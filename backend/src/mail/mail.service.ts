@@ -18,7 +18,7 @@ export class MailService {
 
   async sendOtp(email: string, otp: string): Promise<void> {
     await this.transporter.sendMail({
-      from: `"OTP System" <${process.env.MAIL_USER}>`,
+      from: `"VietCook OTP System" <${process.env.MAIL_USER}>`,
       to: email,
       subject: 'Mã OTP xác thực',
       text: `Mã OTP của bạn là: ${otp}`,
