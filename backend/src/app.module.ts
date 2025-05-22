@@ -10,7 +10,7 @@ import { ConfigModule } from '@nestjs/config';
 @Module({
   imports: [
     ConfigModule.forRoot({
-      isGlobal: true, // Đảm bảo biến có thể dùng toàn cục
+      isGlobal: true,
     }),
     MongooseModule.forRoot(process.env.MONGO_URI!),
     AuthModule,

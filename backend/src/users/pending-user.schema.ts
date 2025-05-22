@@ -10,6 +10,9 @@ export class PendingUser extends Document {
   password: string;
 
   @Prop({ required: true })
+  name: string;
+
+  @Prop({ required: true })
   otp: string;
 
   @Prop({ required: true })

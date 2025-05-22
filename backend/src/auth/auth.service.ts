@@ -20,24 +20,6 @@ export class AuthService {
     private mailService: MailService,
   ) {}
 
-  async register(email: string, password: string) {
-    const existing = await this.userModel.findOne({ email });
-    if (existing) throw new BadRequestException('Email đã được sử dụng');
-
-    const hashed = await bcrypt.hash(password, 10);
-    const otp = Math.floor(100000 + Math.random() * 900000).toString();
-    const otpExpiresAt = new Date(Date.now() + 5 * 60 * 1000);
-
-    await this.pendingUserModel.findOneAndUpdate(
-      { email },
-      { email, password: hashed, otp, otpExpiresAt },
-      { upsert: true, new: true },
-    );
-
-    await this.mailService.sendOtp(email, otp);
-    return { message: 'OTP đã gửi tới email' };
-  }
-
   async verifyOtp(email: string, otp: string) {
     const pending = await this.pendingUserModel.findOne({ email });
     if (!pending || pending.otp !== otp)
@@ -48,6 +30,7 @@ export class AuthService {
     const user = await this.userModel.create({
       email: pending.email,
       password: pending.password,
+      name: pending.name,
     });
 
     await this.pendingUserModel.deleteOne({ email });
@@ -57,9 +40,56 @@ export class AuthService {
       message: 'Đăng ký tài khoản thành công',
       data: {
         email: user.email,
+        name: user.name,
         access_token: token,
       },
     };
+  }
+
+  private async generateAndSendOtp(
+    email: string,
+    hashedPassword?: string,
+    fullName?: string,
+  ) {
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    const otpExpiresAt = new Date(Date.now() + 5 * 60 * 1000);
+
+    await this.pendingUserModel.findOneAndUpdate(
+      { email },
+      {
+        email,
+        ...(hashedPassword && { password: hashedPassword }),
+        ...(fullName && { name: fullName }),
+        otp,
+        otpExpiresAt,
+      },
+      { upsert: true, new: true },
+    );
+
+    await this.mailService.sendOtp(email, otp);
+  }
+
+  async register(email: string, password: string, fullName: string) {
+    const existing = await this.userModel.findOne({ email });
+    if (existing) throw new BadRequestException('Email đã được sử dụng');
+
+    const hashed = await bcrypt.hash(password, 10);
+    await this.generateAndSendOtp(email, hashed, fullName);
+
+    return { message: 'OTP đã gửi tới email' };
+  }
+
+  async resendOtp(email: string) {
+    const pending = await this.pendingUserModel.findOne({ email });
+    if (!pending) {
+      throw new BadRequestException(
+        'Email chưa được đăng ký hoặc không hợp lệ',
+      );
+    }
+
+    await this.generateAndSendOtp(email);
+
+    return { message: 'OTP mới đã được gửi lại qua email' };
   }
 
   async login(email: string, password: string) {

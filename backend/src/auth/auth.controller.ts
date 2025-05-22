@@ -8,13 +8,18 @@ export class AuthController {
   constructor(private authService: AuthService) {}
 
   @Post('register')
-  register(@Body() body: { email: string; password: string }) {
-    return this.authService.register(body.email, body.password);
+  register(@Body() body: { email: string; password: string; name: string }) {
+    return this.authService.register(body.email, body.password, body.name);
   }
 
   @Post('verify-otp')
   verify(@Body() body: { email: string; otp: string }) {
     return this.authService.verifyOtp(body.email, body.otp);
+  }
+
+  @Post('resend-otp')
+  resend(@Body() body: { email: string }) {
+    return this.authService.resendOtp(body.email);
   }
 
   @Post('login')
