@@ -64,11 +64,28 @@ export class AuthService {
 
   async login(email: string, password: string) {
     const user = await this.userModel.findOne({ email });
-    if (!user || !(await bcrypt.compare(password, user.password))) {
-      throw new UnauthorizedException('Sai email hoặc mật khẩu');
+    console.log('>> User:', user);
+    if (!user) {
+      throw new UnauthorizedException('Không tìm thấy người dùng!');
+    }
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      throw new UnauthorizedException('Sai mật khẩu!');
     }
     const token = this.jwtService.sign({ sub: user._id, email: user.email });
-    return { access_token: token };
+    return {
+      message: 'Đăng nhập thành công',
+      data: {
+        token,
+        user: {
+          id: user._id,
+          name: user.name,
+          email: user.email,
+          bio: user.bio,
+          avatar: user.avatarUrl,
+        },
+      },
+    };
   }
 
   logout() {
