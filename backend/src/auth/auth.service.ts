@@ -53,7 +53,13 @@ export class AuthService {
     await this.pendingUserModel.deleteOne({ email });
 
     const token = this.jwtService.sign({ sub: user._id, email: user.email });
-    return { access_token: token };
+    return {
+      message: 'Đăng ký tài khoản thành công',
+      data: {
+        email: user.email,
+        access_token: token,
+      },
+    };
   }
 
   async login(email: string, password: string) {
