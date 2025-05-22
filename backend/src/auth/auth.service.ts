@@ -7,8 +7,8 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
-import { User } from './schemas/user.schema';
-import { PendingUser } from './schemas/pending-user.schema';
+import { User } from '../users/user.schema';
+import { PendingUser } from '../users/pending-user.schema';
 import { MailService } from 'src/mail/mail.service';
 
 @Injectable()

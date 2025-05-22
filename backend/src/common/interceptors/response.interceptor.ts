@@ -31,7 +31,6 @@ export class ResponseInterceptor<T>
           typeof data.statusCode === 'number' &&
           'data' in data
         ) {
-          // Ép kiểu chắc chắn là ApiResponse<T>
           return data as ApiResponse<T>;
         }
         const statusCode =
