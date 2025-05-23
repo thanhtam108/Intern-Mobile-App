@@ -20,32 +20,6 @@ export class AuthService {
     private mailService: MailService,
   ) {}
 
-  async verifyOtp(email: string, otp: string) {
-    const pending = await this.pendingUserModel.findOne({ email });
-    if (!pending || pending.otp !== otp)
-      throw new UnauthorizedException('OTP không đúng');
-    if (pending.otpExpiresAt < new Date())
-      throw new UnauthorizedException('OTP đã hết hạn');
-
-    const user = await this.userModel.create({
-      email: pending.email,
-      password: pending.password,
-      name: pending.name,
-    });
-
-    await this.pendingUserModel.deleteOne({ email });
-
-    const token = this.jwtService.sign({ sub: user._id, email: user.email });
-    return {
-      message: 'Đăng ký tài khoản thành công',
-      data: {
-        email: user.email,
-        name: user.name,
-        access_token: token,
-      },
-    };
-  }
-
   private async generateAndSendOtp(
     email: string,
     hashedPassword?: string,
@@ -76,7 +50,12 @@ export class AuthService {
     const hashed = await bcrypt.hash(password, 10);
     await this.generateAndSendOtp(email, hashed, fullName);
 
-    return { message: 'OTP đã gửi tới email' };
+    return {
+      message: 'OTP đã gửi tới email',
+      data: {
+        user: { email: email },
+      },
+    };
   }
 
   async resendOtp(email: string) {
@@ -89,7 +68,46 @@ export class AuthService {
 
     await this.generateAndSendOtp(email);
 
-    return { message: 'OTP mới đã được gửi lại qua email' };
+    return {
+      message: 'OTP đã được gửi lại vào email',
+      data: {
+        user: { email: email },
+      },
+    };
+  }
+
+  async verifyOtp(email: string, otp: string) {
+    const pending = await this.pendingUserModel.findOne({ email });
+    if (!pending || pending.otp !== otp)
+      throw new UnauthorizedException('OTP không đúng');
+    if (pending.otpExpiresAt < new Date())
+      throw new UnauthorizedException('OTP đã hết hạn');
+
+    const user = await this.userModel.create({
+      email: pending.email,
+      password: pending.password,
+      name: pending.name,
+    });
+
+    await this.pendingUserModel.deleteOne({ email });
+
+    const access_token = this.jwtService.sign({
+      sub: user._id,
+      email: user.email,
+    });
+    return {
+      message: 'Đăng ký tài khoản thành công',
+      data: {
+        access_token,
+        user: {
+          id: user._id,
+          name: user.name,
+          email: user.email,
+          bio: user.bio,
+          avatar: user.avatarUrl,
+        },
+      },
+    };
   }
 
   async login(email: string, password: string) {
@@ -102,11 +120,14 @@ export class AuthService {
     if (!isMatch) {
       throw new UnauthorizedException('Sai mật khẩu!');
     }
-    const token = this.jwtService.sign({ sub: user._id, email: user.email });
+    const access_token = this.jwtService.sign({
+      sub: user._id,
+      email: user.email,
+    });
     return {
       message: 'Đăng nhập thành công',
       data: {
-        token,
+        access_token,
         user: {
           id: user._id,
           name: user.name,
