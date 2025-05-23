@@ -7,6 +7,7 @@ import { PendingUser, PendingUserSchema } from '../users/pending-user.schema';
 import { JwtModule } from '@nestjs/jwt';
 import { MailService } from 'src/mail/mail.service';
 import { ConfigModule } from '@nestjs/config';
+import { JwtStrategy } from './jwt.strategy';
 
 @Module({
   imports: [
@@ -23,6 +24,6 @@ import { ConfigModule } from '@nestjs/config';
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, MailService],
+  providers: [AuthService, MailService, JwtStrategy],
 })
 export class AuthModule {}
