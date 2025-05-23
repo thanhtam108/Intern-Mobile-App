@@ -6,6 +6,7 @@ import { AuthModule } from './auth/auth.module';
 import { MailService } from './mail/mail.service';
 import { MailModule } from './mail/mail.module';
 import { UserModule } from './users/user.module';
+import { CategoryModule } from './categories/category.module';
 import { ConfigModule } from '@nestjs/config';
 
 @Module({
@@ -17,6 +18,7 @@ import { ConfigModule } from '@nestjs/config';
     AuthModule,
     MailModule,
     UserModule,
+    CategoryModule,
   ],
   controllers: [AppController],
   providers: [AppService, MailService],
