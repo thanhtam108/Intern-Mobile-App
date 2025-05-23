@@ -64,7 +64,7 @@ export class AuthService {
 
   async login(email: string, password: string) {
     const user = await this.userModel.findOne({ email });
-    console.log('>> User:', user);
+    // console.log('>> User:', user);
     if (!user) {
       throw new UnauthorizedException('Không tìm thấy người dùng!');
     }
