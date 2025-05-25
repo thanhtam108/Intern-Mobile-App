@@ -7,6 +7,7 @@ import { MailService } from './mail/mail.service';
 import { MailModule } from './mail/mail.module';
 import { UserModule } from './users/user.module';
 import { CategoryModule } from './categories/category.module';
+import { RecipeModule } from './recipe/recipe.module';
 import { ConfigModule } from '@nestjs/config';
 
 @Module({
@@ -19,6 +20,7 @@ import { ConfigModule } from '@nestjs/config';
     MailModule,
     UserModule,
     CategoryModule,
+    RecipeModule,
   ],
   controllers: [AppController],
   providers: [AppService, MailService],
