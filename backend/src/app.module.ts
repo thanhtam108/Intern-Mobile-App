@@ -9,6 +9,8 @@ import { UserModule } from './users/user.module';
 import { CategoryModule } from './categories/category.module';
 import { RecipeModule } from './recipe/recipe.module';
 import { ConfigModule } from '@nestjs/config';
+import { FavoriteModule } from './favorites/favorites.module';
+import { StepperModule } from './stepper/stepper.module';
 
 @Module({
   imports: [
@@ -21,6 +23,8 @@ import { ConfigModule } from '@nestjs/config';
     UserModule,
     CategoryModule,
     RecipeModule,
+    FavoriteModule,
+    StepperModule,
   ],
   controllers: [AppController],
   providers: [AppService, MailService],

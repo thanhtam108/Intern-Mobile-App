@@ -6,8 +6,10 @@ import {
   IsNumber,
   IsOptional,
   IsString,
+  ValidateNested,
 } from 'class-validator';
 import { Type } from 'class-transformer';
+import { StepperDto } from '../../stepper/dto/stepper.dto';
 
 export class RecipeDto {
   @IsString()
@@ -27,10 +29,11 @@ export class RecipeDto {
   @IsString({ each: true })
   ingredients: string[];
 
-  @IsOptional()
-  @IsMongoId()
-  userId?: string;
-
   @IsMongoId()
   category: string;
+
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => StepperDto)
+  steps: StepperDto[];
 }

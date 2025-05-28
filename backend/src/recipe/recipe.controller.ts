@@ -4,23 +4,32 @@ import {
   Delete,
   Get,
   Param,
-  Patch,
   Post,
   Put,
+  Req,
+  UseGuards,
+  UseInterceptors,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
 import { RecipeService } from './recipe.service';
 import { RecipeDto } from './dto/recipe.dto';
+import { ResponseInterceptor } from 'src/common/interceptors/response.interceptor';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('recipes')
+@UseInterceptors(ResponseInterceptor)
 export class RecipeController {
   constructor(private readonly recipeService: RecipeService) {}
 
+  @UseGuards(AuthGuard('jwt'))
   @Post('insert')
   @UsePipes(new ValidationPipe({ whitelist: true }))
-  create(@Body() dto: RecipeDto) {
-    return this.recipeService.create(dto);
+  create(
+    @Body() dto: RecipeDto,
+    @Req() req: Request & { user: { userId: string } },
+  ) {
+    return this.recipeService.create(dto, req.user.userId);
   }
 
   @Get('all')
@@ -33,7 +42,7 @@ export class RecipeController {
     return this.recipeService.findOne(id);
   }
 
-  @Patch(':id')
+  @Put(':id')
   update(@Param('id') id: string, @Body() dto: Partial<RecipeDto>) {
     return this.recipeService.update(id, dto);
   }
