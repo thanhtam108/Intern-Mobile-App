@@ -10,7 +10,7 @@ import {
 } from '@nestjs/common';
 import { CommentService } from './cmt.service';
 import { AuthGuard } from '@nestjs/passport';
-import { CreateCommentDto } from '../common/dto/create-comment.dto';
+import { CreateCommentDto } from './dto/create-comment.dto';
 
 @Controller('comments')
 export class CommentController {
