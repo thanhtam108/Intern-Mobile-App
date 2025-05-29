@@ -11,6 +11,7 @@ import { RecipeModule } from './recipe/recipe.module';
 import { ConfigModule } from '@nestjs/config';
 import { FavoriteModule } from './favorites/favorites.module';
 import { StepperModule } from './stepper/stepper.module';
+import { CommentModule } from './comment/cmt.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { StepperModule } from './stepper/stepper.module';
     RecipeModule,
     FavoriteModule,
     StepperModule,
+    CommentModule,
   ],
   controllers: [AppController],
   providers: [AppService, MailService],
