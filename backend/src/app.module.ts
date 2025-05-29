@@ -11,6 +11,7 @@ import { RecipeModule } from './recipe/recipe.module';
 import { ConfigModule } from '@nestjs/config';
 import { FavoriteModule } from './favorites/favorites.module';
 import { StepperModule } from './stepper/stepper.module';
+import { ReviewModule } from './review/review.module';
 import { CommentModule } from './comment/cmt.module';
 
 @Module({
@@ -26,6 +27,7 @@ import { CommentModule } from './comment/cmt.module';
     RecipeModule,
     FavoriteModule,
     StepperModule,
+    ReviewModule,
     CommentModule,
   ],
   controllers: [AppController],
