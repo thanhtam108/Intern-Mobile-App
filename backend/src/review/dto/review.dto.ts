@@ -11,9 +11,8 @@ export class CreateReviewDto {
   @IsNotEmpty()
   recipeId: string;
 
-  @IsMongoId()
-  @IsNotEmpty()
-  userId: string;
+  //   @IsMongoId()
+  //   userId: string;
 
   @IsNumber()
   @IsNotEmpty()

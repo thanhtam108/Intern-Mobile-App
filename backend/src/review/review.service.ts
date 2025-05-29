@@ -9,8 +9,16 @@ import { UpdateReviewDto } from './dto/review.dto';
 export class ReviewService {
   constructor(@InjectModel(Review.name) private reviewModel: Model<Review>) {}
 
-  async create(dto: CreateReviewDto): Promise<Review> {
-    return await this.reviewModel.create(dto);
+  async create(dto: CreateReviewDto, para_userId: string): Promise<Review> {
+    const { ...reviewData } = dto;
+
+    const review = new this.reviewModel({
+      ...reviewData,
+      userId: para_userId,
+    });
+    await review.save();
+
+    return review;
   }
 
   async findByRecipe(recipeId: string): Promise<Review[]> {

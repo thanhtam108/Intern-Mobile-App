@@ -7,18 +7,31 @@ import {
   Param,
   Body,
   Query,
+  UseInterceptors,
+  UseGuards,
+  UsePipes,
+  ValidationPipe,
+  Req,
 } from '@nestjs/common';
 import { ReviewService } from './review.service';
 import { CreateReviewDto } from './dto/review.dto';
 import { UpdateReviewDto } from './dto/review.dto';
+import { ResponseInterceptor } from 'src/common/interceptors/response.interceptor';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('reviews')
+@UseInterceptors(ResponseInterceptor)
 export class ReviewController {
   constructor(private readonly reviewService: ReviewService) {}
 
+  @UseGuards(AuthGuard('jwt'))
   @Post()
-  create(@Body() dto: CreateReviewDto) {
-    return this.reviewService.create(dto);
+  @UsePipes(new ValidationPipe({ whitelist: true }))
+  create(
+    @Body() dto: CreateReviewDto,
+    @Req() req: Request & { user: { userId: string } },
+  ) {
+    return this.reviewService.create(dto, req.user.userId);
   }
 
   @Get()
