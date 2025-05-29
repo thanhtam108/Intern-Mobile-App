@@ -2,13 +2,14 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { Review } from './schema/review.schema';
-import { ReviewDto } from './dto/review.dto';
+import { CreateReviewDto } from './dto/review.dto';
+import { UpdateReviewDto } from './dto/review.dto';
 
 @Injectable()
 export class ReviewService {
   constructor(@InjectModel(Review.name) private reviewModel: Model<Review>) {}
 
-  async create(dto: ReviewDto): Promise<Review> {
+  async create(dto: CreateReviewDto): Promise<Review> {
     return await this.reviewModel.create(dto);
   }
 
@@ -19,7 +20,7 @@ export class ReviewService {
       .sort({ createdAt: -1 });
   }
 
-  async update(id: string, dto: ReviewDto): Promise<Review> {
+  async update(id: string, dto: UpdateReviewDto): Promise<Review> {
     const review = await this.reviewModel.findByIdAndUpdate(id, dto, {
       new: true,
     });

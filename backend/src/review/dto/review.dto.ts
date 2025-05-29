@@ -6,10 +6,12 @@ import {
   IsString,
 } from 'class-validator';
 
-export class ReviewDto {
+export class CreateReviewDto {
   @IsMongoId()
+  @IsNotEmpty()
   recipeId: string;
 
+  @IsMongoId()
   @IsNotEmpty()
   userId: string;
 
@@ -19,5 +21,15 @@ export class ReviewDto {
 
   @IsString()
   @IsOptional()
-  content: string;
+  content?: string;
+}
+
+export class UpdateReviewDto {
+  @IsNumber()
+  @IsOptional()
+  rating?: number;
+
+  @IsString()
+  @IsOptional()
+  content?: string;
 }
