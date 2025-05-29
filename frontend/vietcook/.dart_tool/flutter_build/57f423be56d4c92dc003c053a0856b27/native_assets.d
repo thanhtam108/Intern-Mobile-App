@@ -1,1 +1,0 @@
- D:\\Mobile-Intern\\frontend\\vietcook\\.dart_tool\\flutter_build\\57f423be56d4c92dc003c053a0856b27\\native_assets.yaml: 
