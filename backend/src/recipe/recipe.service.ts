@@ -34,8 +34,23 @@ export class RecipeService {
     return recipe;
   }
 
-  async findAll(): Promise<Recipe[]> {
-    return this.recipeModel.find().populate('category').populate('userId');
+  async findAll(): Promise<(Recipe & { steps: Stepper[] })[]> {
+    const recipes = await this.recipeModel
+      .find()
+      .populate('category')
+      .populate({ path: 'userId', select: '-password -email' });
+
+    const results = await Promise.all(
+      recipes.map(async (recipe) => {
+        const steps = await this.stepperModel
+          .find({ recipeID: recipe._id })
+          .sort({ createdAt: 1 });
+
+        return Object.assign(recipe.toObject(), { steps });
+      }),
+    );
+
+    return results;
   }
 
   async findOne(id: string): Promise<Recipe & { steps: Stepper[] }> {
