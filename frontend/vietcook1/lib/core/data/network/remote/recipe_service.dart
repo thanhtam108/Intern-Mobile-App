@@ -3,7 +3,7 @@ import 'package:vietcook1/core/data/network/remote/dio_client.dart';
 import '../../local/models/recipe_model.dart';
 
 class RecipeService {
-  final Dio _dio = DioClient().dio;
+  final Dio _dio = Dio();
 
   Future<List<RecipeModel>> fetchRecipes() async {
     try {

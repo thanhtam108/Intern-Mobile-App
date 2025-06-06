@@ -1,14 +1,21 @@
 import 'package:dio/dio.dart';
+import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vietcook1/core/configs/api_constants.dart';
 import 'package:vietcook1/core/data/network/exceptions/app_exception.dart';
 import 'package:vietcook1/core/data/network/model/result_dto.dart';
-import 'dio_client.dart';
+import 'package:vietcook1/core/data/network/model/base_response_dto.dart';
 
-class AuthService {
-  final Dio _dio = Dio();
+class AuthService extends GetxService {
+  late final Dio _dio;
 
-  Future<Result<List<FoodModel>>> register(
+  @override
+  void onInit() {
+    _dio = Get.find<Dio>();
+    super.onInit();
+  }
+
+  Future<Result<String>> register(
       String name, String email, String password) async {
     try {
       final res = await _dio.post(ApiConstants.register, data: {
@@ -17,32 +24,71 @@ class AuthService {
         "password": password,
       });
 
-      //Json to model
+      final baseRp = BaseResponseDto.fromJson(res.data);
 
-      return Result.success("hhhhh");
+      if (res.statusCode == 200 || res.statusCode == 201) {
+        return Result.success("success");
+      } else {
+        return Result.error(AppException(
+          statusCode: res.statusCode,
+          message: "Đăng ký thất bại.",
+          errorCode: "REGISTRATION_FAILED_STATUS",
+        ));
+      }
     } on DioError catch (e) {
+      print("DioError: ${e.message}");
       return Result.error(AppException.parse(e));
     }
   }
 
-  Future<String> verifyOtp(String email, String otp) async {
-    final res = await _dio.post('/auth/verify-otp', data: {
-      "email": email,
-      "otp": otp,
-    });
+  Future<Result<String>> verifyOtp(String email, String otp) async {
+    try {
+      final res = await _dio.post('/auth/verify-otp', data: {
+        "email": email,
+        "otp": otp,
+      });
 
-    print(res.data['access_token']);
-
-    if (res.statusCode == 201 && res.data['access_token'] != null) {
-      return res.data['access_token'];
-    } else {
-      throw Exception(res.data['message'] ?? "OTP không hợp lệ");
+      if (res.statusCode == 201 && res.data['access_token'] != null) {
+        return Result.success(res.data['access_token']);
+      } else {
+        return Result.error(AppException(
+          statusCode: res.statusCode,
+          message: res.data['message'] ?? "OTP không hợp lệ",
+          errorCode: "OTP_INVALID",
+        ));
+      }
+    } on DioError catch (e) {
+      return Result.error(AppException.parse(e));
+    } catch (e) {
+      return Result.error(AppException(
+        statusCode: null,
+        message: "Đã xảy ra lỗi không mong muốn: ${e.toString()}",
+        errorCode: "UNEXPECTED_ERROR",
+      ));
     }
   }
 
-  Future<void> resendOtp(String email) async {
-    final res = await _dio.post('/auth/resend-otp', data: {"email": email});
-    if (res.statusCode != 201) throw Exception("Gửi lại OTP thất bại");
+  Future<Result<void>> resendOtp(String email) async {
+    try {
+      final res = await _dio.post('/auth/resend-otp', data: {"email": email});
+      if (res.statusCode == 201) {
+        return Result.success(null);
+      } else {
+        return Result.error(AppException(
+          statusCode: res.statusCode,
+          message: res.data['message'] ?? "Gửi lại OTP thất bại",
+          errorCode: "RESEND_OTP_FAILED",
+        ));
+      }
+    } on DioError catch (e) {
+      return Result.error(AppException.parse(e));
+    } catch (e) {
+      return Result.error(AppException(
+        statusCode: null,
+        message: "Đã xảy ra lỗi không mong muốn: ${e.toString()}",
+        errorCode: "UNEXPECTED_ERROR",
+      ));
+    }
   }
 
   Future<void> saveToken(String token) async {

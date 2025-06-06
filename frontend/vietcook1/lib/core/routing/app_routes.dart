@@ -9,6 +9,7 @@ import '../../features/recipe/fetch_all/di/recipe_binding.dart';
 import 'routes.dart';
 
 class AppRoutes {
+  static const String initial = Routes.register;
   static final List<GetPage> routes = [
     GetPage(
       name: Routes.register,

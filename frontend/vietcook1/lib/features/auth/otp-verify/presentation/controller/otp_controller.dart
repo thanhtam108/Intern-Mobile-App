@@ -7,6 +7,8 @@ class OtpController extends GetxController {
   final isLoading = false.obs;
   late final String email;
 
+  final AuthService _authService = Get.find<AuthService>();
+
   @override
   void onInit() {
     super.onInit();
@@ -21,23 +23,29 @@ class OtpController extends GetxController {
     }
 
     isLoading.value = true;
-    try {
-      final token = await AuthService().verifyOtp(email, otp);
-      await AuthService().saveToken(token);
-      Get.offAllNamed('/recipes'); // chuyển đến trang chính
-    } catch (e) {
-      Get.snackbar("Sai OTP", e.toString());
-    } finally {
-      isLoading.value = false;
-    }
+    final result = await _authService.verifyOtp(email, otp);
+    isLoading.value = false;
+
+    result.when(
+      onSuccess: (token) async {
+        await _authService.saveToken(token);
+        Get.offAllNamed('/recipes');
+      },
+      onError: (error) {
+        Get.snackbar("Sai OTP", error.message ?? "Xác thực OTP thất bại");
+      },
+    );
   }
 
   void resendOtp() async {
-    try {
-      await AuthService().resendOtp(email);
-      Get.snackbar("Thông báo", "OTP mới đã được gửi");
-    } catch (e) {
-      Get.snackbar("Lỗi", e.toString());
-    }
+    final result = await _authService.resendOtp(email);
+    result.when(
+      onSuccess: (_) {
+        Get.snackbar("Thông báo", "OTP mới đã được gửi");
+      },
+      onError: (error) {
+        Get.snackbar("Lỗi", error.message ?? "Gửi lại OTP thất bại");
+      },
+    );
   }
 }

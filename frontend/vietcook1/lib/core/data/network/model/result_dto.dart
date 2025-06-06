@@ -1,3 +1,5 @@
+import '../exceptions/app_exception.dart';
+
 enum Status { success, error }
 
 class Result<T> {
@@ -5,16 +7,23 @@ class Result<T> {
   final T? data;
   final AppException? exp;
 
-  Result(this.status, this.data, this.exp);
+  Result._(this.status, this.data, this.exp);
 
-  factory Result.success(T? data) {
-    return Result(Status.success, data, null);
-  }
+  factory Result.success(T data) => Result._(Status.success, data, null);
 
-  factory Result.error(
-    AppException? exp, {
-    T? data,
+  factory Result.error(AppException exp, {T? data}) =>
+      Result._(Status.error, data, exp);
+
+  bool get isSuccess => status == Status.success;
+
+  void when({
+    required Function(T data) onSuccess,
+    required Function(AppException exp) onError,
   }) {
-    return Result(Status.error, data, exp);
+    if (isSuccess && data != null) {
+      onSuccess(data!);
+    } else if (!isSuccess && exp != null) {
+      onError(exp!);
+    }
   }
 }
