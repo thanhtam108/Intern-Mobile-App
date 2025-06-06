@@ -9,7 +9,13 @@ class RegisterController extends GetxController {
   final nameController = TextEditingController();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+  final rePasswordController = TextEditingController(); // Thêm dòng này
+
   final isLoading = false.obs;
+
+  // Các biến kiểm tra điều kiện mật khẩu
+  final hasMinLength = false.obs;
+  final hasNumber = false.obs;
 
   final AuthService _authService = Get.find<AuthService>(); // DI
 
@@ -18,7 +24,14 @@ class RegisterController extends GetxController {
     nameController.dispose();
     emailController.dispose();
     passwordController.dispose();
+    rePasswordController.dispose();
     super.onClose();
+  }
+
+  // Hàm kiểm tra điều kiện mật khẩu
+  void onPasswordChanged(String value) {
+    hasMinLength.value = value.length >= 6;
+    hasNumber.value = value.contains(RegExp(r'[0-9]'));
   }
 
   void register() async {

@@ -35,30 +35,14 @@ class CommonTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    OutlineInputBorder defaultBorder = OutlineInputBorder(
-      borderRadius: BorderRadius.circular(10.0),
-      borderSide: BorderSide(color: AppColors.primary, width: 1.0),
-    );
+    const double radius = 18.0;
 
-    OutlineInputBorder focusedBorder = OutlineInputBorder(
-      borderRadius: BorderRadius.circular(10.0),
-      borderSide: BorderSide(color: Theme.of(context).primaryColor, width: 2.0),
-    );
+    OutlineInputBorder borderStyle(Color color, {double width = 1.0}) =>
+        OutlineInputBorder(
+          borderRadius: BorderRadius.circular(radius),
+          borderSide: BorderSide(color: color, width: width),
+        );
 
-    OutlineInputBorder errorBorder = OutlineInputBorder(
-      borderRadius: BorderRadius.circular(10.0),
-      borderSide: BorderSide(color: AppColors.error, width: 2.0),
-    );
-
-    OutlineInputBorder enabledBorder = OutlineInputBorder(
-      borderRadius: BorderRadius.circular(10.0),
-      borderSide: BorderSide(color: Colors.grey.shade400, width: 1.0),
-    );
-
-    OutlineInputBorder disabledBorder = OutlineInputBorder(
-      borderRadius: BorderRadius.circular(10.0),
-      borderSide: BorderSide(color: Colors.grey.shade300, width: 1.0),
-    );
     return TextFormField(
       controller: controller,
       decoration: InputDecoration(
@@ -66,13 +50,16 @@ class CommonTextField extends StatelessWidget {
         hintText: hintText,
         prefixIcon: prefixIcon,
         suffixIcon: suffixIcon,
-        // Áp dụng các border đã định nghĩa
-        border: defaultBorder,
-        enabledBorder: enabledBorder,
-        focusedBorder: focusedBorder,
-        errorBorder: errorBorder,
-        focusedErrorBorder: errorBorder,
-        disabledBorder: disabledBorder,
+        filled: true,
+        fillColor: Colors.white,
+        contentPadding:
+            const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+        border: borderStyle(Colors.grey.shade400),
+        enabledBorder: borderStyle(Colors.grey.shade400),
+        focusedBorder: borderStyle(AppColors.primary, width: 2.0),
+        errorBorder: borderStyle(AppColors.error, width: 2.0),
+        focusedErrorBorder: borderStyle(AppColors.error, width: 2.0),
+        disabledBorder: borderStyle(Colors.grey.shade200),
       ),
       keyboardType: keyboardType,
       obscureText: obscureText,
@@ -82,6 +69,7 @@ class CommonTextField extends StatelessWidget {
       enabled: enabled,
       maxLines: maxLines,
       minLines: minLines,
+      style: const TextStyle(fontSize: 16),
     );
   }
 }
