@@ -10,10 +10,10 @@ part 'base_response_dto.g.dart';
 class BaseResponseDto {
   final dynamic data;
   final String? message;
-  final bool? success;
+  final int? statusCode;
   final dynamic meta;
 
-  BaseResponseDto({this.data, this.message, this.success, this.meta});
+  BaseResponseDto({this.data, this.message, this.statusCode, this.meta});
 
   factory BaseResponseDto.fromJson(Map<String, dynamic> json) =>
       _$BaseResponseDtoFromJson(json);

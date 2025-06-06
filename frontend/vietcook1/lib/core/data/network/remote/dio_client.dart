@@ -8,11 +8,12 @@ class DioClient {
   Future<Dio> create() async {
     final dio = Dio();
     // Initialize the dependencies
-    final checker = await InternetConnectionChecker.createInstance();
-    final networkInfo = NetworkInfoImpl(checker);
+    final networkInfo = NetworkInfoImpl(
+      InternetConnectionChecker.createInstance(),
+    );
     dio.options.baseUrl = ApiConstants.baseUrl;
-    dio.options.connectTimeout = const Duration(seconds: 60);
-    dio.options.receiveTimeout = const Duration(seconds: 60);
+    dio.options.connectTimeout = const Duration(milliseconds: 60000);
+    dio.options.receiveTimeout = const Duration(milliseconds: 60000);
     dio.interceptors.add(AuthInterceptor(networkInfo));
     dio.interceptors.add(LogInterceptor(responseBody: true, requestBody: true));
     return dio;

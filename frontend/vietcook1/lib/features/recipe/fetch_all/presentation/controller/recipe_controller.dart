@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../../../../../core/data/local/models/recipe_model.dart';
 import '../../../../../core/data/network/remote/recipe_service.dart';
 
@@ -12,9 +13,7 @@ class RecipeController extends ChangeNotifier {
     isLoading = true;
     notifyListeners();
 
-    try {
-      recipes = await _recipeService.fetchRecipes();
-    } catch (e) {
+    try {} catch (e) {
       print('Error: $e');
     } finally {
       isLoading = false;

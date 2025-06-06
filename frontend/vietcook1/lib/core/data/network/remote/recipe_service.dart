@@ -1,19 +1,26 @@
 import 'package:dio/dio.dart';
-import 'package:vietcook1/core/data/network/remote/dio_client.dart';
+import 'package:vietcook1/core/data/network/exceptions/app_exception.dart';
+import 'package:vietcook1/core/data/network/model/base_response_dto.dart';
+import 'package:vietcook1/core/data/network/model/result_dto.dart';
+
 import '../../local/models/recipe_model.dart';
 
 class RecipeService {
   final Dio _dio = Dio();
 
-  Future<List<RecipeModel>> fetchRecipes() async {
+  Future<Result<List<RecipeModel>>> fetchRecipes(
+      String name, String email, String password) async {
     try {
-      final response = await _dio.get('/recipes/all');
+      final res = await _dio.get('/recipes/all');
+      final baseRp = BaseResponseDto.fromJson(res.data);
 
-      List<dynamic> data = response.data['data'];
-      print(data);
-      return data.map((json) => RecipeModel.fromJson(json)).toList();
+      List<RecipeModel> tags = <RecipeModel>[];
+      final result = baseRp.data.forEach((element) {
+        tags.add(RecipeModel.fromJson(element));
+      });
+      return Result.success(result);
     } on DioException catch (e) {
-      throw Exception('Failed to load recipes: ${e.message}');
+      return Result.error(AppException.parse(e));
     }
   }
 }

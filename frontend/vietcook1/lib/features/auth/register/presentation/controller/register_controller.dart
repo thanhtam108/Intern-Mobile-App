@@ -1,17 +1,29 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:vietcook1/core/configs/app_colors.dart';
 import 'package:vietcook1/core/data/network/model/result_dto.dart';
+
 import '../../../../../core/data/network/exceptions/app_exception.dart';
 import '../../../../../core/data/network/remote/auth_service.dart';
 
 class RegisterController extends GetxController {
+  final AuthService _authService;
+  RegisterController(this._authService);
   final nameController = TextEditingController();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final isLoading = false.obs;
 
-  final AuthService _authService = Get.find<AuthService>(); // DI
+  @override
+  void onInit() {
+    super.onInit();
+    if (kDebugMode) {
+      nameController.text = "Test User";
+      emailController.text = "nhuan@gmail.com";
+      passwordController.text = "12345678";
+    }
+  }
 
   @override
   void onClose() {

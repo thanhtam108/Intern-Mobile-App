@@ -11,7 +11,7 @@ class AuthInterceptor extends InterceptorsWrapper {
       handler.next(options);
     } else {
       return handler.reject(
-        DioError(
+        DioException(
           requestOptions: options,
           response: Response(
             requestOptions: options,
@@ -33,7 +33,8 @@ class AuthInterceptor extends InterceptorsWrapper {
   }
 
   @override
-  void onError(DioError err, ErrorInterceptorHandler handler) async {
+  void onError(DioException err, ErrorInterceptorHandler handler) async {
+    print("DioError: ${err.message}");
     return handler.next(err);
   }
 }

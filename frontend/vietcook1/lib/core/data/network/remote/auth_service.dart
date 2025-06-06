@@ -3,17 +3,13 @@ import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vietcook1/core/configs/api_constants.dart';
 import 'package:vietcook1/core/data/network/exceptions/app_exception.dart';
-import 'package:vietcook1/core/data/network/model/result_dto.dart';
 import 'package:vietcook1/core/data/network/model/base_response_dto.dart';
+import 'package:vietcook1/core/data/network/model/result_dto.dart';
 
 class AuthService extends GetxService {
-  late final Dio _dio;
+  final Dio _dio;
 
-  @override
-  void onInit() {
-    _dio = Get.find<Dio>();
-    super.onInit();
-  }
+  AuthService(this._dio);
 
   Future<Result<String>> register(
       String name, String email, String password) async {
@@ -23,20 +19,9 @@ class AuthService extends GetxService {
         "email": email,
         "password": password,
       });
-
       final baseRp = BaseResponseDto.fromJson(res.data);
-
-      if (res.statusCode == 200 || res.statusCode == 201) {
-        return Result.success("success");
-      } else {
-        return Result.error(AppException(
-          statusCode: res.statusCode,
-          message: "Đăng ký thất bại.",
-          errorCode: "REGISTRATION_FAILED_STATUS",
-        ));
-      }
-    } on DioError catch (e) {
-      print("DioError: ${e.message}");
+      return Result.success(baseRp.message ?? "Đăng ký thành công");
+    } on DioException catch (e) {
       return Result.error(AppException.parse(e));
     }
   }
@@ -57,7 +42,7 @@ class AuthService extends GetxService {
           errorCode: "OTP_INVALID",
         ));
       }
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       return Result.error(AppException.parse(e));
     } catch (e) {
       return Result.error(AppException(
@@ -80,7 +65,7 @@ class AuthService extends GetxService {
           errorCode: "RESEND_OTP_FAILED",
         ));
       }
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       return Result.error(AppException.parse(e));
     } catch (e) {
       return Result.error(AppException(

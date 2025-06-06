@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
 import '../controller/register_controller.dart';
 
-class RegisterPage extends StatelessWidget {
-  final controller = Get.put(RegisterController());
+class RegisterPage extends GetView<RegisterController> {
+  const RegisterPage({super.key});
 
   @override
   Widget build(BuildContext context) {

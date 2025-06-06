@@ -13,31 +13,31 @@ class AppException implements Exception {
 
   AppException({this.statusCode, this.message, this.errorCode});
 
-  static AppException parse(DioError error) {
-    if (error.type == DioErrorType.connectionTimeout) {
+  static AppException parse(DioException error) {
+    if (error.type == DioExceptionType.connectionTimeout) {
       return AppException(
         statusCode: StatusCode.connectTimeout,
         message: ErrorMessage.timeoutError,
         errorCode: ErrorMessage.timeoutError,
       );
-    } else if (error.type == DioErrorType.sendTimeout) {
+    } else if (error.type == DioExceptionType.sendTimeout) {
       return AppException(
         statusCode: StatusCode.sendTimeout,
         message: ErrorMessage.timeoutError,
         errorCode: ErrorMessage.timeoutError,
       );
-    } else if (error.type == DioErrorType.receiveTimeout) {
+    } else if (error.type == DioExceptionType.receiveTimeout) {
       return AppException(
         statusCode: StatusCode.receiveTimeout,
         message: ErrorMessage.timeoutError,
       );
-    } else if (error.type == DioErrorType.cancel) {
+    } else if (error.type == DioExceptionType.cancel) {
       return AppException(
         statusCode: StatusCode.cancel,
         message: ErrorMessage.cancelError,
         errorCode: ErrorMessage.cancelError,
       );
-    } else if (error.type == DioErrorType.badResponse) {
+    } else if (error.type == DioExceptionType.badResponse) {
       final baseRp = ErrorResponseDto.fromJson(error.response!.data);
 
       return AppException(
@@ -45,7 +45,7 @@ class AppException implements Exception {
         message: baseRp.message,
         errorCode: baseRp.code,
       );
-    } else if (error.type == DioErrorType.unknown) {
+    } else if (error.type == DioExceptionType.unknown) {
       if (error.error is SocketException) {
         return AppException(
           statusCode: StatusCode.internalServerError,
