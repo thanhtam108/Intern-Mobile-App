@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vietcook1/core/configs/api_constants.dart';
 import 'package:vietcook1/core/data/network/exceptions/app_exception.dart';
+import 'package:vietcook1/core/data/network/exceptions/status_code.dart';
 import 'package:vietcook1/core/data/network/model/base_response_dto.dart';
 import 'package:vietcook1/core/data/network/model/result_dto.dart';
 
@@ -28,51 +29,52 @@ class AuthService extends GetxService {
 
   Future<Result<String>> verifyOtp(String email, String otp) async {
     try {
-      final res = await _dio.post('/auth/verify-otp', data: {
-        "email": email,
-        "otp": otp,
-      });
+      final response = await _dio.post(
+        ApiConstants.verify_Otp,
+        data: {
+          "email": email,
+          "otp": otp,
+        },
+      );
 
-      if (res.statusCode == 201 && res.data['access_token'] != null) {
-        return Result.success(res.data['access_token']);
+      final baseResponse = BaseResponseDto.fromJson(response.data);
+
+      // Kiểm tra nếu statusCode của response là 201 (success có data)
+      if (baseResponse.statusCode == StatusCode.success) {
+        return Result.success(baseResponse.message ?? "OTP verified");
       } else {
-        return Result.error(AppException(
-          statusCode: res.statusCode,
-          message: res.data['message'] ?? "OTP không hợp lệ",
-          errorCode: "OTP_INVALID",
-        ));
+        return Result.error(
+          AppException(
+            statusCode: baseResponse.statusCode,
+            message: baseResponse.message,
+          ),
+        );
       }
     } on DioException catch (e) {
       return Result.error(AppException.parse(e));
-    } catch (e) {
-      return Result.error(AppException(
-        statusCode: null,
-        message: "Đã xảy ra lỗi không mong muốn: ${e.toString()}",
-        errorCode: "UNEXPECTED_ERROR",
-      ));
     }
   }
 
   Future<Result<void>> resendOtp(String email) async {
     try {
-      final res = await _dio.post('/auth/resend-otp', data: {"email": email});
-      if (res.statusCode == 201) {
+      final response = await _dio.post(
+        ApiConstants.resend_Otp,
+        data: {"email": email},
+      );
+      final baseResponse = BaseResponseDto.fromJson(response.data);
+      // Nếu statusCode là 201, coi là thành công
+      if (baseResponse.statusCode == StatusCode.success) {
         return Result.success(null);
       } else {
-        return Result.error(AppException(
-          statusCode: res.statusCode,
-          message: res.data['message'] ?? "Gửi lại OTP thất bại",
-          errorCode: "RESEND_OTP_FAILED",
-        ));
+        return Result.error(
+          AppException(
+            statusCode: baseResponse.statusCode,
+            message: baseResponse.message,
+          ),
+        );
       }
     } on DioException catch (e) {
       return Result.error(AppException.parse(e));
-    } catch (e) {
-      return Result.error(AppException(
-        statusCode: null,
-        message: "Đã xảy ra lỗi không mong muốn: ${e.toString()}",
-        errorCode: "UNEXPECTED_ERROR",
-      ));
     }
   }
 

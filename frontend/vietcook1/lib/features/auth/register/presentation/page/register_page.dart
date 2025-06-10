@@ -78,7 +78,21 @@ class RegisterPage extends GetView<RegisterController> {
                             labelText: "Nhập lại Mật khẩu",
                             hintText: "Nhập lại mật khẩu",
                             obscureText: true,
+                            onChanged: (value) {
+                              controller.onRePasswordChanged(value);
+                            },
                           ),
+                          Obx(() => controller.rePasswordError.value != null
+                              ? Padding(
+                                  padding:
+                                      const EdgeInsets.only(top: 4, left: 8),
+                                  child: Text(
+                                    controller.rePasswordError.value!,
+                                    style: const TextStyle(
+                                        color: AppColors.error, fontSize: 13),
+                                  ),
+                                )
+                              : const SizedBox.shrink()),
                           const SizedBox(height: 16),
                           PasswordRequirementWidget(
                             hasMinLength: controller.hasMinLength.value,

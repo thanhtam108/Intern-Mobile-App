@@ -13,9 +13,14 @@ class RegisterController extends GetxController {
   final nameController = TextEditingController();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
-  final rePasswordController = TextEditingController(); // Thêm dòng này
+  final rePasswordController = TextEditingController();
 
   final isLoading = false.obs;
+
+  final hasMinLength = false.obs;
+  final hasNumber = false.obs;
+  final hasLetter = false.obs;
+  final rePasswordError = RxnString();
 
   @override
   void onInit() {
@@ -40,14 +45,35 @@ class RegisterController extends GetxController {
   void onPasswordChanged(String value) {
     hasMinLength.value = value.length >= 6;
     hasNumber.value = value.contains(RegExp(r'[0-9]'));
+    hasLetter.value = value.contains(RegExp(r'[a-zA-Z]'));
+  }
+
+  // void onRePasswordChanged(String value) {
+  //   if (value.isNotEmpty && value != passwordController.text) {
+  //     Get.snackbar(
+  //       "Lỗi",
+  //       "Mật khẩu xác nhận không khớp",
+  //       backgroundColor: AppColors.error,
+  //       colorText: Colors.white,
+  //     );
+  //   }
+  // }
+
+  void onRePasswordChanged(String value) {
+    if (value.isNotEmpty && value != passwordController.text) {
+      rePasswordError.value = "Mật khẩu xác nhận không khớp";
+    } else {
+      rePasswordError.value = null;
+    }
   }
 
   void register() async {
     final name = nameController.text.trim();
     final email = emailController.text.trim();
     final password = passwordController.text;
+    final rePassword = rePasswordController.text;
 
-    if (!_validateFields(name, email, password)) return;
+    if (!_validateFields(name, email, password, rePassword)) return;
 
     isLoading.value = true;
 
@@ -58,11 +84,48 @@ class RegisterController extends GetxController {
     _handleRegisterResponse(result);
   }
 
-  bool _validateFields(String name, String email, String password) {
-    if (email.isEmpty || password.isEmpty || name.isEmpty) {
+  bool _validateFields(
+      String name, String email, String password, String rePassword) {
+    if (name.isEmpty) {
       Get.snackbar(
         "Lỗi",
-        "Không được để trống các trường",
+        "Vui lòng nhập tên",
+        backgroundColor: AppColors.error,
+        colorText: Colors.white,
+      );
+      return false;
+    }
+    if (email.isEmpty) {
+      Get.snackbar(
+        "Lỗi",
+        "Vui lòng nhập email hoặc số điện thoại",
+        backgroundColor: AppColors.error,
+        colorText: Colors.white,
+      );
+      return false;
+    }
+    if (password.isEmpty) {
+      Get.snackbar(
+        "Lỗi",
+        "Vui lòng nhập mật khẩu",
+        backgroundColor: AppColors.error,
+        colorText: Colors.white,
+      );
+      return false;
+    }
+    if (rePassword.isEmpty) {
+      Get.snackbar(
+        "Lỗi",
+        "Vui lòng nhập lại mật khẩu",
+        backgroundColor: AppColors.error,
+        colorText: Colors.white,
+      );
+      return false;
+    }
+    if (password != rePassword) {
+      Get.snackbar(
+        "Lỗi",
+        "Mật khẩu xác nhận không khớp",
         backgroundColor: AppColors.error,
         colorText: Colors.white,
       );
@@ -71,20 +134,32 @@ class RegisterController extends GetxController {
     return true;
   }
 
+  // void _handleRegisterResponse(Result result) {
+  //   if (result.status == Status.success) {
+  //     final userData = result.data?['user'] as Map<String, dynamic>?;
+  //     final email = userData?['email'];
+
+  //     if (email != null) {
+  //       Get.snackbar(
+  //           "Thành công",
+  //           result.data?['message'] ??
+  //               "Vui lòng kiểm tra email để xác nhận OTP");
+  //       Get.toNamed('/verify-otp', arguments: email);
+  //     } else {
+  //       Get.snackbar("Lỗi", "Không tìm thấy email trong phản hồi");
+  //     }
+  //   } else {
+  //     final AppException? error = result.exp;
+  //     Get.snackbar(
+  //         "Lỗi Đăng ký", error?.message ?? "Đã xảy ra lỗi không xác định.");
+  //   }
+  // }
   void _handleRegisterResponse(Result result) {
     if (result.status == Status.success) {
-      final userData = result.data?['user'] as Map<String, dynamic>?;
-      final email = userData?['email'];
-
-      if (email != null) {
-        Get.snackbar(
-            "Thành công",
-            result.data?['message'] ??
-                "Vui lòng kiểm tra email để xác nhận OTP");
-        Get.toNamed('/verify-otp', arguments: email);
-      } else {
-        Get.snackbar("Lỗi", "Không tìm thấy email trong phản hồi");
-      }
+      final email = emailController.text.trim();
+      Get.snackbar("Thành công",
+          result.data ?? "Vui lòng kiểm tra email để xác nhận OTP");
+      Get.toNamed('/verify-otp', arguments: {'email': email});
     } else {
       final AppException? error = result.exp;
       Get.snackbar(
