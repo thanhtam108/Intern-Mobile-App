@@ -29,6 +29,10 @@ export class RecipeDto {
   @IsString({ each: true })
   ingredients: string[];
 
+  @IsOptional()
+  @IsString()
+  duration?: string;
+
   @IsMongoId()
   category: string;
 

@@ -8,9 +8,11 @@ class RecipeModel {
   final String description;
   final List<String> ingredients;
   final int? view;
+  final String? duration;
   final UserModel? user;
   final List<StepModel>? steps;
   final CategoryModel? category;
+  final String? imageUrl;
   final DateTime createdAt;
   final DateTime updatedAt;
 
@@ -20,9 +22,11 @@ class RecipeModel {
     required this.description,
     required this.ingredients,
     this.view,
+    this.duration,
     required this.user,
     required this.steps,
     this.category,
+    this.imageUrl,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -34,6 +38,7 @@ class RecipeModel {
       description: json['description'] as String,
       ingredients: List<String>.from(json['ingredients']),
       view: json['view'] ?? 0,
+      duration: json['duration'] as String?,
       user: json['userId'] != null ? UserModel.fromJson(json['userId']) : null,
       steps: (json['steps'] as List<dynamic>)
           .map((e) => StepModel.fromJson(e))
@@ -41,8 +46,22 @@ class RecipeModel {
       category: json['category'] != null
           ? CategoryModel.fromJson(json['category'])
           : null,
+      imageUrl: json['imageUrl'] as String?,
       createdAt: DateTime.parse(json['createdAt']),
       updatedAt: DateTime.parse(json['updatedAt']),
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'name': name,
+      'description': description,
+      'view': view ?? 0,
+      'duration': duration,
+      'ingredients': ingredients,
+      'category': category?.id,
+      'steps': steps?.map((e) => e.toJson()).toList(),
+      'imageUrl': imageUrl,
+    };
   }
 }

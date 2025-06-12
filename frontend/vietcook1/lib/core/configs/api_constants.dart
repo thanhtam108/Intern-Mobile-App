@@ -1,8 +1,38 @@
 class ApiConstants {
   static const baseUrl = "http://192.168.1.6:3000";
-  static const register = "/auth/register";
-  static const verify_Otp = "/auth/verify-otp";
-  static const resend_Otp = "/auth/resend-otp";
-  static const login = "/auth/login";
-  static const getUser = "/auth/user";
+
+  static var auth = _AuthApi();
+  static var categories = _CategoriesApi();
+  static var recipes = _RecipesApi();
+  static var favorites = _FavoritesApi();
+}
+
+class _AuthApi {
+  final String register = "/auth/register";
+  final String verifyOtp = "/auth/verify-otp";
+  final String resendOtp = "/auth/resend-otp";
+  final String login = "/auth/login";
+  final String getUser = "/auth/user";
+  final String updateUser = "/auth/user/update";
+  final String changePassword = "/auth/user/change-password";
+}
+
+class _CategoriesApi {
+  final String getAll = "/categories/all";
+  final String getById = "/categories/";
+}
+
+class _RecipesApi {
+  final String getAll = "/recipes/all";
+  final String common = "/recipes/";
+  final String getByUserId = "/recipes/user/";
+  final String getByCategoryId = "/recipes/category/id/";
+  final String getByCateName = "/recipes/category/name/";
+  final String create = "/recipes/insert";
+}
+
+class _FavoritesApi {
+  final String common = "/favorites/";
+  final String add = "/favorites/add";
+  final String remove = "/favorites/remove";
 }

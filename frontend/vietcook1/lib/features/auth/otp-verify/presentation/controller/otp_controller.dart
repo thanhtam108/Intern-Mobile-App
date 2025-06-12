@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:vietcook1/core/configs/app_colors.dart';
 import 'dart:async';
 import '../../../../../core/data/network/remote/auth_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
 
 class OtpController extends GetxController {
   final List<TextEditingController> otpControllers =
@@ -49,8 +52,8 @@ class OtpController extends GetxController {
       Get.snackbar(
         "Lỗi",
         "Vui lòng nhập đủ 6 số OTP",
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
+        backgroundColor: AppColors.error,
+        colorText: AppColors.primary,
       );
       return;
     }
@@ -60,14 +63,20 @@ class OtpController extends GetxController {
     isLoading.value = false;
 
     result.when(
-      onSuccess: (token) {
+      onSuccess: (data) async {
+        final accessToken = data['access_token'];
+        final user = data['user'];
+        await saveUserData(accessToken, user);
+        Get.offAllNamed('/home', arguments: {
+          'access_token': accessToken,
+          'user': user,
+        });
         Get.snackbar(
           "Thành công",
-          "Xác thực OTP thành công",
+          "Xác thực OTP thành công! Đang chuyển hướng...",
           backgroundColor: Colors.green,
           colorText: Colors.white,
         );
-        Get.offAllNamed('/register'); // Chuyển sang trang register
       },
       onError: (error) {
         Get.snackbar(
@@ -94,5 +103,12 @@ class OtpController extends GetxController {
         Get.snackbar("Lỗi", error.message ?? "Gửi lại OTP thất bại");
       },
     );
+  }
+
+  Future<void> saveUserData(
+      String accessToken, Map<String, dynamic> user) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('access_token', accessToken);
+    await prefs.setString('user', jsonEncode(user));
   }
 }

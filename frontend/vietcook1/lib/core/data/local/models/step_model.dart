@@ -28,4 +28,12 @@ class StepModel {
       updatedAt: DateTime.parse(json['updatedAt']),
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'stepName': stepName,
+      'stepDescription': stepDescription,
+      'imageUrl': imageUrl,
+    };
+  }
 }

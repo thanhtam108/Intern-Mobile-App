@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../controller/recipe_controller.dart';
+import 'package:vietcook1/core/ui/horizontal_recipe_card.dart';
+import 'package:vietcook1/core/ui/vertical_recipe_card.dart';
 
 class RecipePage extends StatefulWidget {
   @override
@@ -29,10 +31,28 @@ class _RecipePageState extends State<RecipePage> {
               itemCount: controller.recipes.length,
               itemBuilder: (context, index) {
                 final recipe = controller.recipes[index];
-                return ListTile(
-                  title: Text(recipe.name ?? 'No name'),
-                  subtitle: Text(recipe.description ?? 'No description'),
-                );
+                return index % 2 == 0
+                    ? RecipeCardVertical(
+                        imageUrl: recipe.,
+                        title: recipe.name,
+                        subtitle: recipe.description,
+                        rating: recipe.rating,
+                        views: recipe.views,
+                        userName: recipe.userName,
+                        userAvatar: recipe.userAvatar,
+                        timeCreated: recipe.timeAgo,
+                        isFavorite: recipe.isFavorite,
+                      )
+                    : RecipeCardHorizontal(
+                        imageUrl: recipe.imageUrl,
+                        title: recipe.name,
+                        subtitle: recipe.description,
+                        rating: recipe.rating,
+                        views: recipe.views,
+                        userName: recipe.userName,
+                        userAvatar: recipe.userAvatar,
+                        isFavorite: recipe.isFavorite,
+                      );
               },
             ),
       floatingActionButton: FloatingActionButton(

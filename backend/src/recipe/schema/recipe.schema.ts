@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document, Types } from 'mongoose';
 import { Stepper } from 'src/stepper/schema/stepper.schema';
+import { Review } from 'src/review/schema/review.schema';
 
 @Schema({ timestamps: true })
 export class Recipe extends Document {
@@ -16,6 +17,9 @@ export class Recipe extends Document {
   @Prop({ default: 0 })
   view: number;
 
+  @Prop()
+  duration: string;
+
   @Prop({ type: Types.ObjectId, ref: 'User', required: true })
   userId: Types.ObjectId;
 
@@ -24,6 +28,9 @@ export class Recipe extends Document {
 
   @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Steppers' }] })
   steps: Stepper[];
+
+  @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Review' }] })
+  reviews: Review[];
 }
 
 export const RecipeSchema = SchemaFactory.createForClass(Recipe);

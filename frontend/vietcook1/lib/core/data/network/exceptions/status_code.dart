@@ -1,5 +1,5 @@
 class StatusCode {
-  static const int success = 201; // success with data
+  static const int success = 200; // success with data
   static const int noContent = 201; // success with no data (no content)
   static const int badRequest = 400; // failure, API rejected request
   static const int unauthorised = 401; // failure, user is not authorised

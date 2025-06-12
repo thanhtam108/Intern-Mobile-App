@@ -15,7 +15,7 @@ class AuthService extends GetxService {
   Future<Result<String>> register(
       String name, String email, String password) async {
     try {
-      final res = await _dio.post(ApiConstants.register, data: {
+      final res = await _dio.post(ApiConstants.auth.register, data: {
         "name": name,
         "email": email,
         "password": password,
@@ -27,10 +27,11 @@ class AuthService extends GetxService {
     }
   }
 
-  Future<Result<String>> verifyOtp(String email, String otp) async {
+  Future<Result<Map<String, dynamic>>> verifyOtp(
+      String email, String otp) async {
     try {
       final response = await _dio.post(
-        ApiConstants.verify_Otp,
+        ApiConstants.auth.verifyOtp,
         data: {
           "email": email,
           "otp": otp,
@@ -39,9 +40,9 @@ class AuthService extends GetxService {
 
       final baseResponse = BaseResponseDto.fromJson(response.data);
 
-      // Kiểm tra nếu statusCode của response là 201 (success có data)
-      if (baseResponse.statusCode == StatusCode.success) {
-        return Result.success(baseResponse.message ?? "OTP verified");
+      if ((baseResponse.statusCode == StatusCode.success) ||
+          (baseResponse.statusCode == StatusCode.noContent)) {
+        return Result.success(baseResponse.data as Map<String, dynamic>);
       } else {
         return Result.error(
           AppException(
@@ -58,7 +59,7 @@ class AuthService extends GetxService {
   Future<Result<void>> resendOtp(String email) async {
     try {
       final response = await _dio.post(
-        ApiConstants.resend_Otp,
+        ApiConstants.auth.resendOtp,
         data: {"email": email},
       );
       final baseResponse = BaseResponseDto.fromJson(response.data);

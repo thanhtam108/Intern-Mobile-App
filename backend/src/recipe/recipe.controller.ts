@@ -51,4 +51,19 @@ export class RecipeController {
   delete(@Param('id') id: string) {
     return this.recipeService.delete(id);
   }
+
+  @Get('category/name/:categoryName')
+  findByCategoryName(@Param('categoryName') categoryName: string) {
+    return this.recipeService.findByCategoryName(categoryName);
+  }
+
+  @Get('category/id/:categoryId')
+  findByCategoryId(@Param('categoryId') categoryId: string) {
+    return this.recipeService.findByCategoryId(categoryId);
+  }
+
+  @Get('user/:userId')
+  findByUserId(@Param('userId') userId: string) {
+    return this.recipeService.findByUserId(userId);
+  }
 }

@@ -5,6 +5,7 @@ import { Recipe } from './schema/recipe.schema';
 import { RecipeDto } from './dto/recipe.dto';
 import { Stepper } from 'src/stepper/schema/stepper.schema';
 import { StepperService } from 'src/stepper/stepper.service';
+import { Review } from 'src/review/schema/review.schema';
 import { Types } from 'mongoose';
 
 @Injectable()
@@ -12,6 +13,7 @@ export class RecipeService {
   constructor(
     @InjectModel(Recipe.name) private recipeModel: Model<Recipe>,
     @InjectModel(Stepper.name) private stepperModel: Model<Stepper>,
+    @InjectModel(Review.name) private reviewModel: Model<Review>,
     private stepperService: StepperService,
   ) {}
 
@@ -34,41 +36,52 @@ export class RecipeService {
     return recipe;
   }
 
-  async findAll(): Promise<(Recipe & { steps: Stepper[] })[]> {
+  async findAll(): Promise<any[]> {
     const recipes = await this.recipeModel
       .find()
       .populate('category')
-      .populate({ path: 'userId', select: '-password -email' });
+      .populate({ path: 'userId', select: '-password -email -avatarUrl' });
 
-    const results = await Promise.all(
+    const recipeWithStepsAndReviews = await Promise.all(
       recipes.map(async (recipe) => {
         const steps = await this.stepperModel
           .find({ recipeID: recipe._id })
           .sort({ createdAt: 1 });
 
-        return Object.assign(recipe.toObject(), { steps });
+        const reviews = await this.reviewModel
+          .find({ recipeId: recipe._id })
+          .sort({ createdAt: -1 });
+
+        return Object.assign(recipe.toObject(), { steps, reviews });
       }),
     );
 
-    return results;
+    return recipeWithStepsAndReviews;
   }
 
-  async findOne(id: string): Promise<Recipe & { steps: Stepper[] }> {
+  async findOne(
+    id: string,
+  ): Promise<Recipe & { steps: Stepper[]; reviews: Review[] }> {
     const recipe = await this.recipeModel
       .findById(id)
       .populate('category')
-      .populate({ path: 'userId', select: '-password -email' });
+      .populate({ path: 'userId', select: '-password -email -avatarUrl' });
+
     if (!recipe) throw new NotFoundException('Recipe not found');
+
     const steps = await this.stepperModel
       .find({ recipeID: id })
       .sort({ createdAt: 1 });
 
-    return Object.assign(recipe.toObject(), { steps });
+    const reviews = await this.reviewModel
+      .find({ recipeId: id })
+      .sort({ createdAt: -1 });
+
+    return Object.assign(recipe.toObject(), { steps, reviews });
   }
 
   async update(id: string, dto: Partial<RecipeDto>): Promise<Recipe> {
     const { steps, ...updateData } = dto;
-
     const updated = await this.recipeModel.findByIdAndUpdate(id, updateData, {
       new: true,
     });
@@ -93,6 +106,74 @@ export class RecipeService {
     const deleted = await this.recipeModel.findByIdAndDelete(id);
     if (!deleted) throw new NotFoundException('Recipe not found');
     await this.stepperModel.deleteMany({ recipeID: id });
+    await this.reviewModel.deleteMany({ recipeId: id });
     return deleted;
+  }
+
+  async findByUserId(userId: string): Promise<any[]> {
+    const recipes = await this.recipeModel
+      .find({ userId })
+      .populate('category')
+      .populate({ path: 'userId', select: '-password -email -avatarUrl' })
+      .populate('reviews');
+
+    const result = await Promise.all(
+      recipes.map(async (recipe) => {
+        const steps = await this.stepperModel
+          .find({ recipeID: recipe._id })
+          .sort({ createdAt: 1 });
+        return Object.assign(recipe.toObject(), { steps });
+      }),
+    );
+
+    return result;
+  }
+
+  async findByCategoryId(categoryId: string): Promise<any[]> {
+    const recipes = await this.recipeModel
+      .find({ category: categoryId })
+      .populate('category')
+      .populate({ path: 'userId', select: '-password -email -avatarUrl' })
+      .populate('reviews');
+
+    if (!recipes.length) throw new NotFoundException('No recipes found');
+
+    const result = await Promise.all(
+      recipes.map(async (recipe) => {
+        const steps = await this.stepperModel
+          .find({ recipeID: recipe._id })
+          .sort({ createdAt: 1 });
+        return Object.assign(recipe.toObject(), { steps });
+      }),
+    );
+
+    return result;
+  }
+
+  async findByCategoryName(categoryName: string): Promise<any[]> {
+    const categories = await this.recipeModel
+      .find()
+      .populate({
+        path: 'category',
+        match: { name: categoryName },
+      })
+      .populate({ path: 'userId', select: '-password -email -avatarUrl' })
+      .populate('reviews');
+
+    const filtered = categories.filter((r) => r.category);
+
+    const result = await Promise.all(
+      filtered.map(async (recipe) => {
+        const steps = await this.stepperModel
+          .find({ recipeID: recipe._id })
+          .sort({ createdAt: 1 });
+        return Object.assign(recipe.toObject(), { steps });
+      }),
+    );
+
+    if (!result.length)
+      throw new NotFoundException('No recipes found for this category');
+
+    return result;
   }
 }

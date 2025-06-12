@@ -7,9 +7,9 @@ import 'package:vietcook1/core/data/network/model/result_dto.dart';
 import '../../../../../core/data/network/exceptions/app_exception.dart';
 import '../../../../../core/data/network/remote/auth_service.dart';
 
-class RegisterController extends GetxController {
-  final AuthService _authService;
-  RegisterController(this._authService);
+class HomeController extends GetxController {
+  // final AuthService _authService;
+  // RegisterController(this._authService);
   final nameController = TextEditingController();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
@@ -134,6 +134,26 @@ class RegisterController extends GetxController {
     return true;
   }
 
+  // void _handleRegisterResponse(Result result) {
+  //   if (result.status == Status.success) {
+  //     final userData = result.data?['user'] as Map<String, dynamic>?;
+  //     final email = userData?['email'];
+
+  //     if (email != null) {
+  //       Get.snackbar(
+  //           "Thành công",
+  //           result.data?['message'] ??
+  //               "Vui lòng kiểm tra email để xác nhận OTP");
+  //       Get.toNamed('/verify-otp', arguments: email);
+  //     } else {
+  //       Get.snackbar("Lỗi", "Không tìm thấy email trong phản hồi");
+  //     }
+  //   } else {
+  //     final AppException? error = result.exp;
+  //     Get.snackbar(
+  //         "Lỗi Đăng ký", error?.message ?? "Đã xảy ra lỗi không xác định.");
+  //   }
+  // }
   void _handleRegisterResponse(Result result) {
     if (result.status == Status.success) {
       final email = emailController.text.trim();
