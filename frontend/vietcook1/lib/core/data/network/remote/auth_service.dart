@@ -86,7 +86,7 @@ class AuthService extends GetxService {
 
   Future<Map<String, dynamic>> login(String email, String password) async {
     try {
-      final res = await _dio.post(ApiConstants.login, data: {
+      final res = await _dio.post(ApiConstants.auth.login, data: {
         'email': email,
         'password': password,
       });
