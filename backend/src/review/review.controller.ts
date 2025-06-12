@@ -6,7 +6,6 @@ import {
   Delete,
   Param,
   Body,
-  Query,
   UseInterceptors,
   UseGuards,
   UsePipes,
@@ -34,9 +33,9 @@ export class ReviewController {
     return this.reviewService.create(dto, req.user.userId);
   }
 
-  @Get()
-  findByRecipe(@Query('recipeId') recipeId: string) {
-    return this.reviewService.findByRecipe(recipeId);
+  @Get(':id')
+  findByRecipe(@Param('id') id: string) {
+    return this.reviewService.findByRecipe(id);
   }
 
   @Patch(':id')

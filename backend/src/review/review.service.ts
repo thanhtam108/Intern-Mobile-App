@@ -24,7 +24,7 @@ export class ReviewService {
   async findByRecipe(recipeId: string): Promise<Review[]> {
     return await this.reviewModel
       .find({ recipeId })
-      .populate('userId', '-password -email')
+      .populate({ path: 'userId', select: '-password -email -avatarUrl' })
       .sort({ createdAt: -1 });
   }
 

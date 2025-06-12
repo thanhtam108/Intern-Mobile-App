@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:vietcook1/core/data/local/models/recipe_model.dart';
 
-class RecipeCardHorizontal extends StatelessWidget {
+class HorizontalRecipeCard extends StatelessWidget {
   final RecipeModel recipe;
   final bool isFavorite;
 
-  const RecipeCardHorizontal({
+  const HorizontalRecipeCard({
     super.key,
     required this.recipe,
     this.isFavorite = false,

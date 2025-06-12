@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:vietcook1/core/data/local/models/recipe_model.dart';
-import 'package:vietcook1/core/ui/vertical_recipe_card.dart';
+import 'package:vietcook1/core/ui/horizontal_recipe_card.dart';
 
-class FavoriteRecipes extends StatelessWidget {
+class RecentRecipes extends StatelessWidget {
   final List<RecipeModel> recipes;
 
-  const FavoriteRecipes({
+  const RecentRecipes({
     super.key,
     required this.recipes,
   });
@@ -21,7 +21,7 @@ class FavoriteRecipes extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'Món yêu thích',
+                'Món gần đây',
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
               TextButton(
@@ -33,16 +33,14 @@ class FavoriteRecipes extends StatelessWidget {
             ],
           ),
         ),
-        SizedBox(
-          height: 200,
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            itemCount: recipes.length,
-            itemBuilder: (context, index) {
-              final recipe = recipes[index];
-              return VerticalRecipeCard(recipe: recipe);
-            },
-          ),
+        ListView.builder(
+          shrinkWrap: true,
+          physics: NeverScrollableScrollPhysics(),
+          itemCount: recipes.length,
+          itemBuilder: (context, index) {
+            final recipe = recipes[index];
+            return HorizontalRecipeCard(recipe: recipe);
+          },
         ),
       ],
     );
