@@ -5,11 +5,25 @@ import 'package:vietcook1/core/data/network/remote/dio_client.dart';
 
 import 'core/bindings/core_binding.dart';
 import 'core/routing/app_routes.dart';
+import 'package:get/get.dart';
+import 'core/routing/routes.dart';
+import 'core/data/network/remote/dio_client.dart';
+import 'core/data/network/remote/auth_service.dart';
+import 'core/configs/api_constants.dart';
 
-void main() async {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   final dio = await DioClient().create();
-  Get.put<Dio>(dio, permanent: true);
-  runApp(const MyApp());
+  Get.put<Dio>(dio); // inject Dio
+  Get.put<AuthService>(AuthService(dio));
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => RecipeController()),
+      ],
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {

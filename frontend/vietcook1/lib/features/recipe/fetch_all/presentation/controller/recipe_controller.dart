@@ -4,7 +4,7 @@ import '../../../../../core/data/local/models/recipe_model.dart';
 import '../../../../../core/data/network/remote/recipe_service.dart';
 
 class RecipeController extends ChangeNotifier {
-  final RecipeService _recipeService = RecipeService();
+  // final RecipeService _recipeService = RecipeService();
 
   List<RecipeModel> recipes = [];
   bool isLoading = false;

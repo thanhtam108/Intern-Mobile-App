@@ -35,5 +35,10 @@ class AppRoutes {
       name: Routes.recipes,
       page: () => RecipePage(),
     ),
+    GetPage(
+      name: Routes.login,
+      page: () => LoginPage(),
+      binding: LoginBinding(),
+    ),
   ];
 }

@@ -83,4 +83,22 @@ class AuthService extends GetxService {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('access_token', token);
   }
+
+  Future<Map<String, dynamic>> login(String email, String password) async {
+    try {
+      final res = await _dio.post(ApiConstants.login, data: {
+        'email': email,
+        'password': password,
+      });
+
+      if (res.statusCode == 200 || res.statusCode == 201) {
+        return res.data['data'];
+      } else {
+        throw Exception(res.data['message'] ?? 'Đăng nhập thất bại');
+      }
+    } catch (e) {
+      print('Lỗi: $e');
+      throw Exception('Không kết nối được đến server');
+    }
+  }
 }

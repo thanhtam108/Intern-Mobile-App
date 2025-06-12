@@ -15,7 +15,8 @@ class DioClient {
     dio.options.connectTimeout = const Duration(milliseconds: 60000);
     dio.options.receiveTimeout = const Duration(milliseconds: 60000);
     dio.interceptors.add(AuthInterceptor(networkInfo));
-    dio.interceptors.add(LogInterceptor(responseBody: true, requestBody: true));
+    dio.interceptors.add(LogInterceptor(requestBody: true, responseBody: true));
+
     return dio;
   }
 }
