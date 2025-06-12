@@ -6,24 +6,26 @@ import 'package:vietcook1/core/data/network/model/result_dto.dart';
 import 'dio_client.dart';
 
 class AuthService {
-  final Dio _dio = Dio();
+  final Dio _dio;
 
-  Future<Result<List<FoodModel>>> register(
-      String name, String email, String password) async {
-    try {
-      final res = await _dio.post(ApiConstants.register, data: {
-        "name": name,
-        "email": email,
-        "password": password,
-      });
+  AuthService(this._dio);
 
-      //Json to model
+  // Future<Result<List<FoodModel>>> register(
+  //     String name, String email, String password) async {
+  //   try {
+  //     final res = await _dio.post(ApiConstants.register, data: {
+  //       "name": name,
+  //       "email": email,
+  //       "password": password,
+  //     });
 
-      return Result.success("hhhhh");
-    } on DioError catch (e) {
-      return Result.error(AppException.parse(e));
-    }
-  }
+  //     //Json to model
+
+  //     return Result.success("hhhhh");
+  //   } on DioError catch (e) {
+  //     return Result.error(AppException.parse(e));
+  //   }
+  // }
 
   Future<String> verifyOtp(String email, String otp) async {
     final res = await _dio.post('/auth/verify-otp', data: {
@@ -48,5 +50,23 @@ class AuthService {
   Future<void> saveToken(String token) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('access_token', token);
+  }
+
+  Future<Map<String, dynamic>> login(String email, String password) async {
+    try {
+      final res = await _dio.post(ApiConstants.login, data: {
+        'email': email,
+        'password': password,
+      });
+
+      if (res.statusCode == 200 || res.statusCode == 201) {
+        return res.data['data'];
+      } else {
+        throw Exception(res.data['message'] ?? 'Đăng nhập thất bại');
+      }
+    } catch (e) {
+      print('Lỗi: $e');
+      throw Exception('Không kết nối được đến server');
+    }
   }
 }

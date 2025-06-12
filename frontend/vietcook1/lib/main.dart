@@ -1,11 +1,20 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import './features/recipe/fetch_all/presentation/page/recipe_page.dart';
 import 'features/recipe/fetch_all/presentation/controller/recipe_controller.dart';
 import 'core/routing/app_routes.dart';
 import 'package:get/get.dart';
+import 'core/routing/routes.dart';
+import 'core/data/network/remote/dio_client.dart';
+import 'core/data/network/remote/auth_service.dart';
+import 'core/configs/api_constants.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  final dio = await DioClient().create();
+  Get.put<Dio>(dio); // inject Dio
+  Get.put<AuthService>(AuthService(dio));
   runApp(
     MultiProvider(
       providers: [
@@ -28,7 +37,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       debugShowCheckedModeBanner: false,
-      initialRoute: AppRoutes.routes, // hoặc AppRoutes.verifyOtp
+      initialRoute: Routes.login,
       getPages: AppRoutes.routes,
     );
   }
