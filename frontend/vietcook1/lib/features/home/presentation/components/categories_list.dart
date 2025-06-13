@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:vietcook1/core/configs/app_colors.dart';
 // import 'package:vietcook1/core/data/local/models/category_model.dart';
 
 class CategoryList extends StatelessWidget {
@@ -32,7 +33,7 @@ class CategoryList extends StatelessWidget {
                 backgroundColor: Colors.green.shade100,
                 child:
                     // Image.network(category.imageUrl),
-                    Icon(category['icon'], color: Colors.green),
+                    Icon(category['icon'], color: AppColors.primary, size: 32),
               ),
               const SizedBox(height: 4),
               Text(

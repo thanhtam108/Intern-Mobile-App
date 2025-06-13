@@ -64,15 +64,14 @@ class HorizontalRecipeCard extends StatelessWidget {
                       Text('${recipe.view ?? 0}' 'Lượt xem',
                           style: TextStyle(fontSize: 12)),
                       Spacer(),
-                      Text(recipe.user?.name ?? 'Unknown',
+                      Text(recipe.user.name,
                           style: TextStyle(
                               fontSize: 12, fontWeight: FontWeight.w500)),
                       const SizedBox(width: 4),
                       CircleAvatar(
                           radius: 10,
-                          backgroundImage: NetworkImage(
-                              recipe.user?.avatarUrl ??
-                                  'lib/assets/images/avatar_placeholder.png')),
+                          backgroundImage: NetworkImage(recipe.user.avatarUrl ??
+                              'lib/assets/images/avatar_placeholder.png')),
                     ],
                   )
                 ],

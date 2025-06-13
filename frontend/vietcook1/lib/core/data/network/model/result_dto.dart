@@ -21,7 +21,7 @@ class Result<T> {
     required Function(AppException exp) onError,
   }) {
     if (isSuccess && data != null) {
-      onSuccess(data!);
+      onSuccess(data as T);
     } else if (!isSuccess && exp != null) {
       onError(exp!);
     }

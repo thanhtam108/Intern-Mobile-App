@@ -4,10 +4,8 @@ import 'package:vietcook1/core/ui/common_button.dart';
 import 'package:vietcook1/core/ui/common_card_container.dart';
 import '../controller/otp_controller.dart';
 
-// class OtpPage extends StatelessWidget {
-//   final controller = Get.put(
-//     // OtpController()
-//     );
+class OtpPage extends StatelessWidget {
+  final controller = Get.put(OtpController());
 
   @override
   Widget build(BuildContext context) {

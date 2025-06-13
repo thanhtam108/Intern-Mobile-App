@@ -7,6 +7,6 @@ class HomeBinding extends Bindings {
   @override
   void dependencies() {
     Get.lazyPut(() => AuthService(Get.find()));
-    Get.lazyPut(() => HomeController(Get.find<AuthService>()), fenix: true);
+    Get.lazyPut(() => HomeController(), fenix: true);
   }
 }

@@ -64,20 +64,24 @@ class VerticalRecipeCard extends StatelessWidget {
                 Row(
                   children: [
                     Icon(Icons.star, size: 14, color: Colors.orange),
-                    Text('${recipe}.', style: TextStyle(fontSize: 12)),
+                    Text('${recipe.reviews}', style: TextStyle(fontSize: 12)),
                     Icon(Icons.visibility, size: 14, color: Colors.grey),
-                    Text('$views N', style: TextStyle(fontSize: 12)),
+                    Text('${recipe.view} N', style: TextStyle(fontSize: 12)),
                   ],
                 ),
                 const SizedBox(height: 6),
                 Row(
                   children: [
                     CircleAvatar(
-                        radius: 10, backgroundImage: NetworkImage(userAvatar)),
+                        radius: 10,
+                        backgroundImage: NetworkImage(
+                            recipe.user.avatarUrl != null
+                                ? recipe.user.avatarUrl!
+                                : 'lib/assets/images/avatar_placeholder.png')),
                     const SizedBox(width: 4),
-                    Text(userName, style: TextStyle(fontSize: 12)),
+                    Text(recipe.user.name, style: TextStyle(fontSize: 12)),
                     Spacer(),
-                    Text(timeCreated,
+                    Text(recipe.createdAt.toString(),
                         style: TextStyle(fontSize: 10, color: Colors.grey)),
                   ],
                 )

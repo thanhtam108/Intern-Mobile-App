@@ -1,169 +1,73 @@
-import 'package:flutter/foundation.dart';
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:vietcook1/core/configs/app_colors.dart';
-import 'package:vietcook1/core/data/network/model/result_dto.dart';
-
-import '../../../../../core/data/network/exceptions/app_exception.dart';
-import '../../../../../core/data/network/remote/auth_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:vietcook1/core/data/local/models/recipe_model.dart';
+import 'package:vietcook1/core/data/local/models/user_model.dart';
+import 'package:vietcook1/core/data/network/remote/recipe_service.dart';
 
 class HomeController extends GetxController {
-  // final AuthService _authService;
-  // RegisterController(this._authService);
-  final nameController = TextEditingController();
-  final emailController = TextEditingController();
-  final passwordController = TextEditingController();
-  final rePasswordController = TextEditingController();
+  final RecipeService _recipeService = RecipeService();
+
+  final Rx<UserModel?> user = Rx<UserModel?>(null);
+
+  final RxList<RecipeModel> favoriteRecipes = RxList<RecipeModel>();
+
+  final RxList<RecipeModel> recentRecipes = RxList<RecipeModel>();
 
   final isLoading = false.obs;
-
-  final hasMinLength = false.obs;
-  final hasNumber = false.obs;
-  final hasLetter = false.obs;
-  final rePasswordError = RxnString();
 
   @override
   void onInit() {
     super.onInit();
-    if (kDebugMode) {
-      nameController.text = "Test User";
-      emailController.text = "nhuan@gmail.com";
-      passwordController.text = "12345678";
-    }
+    _loadUserData(); // Lấy dữ liệu user từ SharedPreferences
+    fetchFavoriteRecipes();
+    // fetchRecentRecipes();
   }
 
-  @override
-  void onClose() {
-    nameController.dispose();
-    emailController.dispose();
-    passwordController.dispose();
-    rePasswordController.dispose();
-    super.onClose();
-  }
-
-  // Hàm kiểm tra điều kiện mật khẩu
-  void onPasswordChanged(String value) {
-    hasMinLength.value = value.length >= 6;
-    hasNumber.value = value.contains(RegExp(r'[0-9]'));
-    hasLetter.value = value.contains(RegExp(r'[a-zA-Z]'));
-  }
-
-  // void onRePasswordChanged(String value) {
-  //   if (value.isNotEmpty && value != passwordController.text) {
-  //     Get.snackbar(
-  //       "Lỗi",
-  //       "Mật khẩu xác nhận không khớp",
-  //       backgroundColor: AppColors.error,
-  //       colorText: Colors.white,
-  //     );
-  //   }
-  // }
-
-  void onRePasswordChanged(String value) {
-    if (value.isNotEmpty && value != passwordController.text) {
-      rePasswordError.value = "Mật khẩu xác nhận không khớp";
+  Future<void> _loadUserData() async {
+    final prefs = await SharedPreferences.getInstance();
+    final userData = prefs.getString('user');
+    if (userData != null) {
+      user.value = UserModel.fromJson(jsonDecode(userData));
     } else {
-      rePasswordError.value = null;
+      Get.snackbar('Lỗi', 'Không tìm thấy dữ liệu người dùng');
     }
   }
 
-  void register() async {
-    final name = nameController.text.trim();
-    final email = emailController.text.trim();
-    final password = passwordController.text;
-    final rePassword = rePasswordController.text;
-
-    if (!_validateFields(name, email, password, rePassword)) return;
-
+  Future<void> fetchFavoriteRecipes() async {
     isLoading.value = true;
-
-    final result = await _authService.register(name, email, password);
-
+    final result =
+        await _recipeService.fetchFavoriteRecipes(user.value?.id ?? '');
+    result.when(
+      onSuccess: (data) {
+        favoriteRecipes.assignAll(data);
+      },
+      onError: (error) {
+        Get.snackbar('Lỗi', 'Không thể tải danh sách món yêu thích');
+      },
+    );
     isLoading.value = false;
-
-    _handleRegisterResponse(result);
   }
 
-  bool _validateFields(
-      String name, String email, String password, String rePassword) {
-    if (name.isEmpty) {
-      Get.snackbar(
-        "Lỗi",
-        "Vui lòng nhập tên",
-        backgroundColor: AppColors.error,
-        colorText: Colors.white,
-      );
-      return false;
-    }
-    if (email.isEmpty) {
-      Get.snackbar(
-        "Lỗi",
-        "Vui lòng nhập email hoặc số điện thoại",
-        backgroundColor: AppColors.error,
-        colorText: Colors.white,
-      );
-      return false;
-    }
-    if (password.isEmpty) {
-      Get.snackbar(
-        "Lỗi",
-        "Vui lòng nhập mật khẩu",
-        backgroundColor: AppColors.error,
-        colorText: Colors.white,
-      );
-      return false;
-    }
-    if (rePassword.isEmpty) {
-      Get.snackbar(
-        "Lỗi",
-        "Vui lòng nhập lại mật khẩu",
-        backgroundColor: AppColors.error,
-        colorText: Colors.white,
-      );
-      return false;
-    }
-    if (password != rePassword) {
-      Get.snackbar(
-        "Lỗi",
-        "Mật khẩu xác nhận không khớp",
-        backgroundColor: AppColors.error,
-        colorText: Colors.white,
-      );
-      return false;
-    }
-    return true;
-  }
-
-  // void _handleRegisterResponse(Result result) {
-  //   if (result.status == Status.success) {
-  //     final userData = result.data?['user'] as Map<String, dynamic>?;
-  //     final email = userData?['email'];
-
-  //     if (email != null) {
-  //       Get.snackbar(
-  //           "Thành công",
-  //           result.data?['message'] ??
-  //               "Vui lòng kiểm tra email để xác nhận OTP");
-  //       Get.toNamed('/verify-otp', arguments: email);
-  //     } else {
-  //       Get.snackbar("Lỗi", "Không tìm thấy email trong phản hồi");
-  //     }
-  //   } else {
-  //     final AppException? error = result.exp;
-  //     Get.snackbar(
-  //         "Lỗi Đăng ký", error?.message ?? "Đã xảy ra lỗi không xác định.");
-  //   }
+  // Lấy danh sách món gần đây từ API
+  // Future<void> fetchRecentRecipes() async {
+  //   isLoading.value = true;
+  //   final result = await _recipeService.fetchRecentRecipes();
+  //   result.when(
+  //     onSuccess: (data) {
+  //       recentRecipes.assignAll(data);
+  //     },
+  //     onError: (error) {
+  //       Get.snackbar('Lỗi', 'Không thể tải danh sách món gần đây');
+  //     },
+  //   );
+  //   isLoading.value = false;
   // }
-  void _handleRegisterResponse(Result result) {
-    if (result.status == Status.success) {
-      final email = emailController.text.trim();
-      Get.snackbar("Thành công",
-          result.data ?? "Vui lòng kiểm tra email để xác nhận OTP");
-      Get.toNamed('/verify-otp', arguments: {'email': email});
-    } else {
-      final AppException? error = result.exp;
-      Get.snackbar(
-          "Lỗi Đăng ký", error?.message ?? "Đã xảy ra lỗi không xác định.");
-    }
+
+  // Chuyển qua các trang trong MainNavigator
+  void navigateToPage(String routeName) {
+    Get.toNamed(routeName);
   }
 }

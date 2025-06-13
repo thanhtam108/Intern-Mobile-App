@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:vietcook1/core/configs/app_colors.dart';
 import 'package:vietcook1/core/ui/custom_search_bar.dart';
 
 class HomeHeader extends StatelessWidget {
@@ -16,7 +17,7 @@ class HomeHeader extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.green,
+        color: AppColors.primary,
         borderRadius: BorderRadius.vertical(bottom: Radius.circular(24)),
       ),
       child: Column(
@@ -51,4 +52,3 @@ class HomeHeader extends StatelessWidget {
     );
   }
 }
-

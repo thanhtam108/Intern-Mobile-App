@@ -2,28 +2,18 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:vietcook1/core/data/network/remote/dio_client.dart';
-
 import 'core/bindings/core_binding.dart';
 import 'core/routing/app_routes.dart';
-import 'package:get/get.dart';
-import 'core/routing/routes.dart';
-import 'core/data/network/remote/dio_client.dart';
 import 'core/data/network/remote/auth_service.dart';
-import 'core/configs/api_constants.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   final dio = await DioClient().create();
-  Get.put<Dio>(dio); // inject Dio
+  Get.put<Dio>(dio); // Inject Dio
   Get.put<AuthService>(AuthService(dio));
-  runApp(
-    MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (_) => RecipeController()),
-      ],
-      child: const MyApp(),
-    ),
-  );
+
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -37,10 +27,10 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      initialBinding: CoreBinding(),
+      initialBinding: CoreBinding(), // Binding để inject dependencies
       debugShowCheckedModeBanner: false,
-      initialRoute: AppRoutes.initial,
-      getPages: AppRoutes.routes,
+      initialRoute: AppRoutes.initial, // Route ban đầu
+      getPages: AppRoutes.routes, // Danh sách các route
     );
   }
 }

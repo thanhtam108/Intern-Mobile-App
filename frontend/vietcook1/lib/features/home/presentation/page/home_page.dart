@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import '../components/home_header.dart';
 import '../components/categories_list.dart';
 import '../components/favorite_recipes.dart';
 import '../components/recent_recipes.dart';
 import '../controller/home_controller.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends GetView<HomeController> {
+  const HomePage({super.key});
   @override
   Widget build(BuildContext context) {
     final categories = [
@@ -19,13 +21,11 @@ class HomePage extends StatelessWidget {
       {'name': 'Canh', 'icon': Icons.soup_kitchen},
     ];
 
-    final favoriteRecipes = [
-      // Danh sách món yêu thích
-    ];
+    final favoriteRecipes = controller.favoriteRecipes();
 
-    final recentRecipes = [
-      // Danh sách món gần đây
-    ];
+    // final recentRecipes = [
+    //   // Danh sách món gần đây
+    // ];
 
     return Scaffold(
       body: SingleChildScrollView(
@@ -33,10 +33,11 @@ class HomePage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             HomeHeader(
-                userName: 'Tên', avatarUrl: 'https://example.com/avatar.jpg'),
+                userName: 'Tên',
+                avatarUrl: 'lib/assets/icons/avatar_placeholder.jpg'),
             CategoryList(categories: categories),
             FavoriteRecipes(recipes: favoriteRecipes),
-            RecentRecipes(recipes: recentRecipes),
+            // RecentRecipes(recipes: recentRecipes),
           ],
         ),
       ),

@@ -1,6 +1,7 @@
 import 'step_model.dart';
 import 'user_model.dart';
 import 'category_model.dart';
+import 'review_model.dart';
 
 class RecipeModel {
   final String id;
@@ -9,8 +10,9 @@ class RecipeModel {
   final List<String> ingredients;
   final int? view;
   final String? duration;
-  final UserModel? user;
+  final UserModel user;
   final List<StepModel>? steps;
+  final List<ReviewModel>? reviews;
   final CategoryModel? category;
   final String? imageUrl;
   final DateTime createdAt;
@@ -25,6 +27,7 @@ class RecipeModel {
     this.duration,
     required this.user,
     required this.steps,
+    this.reviews,
     this.category,
     this.imageUrl,
     required this.createdAt,
@@ -39,9 +42,13 @@ class RecipeModel {
       ingredients: List<String>.from(json['ingredients']),
       view: json['view'] ?? 0,
       duration: json['duration'] as String?,
-      user: json['userId'] != null ? UserModel.fromJson(json['userId']) : null,
+      user: json['userId'],
+      // != null ? UserModel.fromJson(json['userId']) : null,
       steps: (json['steps'] as List<dynamic>)
           .map((e) => StepModel.fromJson(e))
+          .toList(),
+      reviews: (json['reviews'] as List<dynamic>?)
+          ?.map((e) => ReviewModel.fromJson(e))
           .toList(),
       category: json['category'] != null
           ? CategoryModel.fromJson(json['category'])
@@ -60,7 +67,13 @@ class RecipeModel {
       'duration': duration,
       'ingredients': ingredients,
       'category': category?.id,
-      'steps': steps?.map((e) => e.toJson()).toList(),
+      'userId': user.toJson(),
+      'createdAt': createdAt.toIso8601String(),
+      'updatedAt': updatedAt.toIso8601String(),
+      'id': id,
+      'steps': steps != null ? steps!.map((e) => e.toJson()).toList() : [],
+      'reviews':
+          reviews != null ? reviews!.map((e) => e.toJson()).toList() : [],
       'imageUrl': imageUrl,
     };
   }

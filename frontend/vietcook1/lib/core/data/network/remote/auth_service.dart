@@ -84,21 +84,28 @@ class AuthService extends GetxService {
     await prefs.setString('access_token', token);
   }
 
-  Future<Map<String, dynamic>> login(String email, String password) async {
+  Future<Result<Map<String, dynamic>>> login(
+      String email, String password) async {
     try {
       final res = await _dio.post(ApiConstants.auth.login, data: {
         'email': email,
         'password': password,
       });
+      final baseResponse = BaseResponseDto.fromJson(res.data);
 
-      if (res.statusCode == 200 || res.statusCode == 201) {
-        return res.data['data'];
+      if (baseResponse.statusCode == StatusCode.success ||
+          baseResponse.statusCode == StatusCode.noContent) {
+        return Result.success(baseResponse.data as Map<String, dynamic>);
       } else {
-        throw Exception(res.data['message'] ?? 'Đăng nhập thất bại');
+        return Result.error(
+          AppException(
+            statusCode: baseResponse.statusCode,
+            message: baseResponse.message,
+          ),
+        );
       }
-    } catch (e) {
-      print('Lỗi: $e');
-      throw Exception('Không kết nối được đến server');
+    } on DioException catch (e) {
+      return Result.error(AppException.parse(e));
     }
   }
 }

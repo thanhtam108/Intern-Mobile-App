@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:vietcook1/core/configs/app_colors.dart';
+import 'package:vietcook1/core/routing/app_routes.dart';
 import 'dart:async';
 import '../../../../../core/data/network/remote/auth_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -67,16 +68,16 @@ class OtpController extends GetxController {
         final accessToken = data['access_token'];
         final user = data['user'];
         await saveUserData(accessToken, user);
-        Get.offAllNamed('/home', arguments: {
-          'access_token': accessToken,
-          'user': user,
-        });
         Get.snackbar(
           "Thành công",
           "Xác thực OTP thành công! Đang chuyển hướng...",
           backgroundColor: Colors.green,
           colorText: Colors.white,
         );
+        Get.toNamed('/home', arguments: {
+          'access_token': accessToken,
+          'user': user,
+        });
       },
       onError: (error) {
         Get.snackbar(

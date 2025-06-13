@@ -2,16 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:vietcook1/core/configs/app_colors.dart';
 import 'navigator_controller.dart';
-import '../../';
+import 'package:vietcook1/features/home/presentation/page/home_page.dart';
 
 class MainNavigator extends StatelessWidget {
   final NavigatorController _controller = Get.put(NavigatorController());
 
   final List<Widget> _pages = [
-    HomeScreen(), // Trang chủ
-    SearchScreen(), // Tìm kiếm
-    FavoritesScreen(), // Món yêu thích
-    ProfileScreen(), // Cá nhân
+    HomePage(), // Trang chủ
+    // SearchScreen(), // Tìm kiếm
+    // FavoritesScreen(), // Món yêu thích
+    // ProfileScreen(), // Cá nhân
   ];
 
   @override

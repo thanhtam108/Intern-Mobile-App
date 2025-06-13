@@ -27,7 +27,7 @@ class RegisterController extends GetxController {
     super.onInit();
     if (kDebugMode) {
       nameController.text = "Test User";
-      emailController.text = "nhuan@gmail.com";
+      emailController.text = "yolotrainlalua2003@gmail.com";
       passwordController.text = "12345678";
     }
   }
@@ -143,7 +143,10 @@ class RegisterController extends GetxController {
     } else {
       final AppException? error = result.exp;
       Get.snackbar(
-          "Lỗi Đăng ký", error?.message ?? "Đã xảy ra lỗi không xác định.");
+          backgroundColor: AppColors.error,
+          colorText: Colors.white,
+          "Lỗi Đăng ký",
+          error?.message ?? "Đã xảy ra lỗi không xác định.");
     }
   }
 }

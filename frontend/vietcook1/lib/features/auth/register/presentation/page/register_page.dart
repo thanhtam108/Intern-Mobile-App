@@ -104,6 +104,29 @@ class RegisterPage extends GetView<RegisterController> {
                             isLoading: controller.isLoading.value,
                             onPressed: controller.register,
                           ),
+                          const SizedBox(height: 16),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Text(
+                                "Đã có tài khoản? ",
+                                style: TextStyle(color: Colors.grey),
+                              ),
+                              GestureDetector(
+                                onTap: () {
+                                  Get.toNamed(
+                                      '/login'); // Chuyển sang trang đăng nhập
+                                },
+                                child: const Text(
+                                  "Đăng nhập",
+                                  style: TextStyle(
+                                    color: AppColors.primary,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
                         ],
                       )),
                 ),
