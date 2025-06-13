@@ -2,10 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:vietcook1/core/configs/app_colors.dart';
 import 'navigator_controller.dart';
-<<<<<<< Updated upstream
 import 'package:vietcook1/features/home/presentation/page/home_page.dart';
-=======
->>>>>>> Stashed changes
 
 class MainNavigator extends StatelessWidget {
   final NavigatorController _controller = Get.put(NavigatorController());
