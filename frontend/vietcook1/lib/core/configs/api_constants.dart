@@ -1,5 +1,5 @@
 class ApiConstants {
-  static const baseUrl = "http://192.168.1.240:3000";
+  static const baseUrl = "http://10.0.2.2:3000/";
 
   static var auth = _AuthApi();
   static var categories = _CategoriesApi();
