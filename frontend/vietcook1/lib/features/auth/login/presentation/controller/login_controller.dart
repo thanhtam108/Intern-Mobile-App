@@ -1,12 +1,16 @@
-import 'dart:convert';
+// import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:vietcook1/core/configs/share_prefs_constants.dart';
 import 'package:vietcook1/core/data/network/remote/auth_service.dart';
 import 'package:vietcook1/core/data/network/model/result_dto.dart';
 import 'package:vietcook1/core/configs/app_colors.dart';
-import '../../../../../core/data/network/exceptions/app_exception.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:vietcook1/core/utils/shared_preferences%20_utils.dart';
+import 'package:vietcook1/features/auth/login/models/token_model.dart';
+// import '../../../../../core/data/network/exceptions/app_exception.dart';
+// import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginController extends GetxController {
   final AuthService _authService;
@@ -16,8 +20,17 @@ class LoginController extends GetxController {
   final passwordController = TextEditingController();
 
   final isLoading = false.obs;
+  TokenModel? tokenModel;
 
   final isObscure = true.obs;
+  @override
+  void onInit() {
+    super.onInit();
+    if (kDebugMode) {
+      emailController.text = 'newuser@gmail.com';
+      passwordController.text = '123456';
+    }
+  }
 
   void toggleObscure() {
     isObscure.value = !isObscure.value;
@@ -56,13 +69,6 @@ class LoginController extends GetxController {
     return true;
   }
 
-  Future<void> saveUserData(
-      String accessToken, Map<String, dynamic> user) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('access_token', accessToken);
-    await prefs.setString('user', jsonEncode(user));
-  }
-
   void login() async {
     final email = emailController.text.trim();
     final password = passwordController.text;
@@ -74,28 +80,14 @@ class LoginController extends GetxController {
       emailController.text.trim(),
       passwordController.text.trim(),
     );
+    if (result.status == Status.success) {
+      tokenModel = result.data;
+      await SharedPrefsUtils.saveObject(
+          SharePrefsConstants.token, tokenModel!.toJson());
+
+      print('Login result: ${result.data?.accessToken}');
+    } else {}
 
     isLoading.value = false;
-    result.when(
-      onSuccess: (data) async {
-        final accessToken = data['access_token'];
-        final user = data['user'];
-        await saveUserData(accessToken, user);
-
-        Get.snackbar('Thành công', 'Xin chào ${user['name']}');
-        Get.offAllNamed('/home', arguments: {
-          'access_token': accessToken,
-          'user': user,
-        });
-      },
-      onError: (error) {
-        Get.snackbar(
-          "Lỗi",
-          error.message ?? "Đăng nhập thất bại",
-          backgroundColor: AppColors.error,
-          colorText: Colors.white,
-        );
-      },
-    );
   }
 }

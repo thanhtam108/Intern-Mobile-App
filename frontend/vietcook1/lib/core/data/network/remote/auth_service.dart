@@ -6,6 +6,7 @@ import 'package:vietcook1/core/data/network/exceptions/app_exception.dart';
 import 'package:vietcook1/core/data/network/exceptions/status_code.dart';
 import 'package:vietcook1/core/data/network/model/base_response_dto.dart';
 import 'package:vietcook1/core/data/network/model/result_dto.dart';
+import 'package:vietcook1/features/auth/login/models/token_model.dart';
 
 class AuthService extends GetxService {
   final Dio _dio;
@@ -84,26 +85,16 @@ class AuthService extends GetxService {
     await prefs.setString('access_token', token);
   }
 
-  Future<Result<Map<String, dynamic>>> login(
-      String email, String password) async {
+  Future<Result<TokenModel>> login(String email, String password) async {
     try {
       final res = await _dio.post(ApiConstants.auth.login, data: {
         'email': email,
         'password': password,
       });
-      final baseResponse = BaseResponseDto.fromJson(res.data);
 
-      if (baseResponse.statusCode == StatusCode.success ||
-          baseResponse.statusCode == StatusCode.noContent) {
-        return Result.success(baseResponse.data as Map<String, dynamic>);
-      } else {
-        return Result.error(
-          AppException(
-            statusCode: baseResponse.statusCode,
-            message: baseResponse.message,
-          ),
-        );
-      }
+      final baseRp = BaseResponseDto.fromJson(res.data);
+      final result = TokenModel.fromJson(baseRp.data);
+      return Result.success(result);
     } on DioException catch (e) {
       return Result.error(AppException.parse(e));
     }

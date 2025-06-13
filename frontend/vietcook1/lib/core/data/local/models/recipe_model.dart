@@ -1,5 +1,5 @@
 import 'step_model.dart';
-import 'user_model.dart';
+import '../../../../features/main/models/user_model.dart';
 import 'category_model.dart';
 import 'review_model.dart';
 

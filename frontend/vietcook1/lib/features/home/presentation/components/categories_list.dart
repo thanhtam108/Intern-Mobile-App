@@ -13,36 +13,51 @@ class CategoryList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 16),
-      child: GridView.builder(
-        shrinkWrap: true,
-        physics: NeverScrollableScrollPhysics(),
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 4,
-          childAspectRatio: 1,
-          crossAxisSpacing: 8,
-          mainAxisSpacing: 8,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.background.withOpacity(0.1),
+            spreadRadius: 2,
+            blurRadius: 5,
+            offset: Offset(0, 3), // changes position of shadow
+          ),
+        ],
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 12),
+        child: GridView.builder(
+          shrinkWrap: true,
+          physics: NeverScrollableScrollPhysics(),
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 4,
+            childAspectRatio: 1,
+            crossAxisSpacing: 8,
+            mainAxisSpacing: 8,
+          ),
+          itemCount: categories.length,
+          itemBuilder: (context, index) {
+            final category = categories[index];
+            return Column(
+              children: [
+                CircleAvatar(
+                  radius: 24,
+                  backgroundColor: Colors.green.shade100,
+                  child:
+                      // Image.network(category.imageUrl),
+                      Icon(category['icon'],
+                          color: AppColors.primary, size: 32),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  category['name'] ?? 'Chưa có tên',
+                  style: TextStyle(fontSize: 12),
+                ),
+              ],
+            );
+          },
         ),
-        itemCount: categories.length,
-        itemBuilder: (context, index) {
-          final category = categories[index];
-          return Column(
-            children: [
-              CircleAvatar(
-                radius: 24,
-                backgroundColor: Colors.green.shade100,
-                child:
-                    // Image.network(category.imageUrl),
-                    Icon(category['icon'], color: AppColors.primary, size: 32),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                category['name'] ?? 'Chưa có tên',
-                style: TextStyle(fontSize: 12),
-              ),
-            ],
-          );
-        },
       ),
     );
   }

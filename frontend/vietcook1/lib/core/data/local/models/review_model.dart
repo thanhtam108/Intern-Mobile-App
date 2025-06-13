@@ -1,4 +1,4 @@
-import 'user_model.dart';
+import '../../../../features/main/models/user_model.dart';
 
 class ReviewModel {
   final String id;

@@ -12,7 +12,7 @@ class _AuthApi {
   final String verifyOtp = "/auth/verify-otp";
   final String resendOtp = "/auth/resend-otp";
   final String login = "/auth/login";
-  final String getUser = "/auth/user";
+  final String getUser = "/user/me";
   final String updateUser = "/auth/user/update";
   final String changePassword = "/auth/user/change-password";
 }
