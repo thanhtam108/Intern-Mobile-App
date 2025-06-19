@@ -10,6 +10,7 @@ class UserService {
   final Dio _dio;
 
   UserService(this._dio);
+
   Future<Result<List<RecipeModel>>> fetchFavoriteRecipes(String id) async {
     try {
       final res = await _dio.get('${ApiConstants.favorites.common}/$id');

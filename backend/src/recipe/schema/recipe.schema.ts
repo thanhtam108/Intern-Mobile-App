@@ -31,6 +31,9 @@ export class Recipe extends Document {
 
   @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Review' }] })
   reviews: Review[];
+
+  @Prop()
+  imageUrl: string;
 }
 
 export const RecipeSchema = SchemaFactory.createForClass(Recipe);

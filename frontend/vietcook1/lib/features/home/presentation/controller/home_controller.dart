@@ -8,11 +8,14 @@ import 'package:vietcook1/core/data/local/models/recipe_model.dart';
 import 'package:vietcook1/core/utils/shared_preferences%20_utils.dart';
 import 'package:vietcook1/features/main/models/user_model.dart';
 import 'package:vietcook1/core/data/network/remote/recipe_service.dart';
+import 'package:vietcook1/core/data/local/models/top_rated_recipe_model.dart';
 
 class HomeController extends GetxController {
-  final RecipeService _recipeService = RecipeService();
+  final RecipeService _recipeService;
+  HomeController(this._recipeService);
 
-  final RxList<RecipeModel> topRatedRecipes = RxList<RecipeModel>();
+  final RxList<TopRatedRecipeModel> topRatedRecipes =
+      RxList<TopRatedRecipeModel>();
 
   final RxList<RecipeModel> recentRecipes = RxList<RecipeModel>();
 

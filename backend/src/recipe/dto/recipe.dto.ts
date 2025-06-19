@@ -40,4 +40,8 @@ export class RecipeDto {
   @ValidateNested({ each: true })
   @Type(() => StepperDto)
   steps: StepperDto[];
+
+  @IsOptional()
+  @IsString()
+  imageUrl?: string;
 }

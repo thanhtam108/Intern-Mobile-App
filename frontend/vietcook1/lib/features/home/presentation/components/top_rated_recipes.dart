@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:vietcook1/core/data/local/models/recipe_model.dart';
+import 'package:vietcook1/core/data/local/models/top_rated_recipe_model.dart';
 
 class TopRatedRecipes extends StatelessWidget {
-  final List<RecipeModel> recipes;
+  final List<TopRatedRecipeModel> recipes;
   const TopRatedRecipes({required this.recipes});
 
   @override
@@ -26,6 +27,7 @@ class TopRatedRecipes extends StatelessWidget {
           itemBuilder: (context, index) {
             final recipe = recipes[index];
             return ListTile(
+              key: ValueKey(recipe.id),
               title: Text(recipe.name),
               subtitle: Text(recipe.description),
               leading: CircleAvatar(
