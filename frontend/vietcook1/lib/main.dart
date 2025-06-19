@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:vietcook1/core/configs/app_colors.dart';
 import 'package:vietcook1/core/data/network/remote/dio_client.dart';
 import 'core/bindings/core_binding.dart';
 import 'core/routing/app_routes.dart';
@@ -24,7 +25,7 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       title: 'VietCook',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: AppColors.primary),
         useMaterial3: true,
       ),
       initialBinding: CoreBinding(), // Binding để inject dependencies

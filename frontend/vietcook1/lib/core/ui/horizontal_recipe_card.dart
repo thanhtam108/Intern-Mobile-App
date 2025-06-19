@@ -64,7 +64,7 @@ class HorizontalRecipeCard extends StatelessWidget {
                       Text('${recipe.view ?? 0}' 'Lượt xem',
                           style: TextStyle(fontSize: 12)),
                       Spacer(),
-                      Text(recipe.user.name,
+                      Text(recipe.user.name ?? 'Unknown',
                           style: TextStyle(
                               fontSize: 12, fontWeight: FontWeight.w500)),
                       const SizedBox(width: 4),
