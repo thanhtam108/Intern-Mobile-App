@@ -1,15 +1,18 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:vietcook1/core/configs/api_constants.dart';
+import 'package:vietcook1/core/data/local/models/top_rated_recipe_model.dart';
 import 'package:vietcook1/core/data/network/exceptions/app_exception.dart';
 import 'package:vietcook1/core/data/network/exceptions/status_code.dart';
 import 'package:vietcook1/core/data/network/model/base_response_dto.dart';
 import 'package:vietcook1/core/data/network/model/result_dto.dart';
+import 'package:vietcook1/features/insert/models/insert_recipe_model.dart';
 
 import '../../local/models/recipe_model.dart';
 
 class RecipeService {
-  final Dio _dio = Dio();
+  final Dio _dio;
+  RecipeService(this._dio);
 
   Future<Result<List<RecipeModel>>> fetchRecipes(
       String name, String email, String password) async {
@@ -86,7 +89,7 @@ class RecipeService {
   //   }
   // }
 
-  Future<Result<void>> createRecipe(RecipeModel recipe) async {
+  Future<Result<String>> createRecipe(InsertRecipeModel recipe) async {
     try {
       final recipeJson = recipe.toJson();
 
@@ -95,16 +98,8 @@ class RecipeService {
 
       final baseRp = BaseResponseDto.fromJson(res.data);
 
-      if (baseRp.statusCode == StatusCode.success) {
-        return Result.success(null);
-      } else {
-        return Result.error(
-          AppException(
-            statusCode: baseRp.statusCode,
-            message: baseRp.message,
-          ),
-        );
-      }
+      // final recipeResult = RecipeModel.fromJson(baseRp.data);
+      return Result.success(baseRp.message ?? 'Recipe created successfully');
     } on DioException catch (e) {
       return Result.error(AppException.parse(e));
     }
@@ -151,14 +146,14 @@ class RecipeService {
     }
   }
 
-  Future<Result<List<RecipeModel>>> fetchTopRatedRecipes() async {
+  Future<Result<List<TopRatedRecipeModel>>> fetchTopRatedRecipes() async {
     try {
       final res = await _dio.get(ApiConstants.recipes.getTopRated);
       final baseRp = BaseResponseDto.fromJson(res.data);
-
-      List<RecipeModel> recipes = <RecipeModel>[];
+      print("Top rated recipes: ${baseRp.data}");
+      List<TopRatedRecipeModel> recipes = <TopRatedRecipeModel>[];
       baseRp.data.forEach((element) {
-        recipes.add(RecipeModel.fromJson(element));
+        recipes.add(TopRatedRecipeModel.fromJson(element));
       });
       return Result.success(recipes);
     } on DioException catch (e) {

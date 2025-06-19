@@ -18,7 +18,7 @@ class _AuthApi {
 }
 
 class _CategoriesApi {
-  final String getAll = "/categories/all";
+  final String getAll = "/categories/get-all";
   final String getById = "/categories/";
 }
 

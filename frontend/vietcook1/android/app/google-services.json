@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1005655127047",
+    "project_id": "vietcook-3cad0",
+    "storage_bucket": "vietcook-3cad0.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1005655127047:android:5bab9cf1e6e64fb8b126a2",
+        "android_client_info": {
+          "package_name": "com.example.vietcook1"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAP14V8mtSRVUjJROrTrKT4oYq3FgQk2JU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

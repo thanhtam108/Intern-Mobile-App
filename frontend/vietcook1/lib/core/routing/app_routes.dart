@@ -1,5 +1,7 @@
 import 'package:get/get.dart';
 import 'package:vietcook1/core/routing/routes.dart';
+import 'package:vietcook1/features/insert/di/insert_binding.dart';
+import 'package:vietcook1/features/insert/presentation/page/insert_form.dart';
 import 'package:vietcook1/features/main/di/main_binding.dart';
 import 'package:vietcook1/features/main/presentation/page/main_page.dart';
 import 'package:vietcook1/features/onboarding/presentation/page/onboarding_page.dart';
@@ -13,6 +15,7 @@ import '../../features/auth/otp-verify/di/otp_binding.dart';
 import '../../features/auth/otp-verify/presentation/page/otp_page.dart';
 import '../../features/auth/register/di/register_binding.dart';
 import '../../features/auth/register/presentation/page/register_page.dart';
+import '../../features/onboarding/di/onboarding_binding.dart';
 
 class AppRoutes {
   static const String initial = Routes.initial;
@@ -26,12 +29,20 @@ class AppRoutes {
     GetPage(
       name: Routes.onboarding,
       page: () => OnboardingScreen(),
-      binding: RegisterBinding(),
+      binding: OnboardingBinding(),
     ),
     GetPage(
       name: Routes.main,
       page: () => MainPage(),
       binding: MainBinding(),
+      // Use nested navigation for main tabs
+      children: [
+        GetPage(
+          name: Routes.home,
+          page: () => HomePage(),
+          binding: HomeBinding(),
+        ),
+      ],
     ),
     GetPage(
       name: Routes.register,
@@ -44,23 +55,14 @@ class AppRoutes {
       binding: OtpBinding(),
     ),
     GetPage(
-      name: Routes.register,
-      page: () => RegisterPage(),
-      binding: RegisterBinding(),
-    ),
-    // GetPage(
-    //   name: Routes.recipes,
-    //   // page: () => RecipePage(),
-    // ),
-    GetPage(
       name: Routes.login,
       page: () => LoginPage(),
       binding: LoginBinding(),
     ),
     GetPage(
-      name: Routes.home,
-      page: () => HomePage(),
-      binding: HomeBinding(),
+      name: Routes.insert,
+      page: () => InsertRecipePage(),
+      binding: InsertBinding(),
     ),
   ];
 }

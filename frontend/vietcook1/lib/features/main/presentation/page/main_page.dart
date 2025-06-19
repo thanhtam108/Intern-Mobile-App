@@ -67,7 +67,7 @@ class MainPage extends GetView<MainController> {
             height: 80,
             child: FloatingActionButton(
               onPressed: () {
-                print('Thêm món ăn mới');
+                Get.toNamed('/insert'); // Navigate to insert page
               },
               backgroundColor: AppColors.primary,
               child: const Icon(Icons.add, color: Colors.white),

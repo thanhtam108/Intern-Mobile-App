@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:vietcook1/core/configs/app_colors.dart';
@@ -11,6 +12,7 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   final dio = await DioClient().create();
+  await Firebase.initializeApp();
   Get.put<Dio>(dio); // Inject Dio
   Get.put<AuthService>(AuthService(dio));
 

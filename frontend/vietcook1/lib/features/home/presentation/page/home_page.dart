@@ -6,9 +6,7 @@ import '../components/top_rated_recipes.dart';
 import '../components/recent_recipes.dart';
 import '../controller/home_controller.dart';
 
-class HomePage extends StatelessWidget {
-  final HomeController controller = Get.put(HomeController());
-
+class HomePage extends GetView<HomeController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -38,7 +36,7 @@ class HomePage extends StatelessWidget {
                 {'name': 'Canh', 'icon': Icons.soup_kitchen},
               ]),
               const SizedBox(height: 16),
-              TopRatedRecipes(recipes: controller.topRatedRecipes.toList())
+              TopRatedRecipes(recipes: controller.topRatedRecipes)
             ],
           ),
         );

@@ -1,27 +1,27 @@
 class StepModel {
-  final String id;
-  final String recipeID;
-  final String stepName;
-  final String stepDescription;
+  final String? id;
+  final String? recipeID;
+  final String? stepName;
+  final String? stepDescription;
   final String? imageUrl;
-  final DateTime createdAt;
-  final DateTime updatedAt;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
 
   StepModel({
-    required this.id,
-    required this.recipeID,
-    required this.stepName,
-    required this.stepDescription,
+    this.id,
+    this.recipeID,
+    this.stepName,
+    this.stepDescription,
     this.imageUrl,
-    required this.createdAt,
-    required this.updatedAt,
+    this.createdAt,
+    this.updatedAt,
   });
 
   factory StepModel.fromJson(Map<String, dynamic> json) {
     return StepModel(
-      id: json['_id'] as String,
-      recipeID: json['recipeID'] as String,
-      stepName: json['stepName'] as String,
+      id: json['_id'] as String?,
+      recipeID: json['recipeID'] as String?,
+      stepName: json['stepName'] as String?,
       stepDescription: json['stepDescription'] as String,
       imageUrl: json['imageUrl'] as String?,
       createdAt: DateTime.parse(json['createdAt']),
@@ -33,7 +33,7 @@ class StepModel {
     return {
       'stepName': stepName,
       'stepDescription': stepDescription,
-      'imageUrl': imageUrl,
+      if (imageUrl != null) 'imageUrl': imageUrl,
     };
   }
 }

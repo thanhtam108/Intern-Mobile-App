@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { HydratedDocument, Model } from 'mongoose';
+import { Model } from 'mongoose';
 import { Recipe } from './schema/recipe.schema';
 import { RecipeDto } from './dto/recipe.dto';
 import { Stepper } from 'src/stepper/schema/stepper.schema';
@@ -173,8 +173,20 @@ export class RecipeService {
         },
       },
       {
+        $lookup: {
+          from: 'users',
+          localField: 'userId', // Sửa: dùng trường userId từ recipe
+          foreignField: '_id',
+          as: 'user',
+        },
+      },
+      {
+        $unwind: '$user',
+      },
+      {
         $addFields: {
           averageRating: { $avg: '$reviews.rating' }, // Tính trung bình điểm đánh giá
+          imageUrl: { $ifNull: ['$imageUrl', ''] },
         },
       },
       {
@@ -191,7 +203,16 @@ export class RecipeService {
           averageRating: 1,
           reviews: 1,
           category: 1,
-          userId: 1,
+          view: 1,
+          user: {
+            _id: '$user._id',
+            name: '$user.name',
+            email: '$user.email',
+            avatarUrl: '$user.avatarUrl',
+          },
+          createdAt: 1,
+          updatedAt: 1,
+          imageUrl: 1,
         },
       },
     ]);
