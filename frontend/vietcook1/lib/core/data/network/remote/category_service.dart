@@ -13,12 +13,12 @@ class CategoryService {
     try {
       final res = await _dio.get(ApiConstants.categories.getAll);
       final baseRp = BaseResponseDto.fromJson(res.data);
-      print('Response: ${res.data}');
       List<CategoryModel> tags = <CategoryModel>[];
       final result = baseRp.data.forEach((element) {
         tags.add(CategoryModel.fromJson(element));
       });
-      return Result.success(result);
+      print('Response: $result');
+      return Result.success(tags);
     } on DioException catch (e) {
       return Result.error(AppException.parse(e));
     }

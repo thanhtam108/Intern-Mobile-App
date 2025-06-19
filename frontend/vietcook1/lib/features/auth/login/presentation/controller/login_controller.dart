@@ -7,6 +7,7 @@ import 'package:vietcook1/core/configs/share_prefs_constants.dart';
 import 'package:vietcook1/core/data/network/remote/auth_service.dart';
 import 'package:vietcook1/core/data/network/model/result_dto.dart';
 import 'package:vietcook1/core/configs/app_colors.dart';
+import 'package:vietcook1/core/routing/routes.dart';
 import 'package:vietcook1/core/utils/shared_preferences%20_utils.dart';
 import 'package:vietcook1/features/auth/login/models/token_model.dart';
 // import '../../../../../core/data/network/exceptions/app_exception.dart';
@@ -84,7 +85,7 @@ class LoginController extends GetxController {
       tokenModel = result.data;
       await SharedPrefsUtils.saveObject(
           SharePrefsConstants.token, tokenModel!.toJson());
-
+      Get.offAllNamed(Routes.main);
       print('Login result: ${result.data?.accessToken}');
     } else {}
 

@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -29,6 +30,21 @@ class InsertRecipeController extends GetxController {
     super.onInit();
     getUser();
     getCategories();
+    if (kDebugMode) {
+      // For testing purposes, pre-fill some fields
+      name.value = 'Bánh mì';
+      description.value = 'Món ăn truyền thống Việt Nam';
+      ingredients.addAll(['Bánh mì', 'Thịt nướng', 'Rau sống']);
+      duration.value = '30 phút';
+      steps.addAll([
+        StepModel(
+            stepName: 'Chuẩn bị nguyên liệu',
+            stepDescription: 'Chuẩn bị bánh mì, thịt nướng và rau sống'),
+        StepModel(
+            stepName: 'Nướng thịt',
+            stepDescription: 'Nướng thịt trên bếp than hoa')
+      ]);
+    }
   }
 
   // Rx variables for form fields
@@ -99,7 +115,7 @@ class InsertRecipeController extends GetxController {
     try {
       isLoading.value = true;
       final result = await _categoryService.fetchCategories();
-      
+
       if (result.status == Status.success) {
         categories = result.data ?? [];
         if (categories.isNotEmpty) {
@@ -133,52 +149,78 @@ class InsertRecipeController extends GetxController {
 
   // Submit recipe to backend
   Future<void> submitRecipe(String userId) async {
-    if (name.value.trim().isEmpty ||
-        description.value.trim().isEmpty ||
-        duration.value.trim().isEmpty ||
-        categoryId.value.isEmpty ||
-        ingredients.isEmpty ||
-        steps.isEmpty) {
-      Get.snackbar('Lỗi', 'Vui lòng điền đầy đủ thông tin món ăn');
-      return;
-    }
+    try {
+      // 1. Validate input
+      if (name.value.trim().isEmpty ||
+          description.value.trim().isEmpty ||
+          duration.value.trim().isEmpty ||
+          categoryId.value.isEmpty ||
+          ingredients.isEmpty ||
+          steps.isEmpty) {
+        Get.snackbar(
+          'Lỗi',
+          'Vui lòng điền đầy đủ thông tin món ăn',
+          backgroundColor: AppColors.error,
+          colorText: Colors.white,
+        );
+        return;
+      }
 
-    isLoading.value = true;
+      // 2. Check image
+      if (imageFile.value == null) {
+        Get.snackbar(
+          'Lỗi',
+          'Vui lòng chọn ảnh món ăn',
+          backgroundColor: AppColors.error,
+          colorText: Colors.white,
+        );
+        return;
+      }
 
-    // 1. Upload main recipe image
-    String? uploadedImageUrl;
-    if (imageFile.value != null) {
-      uploadedImageUrl = await uploadImage(imageFile.value!, 'recipes');
-    }
+      isLoading.value = true;
 
-    if (uploadedImageUrl == null) {
-      isLoading.value = false;
-      Get.snackbar('Lỗi', 'Ảnh món ăn chưa được tải lên');
-      return;
-    }
+      // 3. Upload image
+      final uploadedImageUrl = await uploadImage(imageFile.value!, 'recipes');
+      if (uploadedImageUrl == null) {
+        throw Exception('Không thể tải ảnh lên');
+      }
 
-    // 2. Create InsertRecipeModel
-    final recipe = InsertRecipeModel(
-      name: name.value.trim(),
-      description: description.value.trim(),
-      ingredients: ingredients.toList(),
-      userId: userId,
-      view: 0,
-      duration: duration.value.trim(),
-      category: categoryId.value,
-      imageUrl: uploadedImageUrl,
-      steps: steps.toList(),
-    );
+      // 4. Create recipe model
+      final recipe = InsertRecipeModel(
+        name: name.value.trim(),
+        description: description.value.trim(),
+        ingredients: ingredients.toList(),
+        userId: userId,
+        view: 0,
+        duration: duration.value.trim(),
+        category: categoryId.value,
+        imageUrl: uploadedImageUrl,
+        steps: steps.toList(),
+      );
 
-    // 3. Submit to backend
-    final result = await _recipeService.createRecipe(recipe);
-    isLoading.value = false;
+      // 5. Submit to backend
+      final result = await _recipeService.createRecipe(recipe);
 
-    if (result.isSuccess) {
-      Get.snackbar('Thành công', 'Món ăn đã được đăng');
-      Get.back(); // hoặc điều hướng về trang chính
-    } else {
-      Get.snackbar('Lỗi', 'Không thể đăng món ăn: ${result.data}');
+      if (result.status == Status.success) {
+        Get.snackbar(
+          'Thành công',
+          'Món ăn đã được đăng thành công',
+          backgroundColor: AppColors.success,
+          colorText: Colors.white,
+        );
+        Get.back(); // Quay về trang trước
+      } else {
+        throw Exception(result.data ?? 'Không thể đăng món ăn');
+      }
+    } catch (e) {
+      Get.snackbar(
+        'Lỗi',
+        e.toString(),
+        backgroundColor: AppColors.error,
+        colorText: Colors.white,
+      );
+    } finally {
+      isLoading.value = false; // Luôn tắt loading khi kết thúc
     }
   }
 }
