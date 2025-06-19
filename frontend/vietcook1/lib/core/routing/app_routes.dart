@@ -1,5 +1,7 @@
 import 'package:get/get.dart';
 import 'package:vietcook1/core/routing/routes.dart';
+import 'package:vietcook1/features/insert/di/insert_binding.dart';
+import 'package:vietcook1/features/insert/presentation/page/insert_form.dart';
 import 'package:vietcook1/features/main/di/main_binding.dart';
 import 'package:vietcook1/features/main/presentation/page/main_page.dart';
 import 'package:vietcook1/features/onboarding/presentation/page/onboarding_page.dart';
@@ -56,6 +58,11 @@ class AppRoutes {
       name: Routes.login,
       page: () => LoginPage(),
       binding: LoginBinding(),
+    ),
+    GetPage(
+      name: Routes.insert,
+      page: () => InsertRecipePage(),
+      binding: InsertBinding(),
     ),
   ];
 }

@@ -6,6 +6,7 @@ import 'package:vietcook1/core/data/network/exceptions/app_exception.dart';
 import 'package:vietcook1/core/data/network/exceptions/status_code.dart';
 import 'package:vietcook1/core/data/network/model/base_response_dto.dart';
 import 'package:vietcook1/core/data/network/model/result_dto.dart';
+import 'package:vietcook1/features/insert/models/insert_recipe_model.dart';
 
 import '../../local/models/recipe_model.dart';
 
@@ -88,7 +89,7 @@ class RecipeService {
   //   }
   // }
 
-  Future<Result<void>> createRecipe(RecipeModel recipe) async {
+  Future<Result<String>> createRecipe(InsertRecipeModel recipe) async {
     try {
       final recipeJson = recipe.toJson();
 
@@ -97,16 +98,8 @@ class RecipeService {
 
       final baseRp = BaseResponseDto.fromJson(res.data);
 
-      if (baseRp.statusCode == StatusCode.success) {
-        return Result.success(null);
-      } else {
-        return Result.error(
-          AppException(
-            statusCode: baseRp.statusCode,
-            message: baseRp.message,
-          ),
-        );
-      }
+      // final recipeResult = RecipeModel.fromJson(baseRp.data);
+      return Result.success(baseRp.message ?? 'Recipe created successfully');
     } on DioException catch (e) {
       return Result.error(AppException.parse(e));
     }
