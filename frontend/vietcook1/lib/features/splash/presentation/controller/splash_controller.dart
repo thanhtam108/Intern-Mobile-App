@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'dart:async';
 // import 'package:get/get.dart';
 import 'package:vietcook1/core/configs/share_prefs_constants.dart';
+import 'package:vietcook1/core/routing/app_routes.dart';
 import 'package:vietcook1/core/routing/routes.dart';
 import 'package:vietcook1/core/utils/shared_preferences%20_utils.dart';
 import 'package:vietcook1/features/auth/login/models/token_model.dart';
@@ -28,7 +29,7 @@ class SplashController extends GetxController {
       });
       print('Token: ${tokenModel.accessToken}');
     } else {
-      Get.offAllNamed('/onboarding'); // Navigate to onboarding if no token
+      Get.offAllNamed(Routes.onboarding); // Navigate to onboarding if no token
     }
   }
 }

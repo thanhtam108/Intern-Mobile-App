@@ -79,7 +79,8 @@ class VerticalRecipeCard extends StatelessWidget {
                                 ? recipe.user.avatarUrl!
                                 : 'lib/assets/images/avatar_placeholder.png')),
                     const SizedBox(width: 4),
-                    Text(recipe.user.name, style: TextStyle(fontSize: 12)),
+                    Text(recipe.user.name ?? "",
+                        style: TextStyle(fontSize: 12)),
                     Spacer(),
                     Text(recipe.createdAt.toString(),
                         style: TextStyle(fontSize: 10, color: Colors.grey)),

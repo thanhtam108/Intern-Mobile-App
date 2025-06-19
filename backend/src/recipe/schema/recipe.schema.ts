@@ -20,8 +20,8 @@ export class Recipe extends Document {
   @Prop()
   duration: string;
 
-  @Prop({ type: Types.ObjectId, ref: 'User', required: true })
-  userId: Types.ObjectId;
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true })
+  userId: mongoose.Types.ObjectId;
 
   @Prop({ type: Types.ObjectId, ref: 'Category', required: true })
   category: Types.ObjectId;

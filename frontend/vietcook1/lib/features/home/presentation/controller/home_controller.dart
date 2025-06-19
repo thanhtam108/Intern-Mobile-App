@@ -12,7 +12,7 @@ import 'package:vietcook1/core/data/network/remote/recipe_service.dart';
 class HomeController extends GetxController {
   final RecipeService _recipeService = RecipeService();
 
-  final RxList<RecipeModel> favoriteRecipes = RxList<RecipeModel>();
+  final RxList<RecipeModel> topRatedRecipes = RxList<RecipeModel>();
 
   final RxList<RecipeModel> recentRecipes = RxList<RecipeModel>();
 
@@ -23,6 +23,7 @@ class HomeController extends GetxController {
   @override
   void onInit() async {
     super.onInit();
+    initializeData();
     Map<String, dynamic>? user =
         await SharedPrefsUtils.getObject(SharePrefsConstants.user);
     print("User data from SharedPreferences: $user");
@@ -31,31 +32,31 @@ class HomeController extends GetxController {
       print("User data loaded: ${userdata.name}");
       update(["updateUser"]);
     }
+    // // fetchRecentRecipes();
+  }
 
-    _loadUserData(); // Lấy dữ liệu user từ SharedPreferences
-    fetchFavoriteRecipes();
-
-    // fetchRecentRecipes();
+  Future<void> initializeData() async {
+    await _loadUserData(); // Load dữ liệu user từ SharedPreferences
+    await fetchTopRatedRecipes(); // Fetch danh sách món yêu thích
+    update(['updateUser', 'topRatedRecipes']); // Cập nhật giao diện
   }
 
   Future<void> _loadUserData() async {
     final prefs = await SharedPreferences.getInstance();
     final userData = prefs.getString('user');
     if (userData != null) {
-      user.value = UserModel.fromJson(jsonDecode(userData));
+      userdata = UserModel.fromJson(jsonDecode(userData));
     } else {
       Get.snackbar('Lỗi', 'Không tìm thấy dữ liệu người dùng');
     }
   }
 
-  Future<void> fetchFavoriteRecipes() async {
+  Future<void> fetchTopRatedRecipes() async {
     isLoading.value = true;
-    final result =
-        await _recipeService.fetchFavoriteRecipes(user.value?.id ?? '');
+    final result = await _recipeService.fetchTopRatedRecipes();
 
-    List<RecipeModel> recipes = [];
-    recipes = result.data ?? [];
-    update(['favoriteRecipes']);
+    topRatedRecipes.assignAll(result.data ?? []);
+    print("Top rated recipes: ${result.data}");
     isLoading.value = false;
   }
 

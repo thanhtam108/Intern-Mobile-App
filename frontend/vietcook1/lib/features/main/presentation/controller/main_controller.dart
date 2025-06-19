@@ -26,7 +26,7 @@ class MainController extends GetxController {
     if (settings.name == '/home') {
       return GetPageRoute(
         settings: settings,
-        page: () => const HomePage(),
+        page: () => HomePage(),
         binding: HomeBinding(),
         transition: Transition.fadeIn,
       );

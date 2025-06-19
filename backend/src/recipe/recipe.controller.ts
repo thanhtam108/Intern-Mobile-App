@@ -1,24 +1,23 @@
 import {
-  Body,
   Controller,
-  Delete,
-  Get,
-  Param,
   Post,
+  Get,
   Put,
+  Delete,
+  Param,
+  Body,
   Req,
   UseGuards,
-  UseInterceptors,
   UsePipes,
   ValidationPipe,
+  Query,
 } from '@nestjs/common';
 import { RecipeService } from './recipe.service';
 import { RecipeDto } from './dto/recipe.dto';
-import { ResponseInterceptor } from 'src/common/interceptors/response.interceptor';
 import { AuthGuard } from '@nestjs/passport';
+import { Request } from 'express';
 
 @Controller('recipes')
-@UseInterceptors(ResponseInterceptor)
 export class RecipeController {
   constructor(private readonly recipeService: RecipeService) {}
 
@@ -33,8 +32,23 @@ export class RecipeController {
   }
 
   @Get('all')
-  findAll() {
-    return this.recipeService.findAll();
+  findAll(@Query('page') page?: number, @Query('limit') limit?: number) {
+    return this.recipeService.findAll(Number(page) || 1, Number(limit) || 10);
+  }
+
+  @Get('most-rated')
+  findByMostRated(@Query('limit') limit?: number) {
+    return this.recipeService.findByMostRated(Number(limit) || 10);
+  }
+
+  @Get('most-recent')
+  findByMostRecent() {
+    return this.recipeService.findByMostRecent();
+  }
+
+  @Get('most-popular')
+  findMostPopularRecipes() {
+    return this.recipeService.findMostPopularRecipes();
   }
 
   @Get(':id')
@@ -65,5 +79,15 @@ export class RecipeController {
   @Get('user/:userId')
   findByUserId(@Param('userId') userId: string) {
     return this.recipeService.findByUserId(userId);
+  }
+
+  @Put('view/:id')
+  incrementViewCount(@Param('id') id: string) {
+    return this.recipeService.incrementViewCount(id);
+  }
+
+  @Get('most-rated/category/:categoryId')
+  findMostRatedByCategory(@Param('categoryId') categoryId: string) {
+    return this.recipeService.findMostRatedByCategory(categoryId);
   }
 }

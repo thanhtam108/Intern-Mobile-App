@@ -13,7 +13,6 @@ import '../../features/auth/otp-verify/di/otp_binding.dart';
 import '../../features/auth/otp-verify/presentation/page/otp_page.dart';
 import '../../features/auth/register/di/register_binding.dart';
 import '../../features/auth/register/presentation/page/register_page.dart';
-import '../../features/recipe/fetch_all/presentation/page/recipe_page.dart';
 
 class AppRoutes {
   static const String initial = Routes.initial;

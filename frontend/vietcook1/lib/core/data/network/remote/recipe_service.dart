@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:vietcook1/core/configs/api_constants.dart';
 import 'package:vietcook1/core/data/network/exceptions/app_exception.dart';
 import 'package:vietcook1/core/data/network/exceptions/status_code.dart';
@@ -150,9 +151,9 @@ class RecipeService {
     }
   }
 
-  Future<Result<List<RecipeModel>>> fetchFavoriteRecipes(String userId) async {
+  Future<Result<List<RecipeModel>>> fetchTopRatedRecipes() async {
     try {
-      final res = await _dio.get('${ApiConstants.favorites.common}/$userId');
+      final res = await _dio.get(ApiConstants.recipes.getTopRated);
       final baseRp = BaseResponseDto.fromJson(res.data);
 
       List<RecipeModel> recipes = <RecipeModel>[];

@@ -17,6 +17,7 @@ class RecipeModel {
   final String? imageUrl;
   final DateTime createdAt;
   final DateTime updatedAt;
+  final double? averageRating;
 
   RecipeModel({
     required this.id,
@@ -32,6 +33,7 @@ class RecipeModel {
     this.imageUrl,
     required this.createdAt,
     required this.updatedAt,
+    this.averageRating,
   });
 
   factory RecipeModel.fromJson(Map<String, dynamic> json) {
@@ -44,6 +46,7 @@ class RecipeModel {
       duration: json['duration'] as String?,
       user: json['userId'],
       // != null ? UserModel.fromJson(json['userId']) : null,
+      averageRating: (json['averageRating'] as num?)?.toDouble(),
       steps: (json['steps'] as List<dynamic>)
           .map((e) => StepModel.fromJson(e))
           .toList(),
@@ -72,6 +75,7 @@ class RecipeModel {
       'updatedAt': updatedAt.toIso8601String(),
       'id': id,
       'steps': steps != null ? steps!.map((e) => e.toJson()).toList() : [],
+      'averageRating': averageRating,
       'reviews':
           reviews != null ? reviews!.map((e) => e.toJson()).toList() : [],
       'imageUrl': imageUrl,
