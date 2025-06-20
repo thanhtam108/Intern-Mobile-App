@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:vietcook1/core/configs/app_colors.dart';
-import 'package:vietcook1/core/ui/custom_search_bar.dart';
+import 'package:vietcook1/features/search/presentation/components/custom_search_bar.dart';
 
 class HomeHeader extends StatelessWidget {
   final String userName;
@@ -41,12 +41,12 @@ class HomeHeader extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 16),
-          CustomSearchBar(
-            hintText: 'Tìm kiếm món ăn, thành phần...',
-            onSearch: (query) {
-              print('Tìm kiếm: $query'); // Xử lý logic tìm kiếm
-            },
-          ),
+          // CustomSearchBar(
+          //   hintText: 'Tìm kiếm món ăn, thành phần...',
+          //   onSearch: (query) {
+          //     print('Tìm kiếm: $query'); // Xử lý logic tìm kiếm
+          //   },
+          // ),
         ],
       ),
     );

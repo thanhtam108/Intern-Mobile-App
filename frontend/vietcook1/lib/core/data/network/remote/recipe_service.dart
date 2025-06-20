@@ -73,21 +73,18 @@ class RecipeService {
     }
   }
 
-  // Future<Result<List<RecipeModel>>> fetchRecipesBySearch(String query) async {
-  //   try {
-  //     final res =
-  //         await _dio.get('/recipes/search', queryParameters: {'q': query});
-  //     final baseRp = BaseResponseDto.fromJson(res.data);
-
-  //     List<RecipeModel> recipes = <RecipeModel>[];
-  //     baseRp.data.forEach((element) {
-  //       recipes.add(RecipeModel.fromJson(element));
-  //     });
-  //     return Result.success(recipes);
-  //   } on DioException catch (e) {
-  //     return Result.error(AppException.parse(e));
-  //   }
-  // }
+  Future<List<RecipeModel>> fetchRecipesBySearch(String query) async {
+    try {
+      final response = await _dio.get('/recipes/search', queryParameters: {
+        'query': query,
+      });
+      final List data = response.data['data'];
+      return data.map((e) => RecipeModel.fromJson(e)).toList();
+    } catch (e) {
+      print('Lỗi fetch: $e');
+      return [];
+    }
+  }
 
   Future<Result<String>> createRecipe(InsertRecipeModel recipe) async {
     try {

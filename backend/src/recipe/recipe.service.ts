@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, InternalServerErrorException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Recipe } from './schema/recipe.schema';
@@ -298,4 +298,39 @@ export class RecipeService {
     );
     return result;
   }
+  async searchRecipes(query: string): Promise<any> {
+    try {
+      const keywords = query.trim().split(/\s+/);
+      const regexConditions = keywords.flatMap((word) => {
+        const regex = new RegExp(this.escapeRegex(word), 'i');
+        return [
+          { name: { $regex: regex } },
+          { ingredients: { $regex: regex } },
+        ];
+      });
+  
+      const recipes = await this.recipeModel
+        .find({ $or: regexConditions })
+        .populate('category')
+        .populate({ path: 'userId', select: '-password -email -avatarUrl' });
+  
+      if (!recipes.length) {
+        throw new NotFoundException('Không tìm thấy món ăn nào phù hợp');
+      }
+  
+      return {
+        message: 'Tìm kiếm thành công',
+        data: recipes,
+      };
+    } catch (error) {
+      console.error('Lỗi tìm kiếm:', error);
+      throw error;
+    }
+  }
+  
+  private escapeRegex(text: string): string {
+    return text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  }
+  
+  
 }
