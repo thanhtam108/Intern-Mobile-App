@@ -9,11 +9,11 @@ import 'package:vietcook1/core/data/local/models/category_model.dart';
 import 'package:vietcook1/core/data/network/model/result_dto.dart';
 import 'package:vietcook1/core/data/network/remote/category_service.dart';
 import 'package:vietcook1/core/data/network/remote/user_service.dart';
+import 'package:vietcook1/core/utils/upload_image_utils.dart';
 import 'package:vietcook1/features/main/models/user_model.dart';
 import '../../models/insert_recipe_model.dart';
 import 'package:vietcook1/core/data/local/models/step_model.dart';
 import 'package:vietcook1/core/data/network/remote/recipe_service.dart';
-import 'package:vietcook1/core/utils/firebase_upload_helper.dart';
 import 'package:vietcook1/core/utils/shared_preferences _utils.dart';
 
 class InsertRecipeController extends GetxController {
@@ -55,16 +55,20 @@ class InsertRecipeController extends GetxController {
   final categoryId = ''.obs;
   final steps = <StepModel>[].obs;
 
-  final imageFile = Rxn<File>();
+  final imageFile = Rxn<XFile>();
   final isLoading = false.obs;
 
   final picker = ImagePicker();
 
   // Pick main recipe image
-  Future<void> pickImage() async {
-    final picked = await picker.pickImage(source: ImageSource.gallery);
+  Future<void> pickImage({required BuildContext context}) async {
+    // final picked = await picker.pickImage(source: ImageSource.gallery);
+    // if (picked != null) {
+    //   imageFile.value = File(picked.path);
+    // }
+    final picked = await UpLoadImageUtil.pickImages(context: context);
     if (picked != null) {
-      imageFile.value = File(picked.path);
+      imageFile.value = picked.first;
     }
   }
 
@@ -143,13 +147,14 @@ class InsertRecipeController extends GetxController {
   }
 
   // Upload image to Firebase and return URL
-  Future<String?> uploadImage(File file, String path) async {
-    return await FirebaseUploadHelper.uploadImage(file: file, path: path);
+  Future<void> uploadImage(File file, String path) async {
+    print('UPLOAD image');
   }
 
   // Submit recipe to backend
   Future<void> submitRecipe(String userId) async {
     try {
+      print('Bắt đầu submitRecipe');
       // 1. Validate input
       if (name.value.trim().isEmpty ||
           description.value.trim().isEmpty ||
@@ -165,6 +170,11 @@ class InsertRecipeController extends GetxController {
         );
         return;
       }
+      final urls = await UpLoadImageUtil.uploadImagesToCloudinary(
+        fileName: 'recipes/${DateTime.now().millisecond}',
+        pickedFiles: [imageFile.value!],
+        uploadPreset: 'upload',
+      );
 
       // 2. Check image
       if (imageFile.value == null) {
@@ -180,10 +190,8 @@ class InsertRecipeController extends GetxController {
       isLoading.value = true;
 
       // 3. Upload image
-      final uploadedImageUrl = await uploadImage(imageFile.value!, 'recipes');
-      if (uploadedImageUrl == null) {
-        throw Exception('Không thể tải ảnh lên');
-      }
+      print('Bắt đầu upload ảnh');
+      // final uploadedImageUrl = await uploadImage(imageFile.value!, 'recipes');
 
       // 4. Create recipe model
       final recipe = InsertRecipeModel(
@@ -194,12 +202,14 @@ class InsertRecipeController extends GetxController {
         view: 0,
         duration: duration.value.trim(),
         category: categoryId.value,
-        imageUrl: uploadedImageUrl,
+        imageUrl: urls.first,
         steps: steps.toList(),
       );
 
       // 5. Submit to backend
+      print('Bắt đầu gửi recipe lên backend');
       final result = await _recipeService.createRecipe(recipe);
+      print('Kết quả backend: ${result.status} - ${result.data} - ${result}');
 
       if (result.status == Status.success) {
         Get.snackbar(
@@ -213,6 +223,7 @@ class InsertRecipeController extends GetxController {
         throw Exception(result.data ?? 'Không thể đăng món ăn');
       }
     } catch (e) {
+      print('Lỗi trong submitRecipe: $e');
       Get.snackbar(
         'Lỗi',
         e.toString(),
@@ -220,6 +231,7 @@ class InsertRecipeController extends GetxController {
         colorText: Colors.white,
       );
     } finally {
+      print('Kết thúc submitRecipe, tắt loading');
       isLoading.value = false; // Luôn tắt loading khi kết thúc
     }
   }

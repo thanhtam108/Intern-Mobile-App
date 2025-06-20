@@ -4,9 +4,9 @@ import 'package:vietcook1/core/data/network/remote/auth_service.dart';
 import 'package:vietcook1/core/data/network/remote/dio_client.dart';
 import 'package:vietcook1/core/data/network/remote/recipe_service.dart';
 import 'package:vietcook1/core/data/network/remote/user_service.dart';
-import '../presentation/controller/home_controller.dart';
+import '../presentation/controller/profile_controller.dart';
 
-class HomeBinding extends Bindings {
+class ProfileBinding extends Bindings {
   @override
   void dependencies() {
     Get.putAsync<Dio>(() => DioClient().create());
@@ -14,6 +14,6 @@ class HomeBinding extends Bindings {
     Get.lazyPut(() => RecipeService(Get.find<Dio>()));
     Get.lazyPut(() => UserService(Get.find<Dio>()));
     Get.lazyPut(() =>
-        HomeController(Get.find<RecipeService>(), Get.find<UserService>()));
+        ProfileController(Get.find<RecipeService>(), Get.find<UserService>()));
   }
 }

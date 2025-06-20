@@ -9,37 +9,42 @@ import '../controller/home_controller.dart';
 class HomePage extends GetView<HomeController> {
   @override
   Widget build(BuildContext context) {
+    controller.onInit();
     return Scaffold(
       body: Obx(() {
         if (controller.isLoading.value) {
           return const Center(child: CircularProgressIndicator());
         }
 
-        return SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(height: 34),
-              HomeHeader(
-                userName: controller.userdata.name ?? 'Người dùng',
-                avatarUrl: controller.userdata.avatarUrl ??
-                    'lib/assets/icons/avatar_placeholder.jpg',
-              ),
-              CategoryList(categories: [
-                {'name': 'Ăn sáng', 'icon': Icons.breakfast_dining},
-                {'name': 'Ăn trưa', 'icon': Icons.lunch_dining},
-                {'name': 'Nước uống', 'icon': Icons.local_drink},
-                {'name': 'Xào', 'icon': Icons.restaurant},
-                {'name': 'Bánh', 'icon': Icons.cake},
-                {'name': 'Cơm phần', 'icon': Icons.rice_bowl},
-                {'name': 'Đồ chay', 'icon': Icons.eco},
-                {'name': 'Canh', 'icon': Icons.soup_kitchen},
-              ]),
-              const SizedBox(height: 16),
-              TopRatedRecipes(recipes: controller.topRatedRecipes)
-            ],
-          ),
-        );
+        return GetBuilder<HomeController>(
+            id: 'updateHome',
+            builder: (context) {
+              return SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: 34),
+                    HomeHeader(
+                      userName: controller.user.name ?? 'Người dùng',
+                      avatarUrl: controller.user.avatarUrl ??
+                          'lib/assets/icons/avatar_placeholder.jpg',
+                    ),
+                    CategoryList(categories: [
+                      {'name': 'Ăn sáng', 'icon': Icons.breakfast_dining},
+                      {'name': 'Ăn trưa', 'icon': Icons.lunch_dining},
+                      {'name': 'Nước uống', 'icon': Icons.local_drink},
+                      {'name': 'Xào', 'icon': Icons.restaurant},
+                      {'name': 'Bánh', 'icon': Icons.cake},
+                      {'name': 'Cơm phần', 'icon': Icons.rice_bowl},
+                      {'name': 'Đồ chay', 'icon': Icons.eco},
+                      {'name': 'Canh', 'icon': Icons.soup_kitchen},
+                    ]),
+                    const SizedBox(height: 16),
+                    TopRatedRecipes(recipes: controller.topRatedRecipes)
+                  ],
+                ),
+              );
+            });
       }),
     );
   }

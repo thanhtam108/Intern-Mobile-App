@@ -8,6 +8,8 @@ import 'package:vietcook1/core/utils/shared_preferences%20_utils.dart';
 import 'package:vietcook1/features/home/di/home_binding.dart';
 import 'package:vietcook1/features/home/presentation/page/home_page.dart';
 import 'package:vietcook1/features/main/models/user_model.dart';
+import 'package:vietcook1/features/profile/di/profile_binding.dart';
+import 'package:vietcook1/features/profile/presentation/page/profile_page.dart';
 
 class MainController extends GetxController {
   RxInt currentIndex = 0.obs;
@@ -15,7 +17,6 @@ class MainController extends GetxController {
   final UserService _userService;
   MainController(this._userService);
   UserModel? user;
-  // RxBool isTablet = false.obs;
   @override
   void onInit() async {
     super.onInit();
@@ -51,8 +52,8 @@ class MainController extends GetxController {
     if (settings.name == '/profile') {
       return GetPageRoute(
         settings: settings,
-        page: () => Container(),
-        // binding: UploadImageBinding(),
+        page: () => ProfilePage(),
+        binding: ProfileBinding(),
         transition: Transition.fadeIn,
       );
     }
@@ -67,6 +68,7 @@ class MainController extends GetxController {
   }
 
   void getUser() async {
+    print("Nhuan1");
     final result = await _userService.getUser();
     if (result.status == Status.success) {
       user = result.data;

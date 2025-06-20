@@ -9,4 +9,7 @@ class Routes {
   static const String main = '/main';
   static const String insert = '/insert';
   static const String category = '/category';
+  static const String favorites = '/favorites';
+  static const String profile = '/profile';
+  static const String search = '/search';
 }

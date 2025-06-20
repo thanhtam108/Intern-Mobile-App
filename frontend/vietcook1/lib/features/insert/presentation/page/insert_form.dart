@@ -23,7 +23,9 @@ class InsertRecipePage extends GetView<InsertRecipeController> {
                 children: [
                   // 1. Ảnh món ăn
                   GestureDetector(
-                    onTap: controller.pickImage,
+                    onTap: () {
+                      controller.pickImage(context: context);
+                    },
                     child: Obx(() => Container(
                           height: 150,
                           width: double.infinity,
@@ -31,8 +33,8 @@ class InsertRecipePage extends GetView<InsertRecipeController> {
                             border: Border.all(color: Colors.grey),
                           ),
                           child: controller.imageFile.value != null
-                              ? Image.file(controller.imageFile.value!,
-                                  fit: BoxFit.cover)
+                              ? Image.file(
+                                  File(controller.imageFile.value!.path))
                               : const Center(child: Text('Tải ảnh món ăn')),
                         )),
                   ),
@@ -47,7 +49,8 @@ class InsertRecipePage extends GetView<InsertRecipeController> {
                   // 3. Mô tả
                   TextField(
                     onChanged: (val) => controller.description.value = val,
-                    decoration: const InputDecoration(labelText: 'Mô tả món ăn'),
+                    decoration:
+                        const InputDecoration(labelText: 'Mô tả món ăn'),
                   ),
 
                   // 4. Dropdown loại món
@@ -63,7 +66,8 @@ class InsertRecipePage extends GetView<InsertRecipeController> {
                             .toList(),
                         onChanged: (value) =>
                             controller.categoryId.value = value ?? '',
-                        decoration: const InputDecoration(labelText: 'Loại món'),
+                        decoration:
+                            const InputDecoration(labelText: 'Loại món'),
                       )),
 
                   // 5. Thời lượng
@@ -81,8 +85,8 @@ class InsertRecipePage extends GetView<InsertRecipeController> {
                       Expanded(
                         child: TextField(
                           controller: ingredientController,
-                          decoration:
-                              const InputDecoration(hintText: 'Nhập nguyên liệu'),
+                          decoration: const InputDecoration(
+                              hintText: 'Nhập nguyên liệu'),
                         ),
                       ),
                       IconButton(
@@ -112,7 +116,8 @@ class InsertRecipePage extends GetView<InsertRecipeController> {
                       style: TextStyle(fontWeight: FontWeight.bold)),
                   TextField(
                     controller: stepTitleController,
-                    decoration: const InputDecoration(labelText: 'Tiêu đề bước'),
+                    decoration:
+                        const InputDecoration(labelText: 'Tiêu đề bước'),
                   ),
                   TextField(
                     controller: stepDescController,
