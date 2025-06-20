@@ -8,6 +8,8 @@ import 'package:vietcook1/core/utils/shared_preferences%20_utils.dart';
 import 'package:vietcook1/features/home/di/home_binding.dart';
 import 'package:vietcook1/features/home/presentation/page/home_page.dart';
 import 'package:vietcook1/features/main/models/user_model.dart';
+import 'package:vietcook1/features/search/di/search_binding.dart';
+import 'package:vietcook1/features/search/presentation/page/search_page.dart';
 
 class MainController extends GetxController {
   RxInt currentIndex = 0.obs;
@@ -35,8 +37,8 @@ class MainController extends GetxController {
     if (settings.name == '/search') {
       return GetPageRoute(
         settings: settings,
-        page: () => Container(),
-        // binding: CategoryBinding(),
+        page: () => SearchPage(),
+        binding: SearchBinding(),
         transition: Transition.fadeIn,
       );
     }

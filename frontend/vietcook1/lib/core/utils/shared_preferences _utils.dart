@@ -28,4 +28,16 @@ class SharedPrefsUtils {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.clear();
   }
+
+  // Save list of strings
+  static Future<void> saveStringList(String key, List<String> list) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setStringList(key, list);
+  }
+
+// Get list of strings
+  static Future<List<String>> getStringList(String key) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getStringList(key) ?? [];
+  }
 }

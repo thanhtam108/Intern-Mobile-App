@@ -13,7 +13,7 @@ Future<void> main() async {
 
   final dio = await DioClient().create();
   await Firebase.initializeApp();
-  Get.put<Dio>(dio); // Inject Dio
+  Get.put<Dio>(dio);
   Get.put<AuthService>(AuthService(dio));
 
   runApp(const MyApp());

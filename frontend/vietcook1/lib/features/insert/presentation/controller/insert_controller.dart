@@ -13,7 +13,6 @@ import 'package:vietcook1/features/main/models/user_model.dart';
 import '../../models/insert_recipe_model.dart';
 import 'package:vietcook1/core/data/local/models/step_model.dart';
 import 'package:vietcook1/core/data/network/remote/recipe_service.dart';
-import 'package:vietcook1/core/utils/firebase_upload_helper.dart';
 import 'package:vietcook1/core/utils/shared_preferences _utils.dart';
 
 class InsertRecipeController extends GetxController {
@@ -144,7 +143,7 @@ class InsertRecipeController extends GetxController {
 
   // Upload image to Firebase and return URL
   Future<String?> uploadImage(File file, String path) async {
-    return await FirebaseUploadHelper.uploadImage(file: file, path: path);
+    return "ngoc tho dit bu";
   }
 
   // Submit recipe to backend

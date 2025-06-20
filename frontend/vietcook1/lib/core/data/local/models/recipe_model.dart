@@ -44,8 +44,7 @@ class RecipeModel {
       ingredients: List<String>.from(json['ingredients']),
       view: json['view'] ?? 0,
       duration: json['duration'] as String?,
-      user: json['userId'],
-      // != null ? UserModel.fromJson(json['userId']) : null,
+      user: UserModel.fromJson(json['userId']),
       averageRating: (json['averageRating'] as num?)?.toDouble(),
       steps: (json['steps'] as List<dynamic>)
           .map((e) => StepModel.fromJson(e))

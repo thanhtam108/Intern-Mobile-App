@@ -50,7 +50,10 @@ export class RecipeController {
   findMostPopularRecipes() {
     return this.recipeService.findMostPopularRecipes();
   }
-
+  @Get('search')
+  async searchRecipes(@Query('query') query: string) {
+    return this.recipeService.searchRecipes(query);
+  }
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.recipeService.findOne(id);

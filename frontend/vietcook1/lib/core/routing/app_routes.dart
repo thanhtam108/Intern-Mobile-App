@@ -8,6 +8,8 @@ import 'package:vietcook1/features/onboarding/presentation/page/onboarding_page.
 import 'package:vietcook1/features/auth/login/presentation/page/login_page.dart';
 import 'package:vietcook1/features/home/di/home_binding.dart';
 import 'package:vietcook1/features/home/presentation/page/home_page.dart';
+import 'package:vietcook1/features/search/di/search_binding.dart';
+import 'package:vietcook1/features/search/presentation/page/search_page.dart';
 import 'package:vietcook1/features/splash/di/splash_binding.dart';
 import 'package:vietcook1/features/splash/presentation/page/splash_page.dart';
 import '../../features/auth/login/di/login_binding.dart';
@@ -63,6 +65,11 @@ class AppRoutes {
       name: Routes.insert,
       page: () => InsertRecipePage(),
       binding: InsertBinding(),
+    ),
+    GetPage(
+      name: Routes.search,
+      page: () => SearchPage(),
+      binding: SearchBinding(),
     ),
   ];
 }
