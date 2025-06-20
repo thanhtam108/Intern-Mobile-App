@@ -42,9 +42,7 @@ class SearchResultsList extends StatelessWidget {
           subtitle: recipe.description != null && recipe.description!.isNotEmpty
               ? Text(recipe.description!)
               : null,
-          onTap: () {
-            // TODO: mở trang chi tiết nếu cần
-          },
+          onTap: () {},
         );
       },
     );

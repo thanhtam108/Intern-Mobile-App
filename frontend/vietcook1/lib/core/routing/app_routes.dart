@@ -69,7 +69,7 @@ class AppRoutes {
     GetPage(
       name: Routes.search,
       page: () => SearchPage(),
-      binding: SearchBinding(),
+      binding: CustomSearchBinding(),
     ),
   ];
 }

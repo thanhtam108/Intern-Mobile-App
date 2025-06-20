@@ -6,7 +6,7 @@ import '../components/recent_searches.dart';
 import '../components/search_results_list.dart';
 
 class SearchPage extends GetView<CustomSearchController> {
-  // final my.SearchController controller = Get.put(my.SearchController());
+  // final CustomSearchController controller = Get.put(CustomSearchController());
 
   @override
   Widget build(BuildContext context) {
@@ -16,14 +16,7 @@ class SearchPage extends GetView<CustomSearchController> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 12),
-            SearchHeader(
-              onSearch: (keyword) {
-                controller.searchRecipes(); // Gọi tìm kiếm khi gõ
-              },
-              onSubmitted: (keyword) {
-                controller.searchRecipes(); // Gọi tìm kiếm khi nhấn Enter
-              },
-            ),
+            SearchHeader(),
             const RecentSearches(),
             const SizedBox(height: 12),
             Expanded(

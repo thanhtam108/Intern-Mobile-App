@@ -78,7 +78,6 @@ class RecipeService {
       final response = await _dio.get('/recipes/search', queryParameters: {
         'query': query,
       });
-
       final List data = response.data['data'];
       return data.map((e) => RecipeModel.fromJson(e)).toList();
     } catch (e) {

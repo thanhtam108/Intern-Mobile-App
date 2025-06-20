@@ -38,7 +38,7 @@ class MainController extends GetxController {
       return GetPageRoute(
         settings: settings,
         page: () => SearchPage(),
-        binding: SearchBinding(),
+        binding: CustomSearchBinding(),
         transition: Transition.fadeIn,
       );
     }

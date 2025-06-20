@@ -2,10 +2,10 @@ import 'package:dio/dio.dart';
 import 'package:get/get.dart';
 import 'package:vietcook1/core/data/local/models/recipe_model.dart';
 import 'package:vietcook1/core/data/network/remote/recipe_service.dart';
-import 'package:vietcook1/core/utils/search_history_utils.dart';
 
 class CustomSearchController extends GetxController {
-  final RecipeService _recipeService = RecipeService(Get.find<Dio>());
+  final RecipeService _recipeService;
+  CustomSearchController(this._recipeService);
 
   final RxList<RecipeModel> recipes = <RecipeModel>[].obs;
   final RxBool isLoading = false.obs;
@@ -41,7 +41,6 @@ class CustomSearchController extends GetxController {
     } finally {
       isLoading.value = false;
     }
-
     print('SEARCH RECIPES : $recipes');
   }
 }
