@@ -35,28 +35,28 @@ export class UserService {
     const topUsers = await this.recipeModel.aggregate([
       {
         $group: {
-          _id: '$userId', // Nhóm theo userId
-          recipeCount: { $sum: 1 }, // Đếm số lượng công thức
+          _id: '$userId',
+          recipeCount: { $sum: 1 }, 
         },
       },
       {
-        $sort: { recipeCount: -1 }, // Sắp xếp giảm dần theo số công thức
+        $sort: { recipeCount: -1 }, 
       },
       {
-        $limit: limit, // Lấy top N
+        $limit: limit, 
       },
       {
         $lookup: {
-          from: 'users', // Tên collection MongoDB
-          localField: '_id', // userId từ Recipe
-          foreignField: '_id', // _id từ User
+          from: 'users', 
+          localField: '_id', 
+          foreignField: '_id',
           as: 'userDetails',
         },
       },
       {
         $unwind: {
           path: '$userDetails',
-          preserveNullAndEmptyArrays: true, // giữ lại cả khi không match
+          preserveNullAndEmptyArrays: true, 
         }
       },
       {
@@ -73,4 +73,47 @@ export class UserService {
     ]);
     return topUsers;
   }
+
+  async searchChefs(query: string): Promise<any> {
+    const regex = new RegExp(query, 'i');
+  
+    const users = await this.userModel.aggregate([
+      {
+        $match: {
+          $or: [
+            { name: { $regex: regex } },
+            { email: { $regex: regex } },
+          ],
+        },
+      },
+      {
+        $lookup: {
+          from: 'recipes',
+          localField: '_id',
+          foreignField: 'userId',
+          as: 'userRecipes',
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          userId: '$_id',
+          name: { $ifNull: ['$name', null] },
+          email: { $ifNull: ['$email', null] },
+          bio: { $ifNull: ['$bio', null] },
+          avatarUrl: { $ifNull: ['$avatarUrl', null] },
+          recipeCount: { $size: '$userRecipes' }, // = 0 nếu không có recipe
+        },
+      },
+    ]);
+    if (!users.length) {
+      throw new NotFoundException('Không tìm thấy đầu bếp phù hợp');
+    }
+    return {
+      message: 'Tìm kiếm thành công',
+      data: users,
+    };
+  }
+  
+
 }

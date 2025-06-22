@@ -33,6 +33,13 @@ export class UserController {
     }
     return this.userService.getTopUsersWithRecipes(limit || 10);
   }
+  @Get('search')
+  searchChefs(@Query('query') query: string) {
+  if (!query || !query.trim()) {
+    throw new BadRequestException('Thiếu từ khóa tìm kiếm');
+  }
+  return this.userService.searchChefs(query);
+}
 
   @Get('all')
   getAllUsers() {
@@ -46,4 +53,6 @@ export class UserController {
   update(@Param('id') id: string, @Body() dto: Partial<UserDto>) {
     return this.userService.update(id, dto);
   }
+
+
 }
