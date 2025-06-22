@@ -9,6 +9,7 @@ import 'package:vietcook1/core/data/local/models/category_model.dart';
 import 'package:vietcook1/core/data/network/model/result_dto.dart';
 import 'package:vietcook1/core/data/network/remote/category_service.dart';
 import 'package:vietcook1/core/data/network/remote/user_service.dart';
+import 'package:vietcook1/core/routing/routes.dart';
 import 'package:vietcook1/core/utils/upload_image_utils.dart';
 import 'package:vietcook1/features/main/models/user_model.dart';
 import '../../models/insert_recipe_model.dart';
@@ -218,7 +219,9 @@ class InsertRecipeController extends GetxController {
           backgroundColor: AppColors.success,
           colorText: Colors.white,
         );
-        Get.back(); // Quay về trang trước
+        Get.toNamed(
+          Routes.profile,
+        ); // Quay về trang trước
       } else {
         throw Exception(result.data ?? 'Không thể đăng món ăn');
       }

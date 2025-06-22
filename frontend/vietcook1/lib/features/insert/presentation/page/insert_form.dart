@@ -1,13 +1,16 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:vietcook1/core/configs/app_colors.dart';
 import '../controller/insert_controller.dart';
 
 class InsertRecipePage extends GetView<InsertRecipeController> {
   InsertRecipePage({super.key});
 
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController descController = TextEditingController();
+  final TextEditingController durationController = TextEditingController();
   final TextEditingController ingredientController = TextEditingController();
-  final TextEditingController stepTitleController = TextEditingController();
   final TextEditingController stepDescController = TextEditingController();
 
   @override
@@ -15,90 +18,79 @@ class InsertRecipePage extends GetView<InsertRecipeController> {
     return Scaffold(
       backgroundColor: const Color(0xFFF3F6F3),
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
+        backgroundColor: AppColors.primary,
         elevation: 0,
         leading: TextButton(
           onPressed: () => Get.back(),
           child: const Text('Huỷ',
-              style:
-                  TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
+              style: TextStyle(
+                  color: AppColors.secondary, fontWeight: FontWeight.bold)),
         ),
         toolbarHeight: 48,
       ),
       body: Obx(() => controller.isLoading.value
           ? const Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(horizontal: 0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Stepper
+                  // Ảnh món ăn
                   Padding(
-                    padding: const EdgeInsets.only(top: 0, bottom: 12),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 16, horizontal: 16),
                     child: Center(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          _StepCircle(isActive: true, number: 1),
-                          _StepperLine(),
-                          _StepCircle(isActive: false, number: 2),
-                        ],
+                      child: GestureDetector(
+                        onTap: () => controller.pickImage(context: context),
+                        child: Obx(() => Container(
+                              height: 110,
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                border: Border.all(
+                                  color: Colors.grey.shade300,
+                                  style: BorderStyle.solid,
+                                  width: 2,
+                                ),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: controller.imageFile.value != null
+                                  ? ClipRRect(
+                                      borderRadius: BorderRadius.circular(12),
+                                      child: Image.file(
+                                        File(controller.imageFile.value!.path),
+                                        fit: BoxFit.cover,
+                                        width: double.infinity,
+                                        height: 110,
+                                      ),
+                                    )
+                                  : Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: const [
+                                        Icon(Icons.image,
+                                            size: 40, color: Colors.grey),
+                                        SizedBox(height: 8),
+                                        Text('Thêm ảnh',
+                                            style: TextStyle(
+                                                color: Colors.grey,
+                                                fontWeight: FontWeight.bold)),
+                                        SizedBox(height: 4),
+                                        Text('(tối đa 12 Mb)',
+                                            style: TextStyle(
+                                                color: Colors.grey,
+                                                fontSize: 12)),
+                                      ],
+                                    ),
+                            )),
                       ),
                     ),
                   ),
-                  // Ảnh món ăn
-                  Center(
-                    child: GestureDetector(
-                      onTap: () {
-                        controller.pickImage(context: context);
-                      },
-                      child: Obx(() => Container(
-                            height: 120,
-                            width: 220,
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              border: Border.all(
-                                color: Colors.grey.shade300,
-                                style: BorderStyle.solid,
-                                width: 2,
-                              ),
-                              borderRadius: BorderRadius.circular(16),
-                            ),
-                            child: controller.imageFile.value != null
-                                ? ClipRRect(
-                                    borderRadius: BorderRadius.circular(16),
-                                    child: Image.file(
-                                      File(controller.imageFile.value!.path),
-                                      fit: BoxFit.cover,
-                                      width: 220,
-                                      height: 120,
-                                    ),
-                                  )
-                                : Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: const [
-                                      Icon(Icons.image,
-                                          size: 40, color: Colors.grey),
-                                      SizedBox(height: 8),
-                                      Text('Thêm ảnh',
-                                          style: TextStyle(
-                                              color: Colors.grey,
-                                              fontWeight: FontWeight.bold)),
-                                      SizedBox(height: 4),
-                                      Text('(tối đa 12 Mb)',
-                                          style: TextStyle(
-                                              color: Colors.grey, fontSize: 12)),
-                                    ],
-                                  ),
-                          )),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
                   // Tên món ăn
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
                     child: TextField(
-                      onChanged: (val) => controller.name.value = val,
+                      controller: nameController,
                       decoration: InputDecoration(
                         labelText: 'Tên món ăn',
                         hintText: 'Nhập tên món ăn',
@@ -106,15 +98,17 @@ class InsertRecipePage extends GetView<InsertRecipeController> {
                             borderRadius: BorderRadius.circular(16)),
                         contentPadding: const EdgeInsets.symmetric(
                             horizontal: 16, vertical: 12),
+                        filled: true,
+                        fillColor: Colors.white,
                       ),
                     ),
                   ),
-                  const SizedBox(height: 12),
                   // Mô tả
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
                     child: TextField(
-                      onChanged: (val) => controller.description.value = val,
+                      controller: descController,
                       decoration: InputDecoration(
                         labelText: 'Mô tả',
                         hintText: 'Mô tả một chút về món ăn',
@@ -122,14 +116,16 @@ class InsertRecipePage extends GetView<InsertRecipeController> {
                             borderRadius: BorderRadius.circular(16)),
                         contentPadding: const EdgeInsets.symmetric(
                             horizontal: 16, vertical: 12),
+                        filled: true,
+                        fillColor: Colors.white,
                       ),
                       maxLines: 2,
                     ),
                   ),
-                  const SizedBox(height: 12),
-                  // Dropdown loại món
+                  // Loại món ăn
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
                     child: Obx(() => DropdownButtonFormField<String>(
                           value: controller.categoryId.value.isEmpty
                               ? null
@@ -149,31 +145,271 @@ class InsertRecipePage extends GetView<InsertRecipeController> {
                                 borderRadius: BorderRadius.circular(16)),
                             contentPadding: const EdgeInsets.symmetric(
                                 horizontal: 16, vertical: 12),
+                            filled: true,
+                            fillColor: Colors.white,
                           ),
                         )),
                   ),
-                  const SizedBox(height: 24),
-                  // Nút kế tiếp
+                  // Thời lượng nấu
+                  Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                    child: TextField(
+                      controller: durationController,
+                      decoration: InputDecoration(
+                        labelText: 'Thời lượng nấu (phút)',
+                        hintText: 'Nhập thời gian cần để nấu',
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(16)),
+                        contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 12),
+                        filled: true,
+                        fillColor: Colors.white,
+                      ),
+                    ),
+                  ),
+                  // Nguyên liệu
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 16, vertical: 10),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text('Nguyên liệu',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                                color: AppColors.primary)),
+                        TextButton.icon(
+                          onPressed: () {
+                            // Xử lý thêm nhóm nguyên liệu nếu muốn
+                          },
+                          icon: const Icon(Icons.add,
+                              size: 18, color: Color(0xFF7BA23F)),
+                          label: const Text('Nhóm',
+                              style: TextStyle(color: Color(0xFF7BA23F))),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Column(
+                      children: [
+                        ...controller.ingredients.map((ingredient) => Padding(
+                              padding: const EdgeInsets.only(bottom: 8),
+                              child: TextField(
+                                controller:
+                                    TextEditingController(text: ingredient),
+                                readOnly: true,
+                                decoration: InputDecoration(
+                                  prefixIcon: const Icon(Icons.drag_indicator,
+                                      color: Colors.grey),
+                                  border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(16)),
+                                  contentPadding: const EdgeInsets.symmetric(
+                                      horizontal: 16, vertical: 12),
+                                  filled: true,
+                                  fillColor: Colors.white,
+                                ),
+                              ),
+                            )),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: TextField(
+                                controller: ingredientController,
+                                decoration: InputDecoration(
+                                  hintText: 'Nhập tên nguyên liệu',
+                                  border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(16)),
+                                  contentPadding: const EdgeInsets.symmetric(
+                                      horizontal: 16, vertical: 12),
+                                  filled: true,
+                                  fillColor: Colors.white,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: AppColors.primary,
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(16)),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 16, vertical: 16),
+                              ),
+                              onPressed: () {
+                                if (ingredientController.text
+                                    .trim()
+                                    .isNotEmpty) {
+                                  controller.ingredients
+                                      .add(ingredientController.text.trim());
+                                  ingredientController.clear();
+                                }
+                              },
+                              child: const Text(
+                                'Thêm',
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  // Bước thực hiện
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 16, vertical: 10),
+                    child: const Text('Bước thực hiện',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            color: AppColors.primary)),
+                  ),
+                  Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        CircleAvatar(
+                          radius: 14,
+                          backgroundColor: AppColors.primary,
+                          child: Text('${controller.steps.length + 1}',
+                              style: const TextStyle(color: Colors.white)),
+                        ),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: TextField(
+                            controller: stepDescController,
+                            maxLines: 2,
+                            decoration: InputDecoration(
+                              hintText: 'Nhập vào các bước làm món ăn',
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12)),
+                              contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 12, vertical: 12),
+                              filled: true,
+                              fillColor: Colors.white,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        IconButton(
+                          icon: const Icon(Icons.camera_alt,
+                              color: AppColors.primary),
+                          onPressed: () {
+                            // Xử lý thêm ảnh cho bước nếu muốn
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     child: SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF9BAE8C),
-                          foregroundColor: Colors.white,
+                          backgroundColor: AppColors.primary,
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(24),
-                          ),
+                              borderRadius: BorderRadius.circular(16)),
                           padding: const EdgeInsets.symmetric(vertical: 14),
                         ),
                         onPressed: () {
-                          // Xử lý chuyển bước tiếp theo
+                          if (stepDescController.text.trim().isNotEmpty) {
+                            controller.addStep(
+                                '', stepDescController.text.trim());
+                            stepDescController.clear();
+                          }
                         },
-                        child: const Text('Kế tiếp',
-                            style: TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.bold)),
+                        child: const Text(
+                          'Thêm',
+                          style: TextStyle(color: Colors.white),
+                        ),
                       ),
+                    ),
+                  ),
+                  // Danh sách các bước đã thêm
+                  Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    child: Obx(() => Column(
+                          children: controller.steps
+                              .asMap()
+                              .entries
+                              .map((entry) => ListTile(
+                                    leading: CircleAvatar(
+                                      radius: 14,
+                                      backgroundColor: AppColors.primary,
+                                      child: Text('${entry.key + 1}',
+                                          style: const TextStyle(
+                                              color: Colors.white)),
+                                    ),
+                                    title:
+                                        Text(entry.value.stepDescription ?? ''),
+                                  ))
+                              .toList(),
+                        )),
+                  ),
+                  // Nút đăng tải
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 16, vertical: 16),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: OutlinedButton(
+                            style: OutlinedButton.styleFrom(
+                              foregroundColor: const Color(0xFF1A2B3C),
+                              side: const BorderSide(color: Color(0xFF1A2B3C)),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(24)),
+                              padding: const EdgeInsets.symmetric(vertical: 14),
+                            ),
+                            onPressed: () {
+                              Get.back();
+                            },
+                            child: const Text('Trở lại',
+                                style: TextStyle(fontWeight: FontWeight.bold)),
+                          ),
+                        ),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xFF9BAE8C),
+                              foregroundColor: Colors.white,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(24)),
+                              padding: const EdgeInsets.symmetric(vertical: 14),
+                            ),
+                            onPressed: () {
+                              controller.name.value = nameController.text;
+                              controller.description.value =
+                                  descController.text;
+                              controller.duration.value =
+                                  durationController.text;
+                              if (controller.user?.id != null) {
+                                controller.submitRecipe(controller.user!.id!);
+                              } else {
+                                Get.snackbar(
+                                  'Lỗi',
+                                  'Vui lòng đăng nhập để đăng món ăn',
+                                  backgroundColor: Colors.red,
+                                  colorText: Colors.white,
+                                );
+                              }
+                            },
+                            child: const Text('Đăng tải',
+                                style: TextStyle(fontWeight: FontWeight.bold)),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                   const SizedBox(height: 16),
@@ -192,50 +428,6 @@ class InsertRecipePage extends GetView<InsertRecipeController> {
                 ],
               ),
             )),
-    );
-  }
-}
-
-// Stepper circle widget
-class _StepCircle extends StatelessWidget {
-  final bool isActive;
-  final int number;
-  const _StepCircle({required this.isActive, required this.number});
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 32,
-      height: 32,
-      decoration: BoxDecoration(
-        color: isActive ? const Color(0xFF7BA23F) : Colors.white,
-        border: Border.all(
-          color: isActive ? const Color(0xFF7BA23F) : Colors.grey,
-          width: 2,
-        ),
-        shape: BoxShape.circle,
-      ),
-      child: Center(
-        child: Text(
-          '$number',
-          style: TextStyle(
-            color: isActive ? Colors.white : Colors.grey,
-            fontWeight: FontWeight.bold,
-            fontSize: 16,
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-// Stepper line widget
-class _StepperLine extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 32,
-      height: 2,
-      color: const Color(0xFF7BA23F),
     );
   }
 }

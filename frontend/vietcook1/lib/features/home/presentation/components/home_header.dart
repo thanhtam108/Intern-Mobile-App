@@ -53,9 +53,6 @@ class HomeHeader extends StatelessWidget {
             onSearch: (query) {
               print('Tìm kiếm: $query'); // Xử lý logic tìm kiếm
             },
-            onTap: () {
-              Get.toNamed(Routes.search); // Điều hướng đến trang tìm kiếm
-            },
           ),
         ],
       ),

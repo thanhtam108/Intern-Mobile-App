@@ -18,6 +18,6 @@ class HomeBinding extends Bindings {
     Get.lazyPut(() => CategoryService(Get.find<Dio>()));
     Get.lazyPut(() => HomeController(Get.find<RecipeService>(),
         Get.find<UserService>(), Get.find<CategoryService>()));
-    Get.lazyPut(() => CustomSearchController(Get.find<RecipeService>()));
+    Get.lazyPut(() => CustomSearchController());
   }
 }

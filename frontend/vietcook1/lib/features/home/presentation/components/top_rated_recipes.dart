@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:vietcook1/core/data/local/models/recipe_model.dart';
 import 'package:vietcook1/core/data/local/models/top_rated_recipe_model.dart';
 import 'package:vietcook1/core/routing/routes.dart';
+import 'package:vietcook1/core/ui/horizontal_recipe_card.dart';
 
 class TopRatedRecipes extends StatelessWidget {
   final List<TopRatedRecipeModel> recipes;
@@ -27,16 +28,14 @@ class TopRatedRecipes extends StatelessWidget {
           itemCount: recipes.length,
           itemBuilder: (context, index) {
             final recipe = recipes[index];
-            return ListTile(
+            return GestureDetector(
               onTap: () {
                 Get.toNamed(Routes.recipe_detail,
                     arguments: {'recipeId': recipe.id});
               },
-              key: ValueKey(recipe.id),
-              title: Text(recipe.name),
-              subtitle: Text(recipe.description),
-              leading: CircleAvatar(
-                backgroundImage: NetworkImage(recipe.imageUrl ?? ''),
+              child: HorizontalRecipeCard(
+                recipe: recipe, // Đảm bảo recipe là RecipeModel hoặc sửa HorizontalRecipeCard nhận TopRatedRecipeModel
+                isFavorite: false, // hoặc truyền trạng thái yêu thích nếu có
               ),
             );
           },
