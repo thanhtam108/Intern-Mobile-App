@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:vietcook1/core/configs/app_colors.dart';
+import 'package:vietcook1/core/routing/routes.dart';
 import 'package:vietcook1/features/search/presentation/components/custom_search_bar.dart';
 
 class HomeHeader extends StatelessWidget {
@@ -34,19 +36,27 @@ class HomeHeader extends StatelessWidget {
                   color: Colors.white,
                 ),
               ),
-              CircleAvatar(
-                radius: 20,
-                backgroundImage: NetworkImage(avatarUrl),
+              GestureDetector(
+                onTap: () {
+                  Get.toNamed(Routes.profile); // Điều hướng đến trang cá nhân
+                },
+                child: CircleAvatar(
+                  radius: 20,
+                  backgroundImage: NetworkImage(avatarUrl),
+                ),
               ),
             ],
           ),
           const SizedBox(height: 16),
-          // CustomSearchBar(
-          //   hintText: 'Tìm kiếm món ăn, thành phần...',
-          //   onSearch: (query) {
-          //     print('Tìm kiếm: $query'); // Xử lý logic tìm kiếm
-          //   },
-          // ),
+          CustomSearchBar(
+            hintText: 'Tìm kiếm món ăn, thành phần...',
+            onSearch: (query) {
+              print('Tìm kiếm: $query'); // Xử lý logic tìm kiếm
+            },
+            onTap: () {
+              Get.toNamed(Routes.search); // Điều hướng đến trang tìm kiếm
+            },
+          ),
         ],
       ),
     );

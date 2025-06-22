@@ -11,25 +11,36 @@ class UserService {
 
   UserService(this._dio);
 
-  Future<Result<List<RecipeModel>>> fetchFavoriteRecipes(String id) async {
+  Future<Result<UserModel>> getUser() async {
     try {
-      final res = await _dio.get('${ApiConstants.favorites.common}/$id');
-      final baseRp = BaseResponseDto.fromJson(res.data);
+      final res = await _dio.get(
+        ApiConstants.auth.getUser,
+      );
 
-      List<RecipeModel> favs = <RecipeModel>[];
-      final result = baseRp.data.forEach((element) {
-        favs.add(RecipeModel.fromJson(element));
-      });
+      final baseRp = BaseResponseDto.fromJson(res.data);
+      final result = UserModel.fromJson(baseRp.data);
       return Result.success(result);
     } on DioException catch (e) {
       return Result.error(AppException.parse(e));
     }
   }
 
-  Future<Result<UserModel>> getUser() async {
+  Future<Result<UserModel>> updateUser({
+    required String? id,
+    required String? name,
+    required String? bio,
+    required String? email,
+    String? avatarUrl,
+  }) async {
     try {
-      final res = await _dio.get(
-        ApiConstants.auth.getUser,
+      final res = await _dio.put(
+        '${ApiConstants.user.update}/$id',
+        data: {
+          'name': name,
+          'bio': bio,
+          'email': email,
+          'avatarUrl': avatarUrl,
+        },
       );
 
       final baseRp = BaseResponseDto.fromJson(res.data);

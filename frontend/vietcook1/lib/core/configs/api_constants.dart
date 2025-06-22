@@ -1,10 +1,12 @@
 class ApiConstants {
-  static const baseUrl = "http://192.168.1.227:3000";
+  static const baseUrl = "http://192.168.6.108:3000";
 
   static var auth = _AuthApi();
   static var categories = _CategoriesApi();
   static var recipes = _RecipesApi();
   static var favorites = _FavoritesApi();
+  static var user = _UserApi();
+  static var reviews = _Reviews();
 }
 
 class _AuthApi {
@@ -13,8 +15,11 @@ class _AuthApi {
   final String resendOtp = "/auth/resend-otp";
   final String login = "/auth/login";
   final String getUser = "/user/me";
-  final String updateUser = "/auth/user/update";
-  final String changePassword = "/auth/user/change-password";
+}
+
+class _UserApi {
+  final String update = "/user/";
+  final String getById = "/user/";
 }
 
 class _CategoriesApi {
@@ -36,7 +41,11 @@ class _RecipesApi {
 }
 
 class _FavoritesApi {
-  final String common = "/favorites/";
+  final String common = "/favorites";
   final String add = "/favorites/add";
   final String remove = "/favorites/remove";
+}
+
+class _Reviews {
+  final String common = "/reviews";
 }

@@ -7,6 +7,8 @@ class CustomSearchBar extends GetView<CustomSearchController> {
   final Function(String)? onSearch;
   final Function(String)? onSubmitted;
   final TextEditingController? textController;
+  final FocusNode? focusNode;
+  final VoidCallback? onTap;
 
   const CustomSearchBar({
     super.key,
@@ -14,11 +16,15 @@ class CustomSearchBar extends GetView<CustomSearchController> {
     this.onSearch,
     this.onSubmitted,
     this.textController,
+    this.focusNode,
+    this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
     return TextField(
+      focusNode: focusNode,
+      onTap: onTap,
       controller: textController,
       onChanged: controller.onSearchChanged,
       onSubmitted: onSubmitted,

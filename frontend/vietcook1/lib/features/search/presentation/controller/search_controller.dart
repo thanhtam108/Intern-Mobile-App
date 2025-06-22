@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:vietcook1/core/data/local/models/recipe_model.dart';
 import 'package:vietcook1/core/data/network/remote/recipe_service.dart';
@@ -11,6 +12,7 @@ class CustomSearchController extends GetxController {
   final RxBool isLoading = false.obs;
   final RxList<String> recentSearches = <String>[].obs;
   final RxBool hasSearched = false.obs;
+  final FocusNode searchFocusNode = FocusNode();
 
   String _query = '';
 

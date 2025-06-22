@@ -7,16 +7,19 @@ import '../components/search_results_list.dart';
 
 class SearchPage extends GetView<CustomSearchController> {
   // final CustomSearchController controller = Get.put(CustomSearchController());
-
+  final FocusNode searchFocusNode = FocusNode();
   @override
   Widget build(BuildContext context) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      searchFocusNode.requestFocus();
+    });
     return Scaffold(
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 12),
-            SearchHeader(),
+            SearchHeader(focusNode: searchFocusNode),
             const RecentSearches(),
             const SizedBox(height: 12),
             Expanded(

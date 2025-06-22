@@ -10,9 +10,13 @@ import 'package:vietcook1/features/auth/login/models/token_model.dart';
 
 class SplashController extends GetxController {
   RxBool isLoading = true.obs;
+  final fadeOpacity = 0.0.obs;
   @override
   void onInit() {
     super.onInit();
+    Future.delayed(Duration.zero, () {
+      fadeOpacity.value = 1.0;
+    });
     _simulateLoading();
   }
 

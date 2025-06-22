@@ -174,37 +174,4 @@ class RecipeService {
       return Result.error(AppException.parse(e));
     }
   }
-
-  // Future<Result<List<RecipeModel>>> fetchRecipesByUserName(
-  //     String userName) async {
-  //   try {
-  //     final res =
-  //         await _dio.get('${ApiConstants.recipes.getByUserId}/$userName');
-  //     final baseRp = BaseResponseDto.fromJson(res.data);
-
-  //     List<RecipeModel> recipes = <RecipeModel>[];
-  //     baseRp.data.forEach((element) {
-  //       recipes.add(RecipeModel.fromJson(element));
-  //     });
-  //     return Result.success(recipes);
-  //   } on DioException catch (e) {
-  //     return Result.error(AppException.parse(e));
-  //   }
-  // }
-
-  // Future<Result<List<RecipeModel>>> fetchRecipesByUserEmail(
-  //     String userEmail) async {
-  //   try {
-  //     final res = await _dio.get('/recipes/user/email/$userEmail');
-  //     final baseRp = BaseResponseDto.fromJson(res.data);
-
-  //     List<RecipeModel> recipes = <RecipeModel>[];
-  //     baseRp.data.forEach((element) {
-  //       recipes.add(RecipeModel.fromJson(element));
-  //     });
-  //     return Result.success(recipes);
-  //   } on DioException catch (e) {
-  //     return Result.error(AppException.parse(e));
-  //   }
-  // }
 }

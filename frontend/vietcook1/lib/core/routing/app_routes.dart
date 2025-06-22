@@ -1,5 +1,7 @@
 import 'package:get/get.dart';
 import 'package:vietcook1/core/routing/routes.dart';
+import 'package:vietcook1/features/edit_profile/di/edit_profile_binding.dart';
+import 'package:vietcook1/features/edit_profile/presentation/page/edit_personal_info.dart';
 import 'package:vietcook1/features/insert/di/insert_binding.dart';
 import 'package:vietcook1/features/insert/presentation/page/insert_form.dart';
 import 'package:vietcook1/features/main/di/main_binding.dart';
@@ -8,6 +10,10 @@ import 'package:vietcook1/features/onboarding/presentation/page/onboarding_page.
 import 'package:vietcook1/features/auth/login/presentation/page/login_page.dart';
 import 'package:vietcook1/features/home/di/home_binding.dart';
 import 'package:vietcook1/features/home/presentation/page/home_page.dart';
+import 'package:vietcook1/features/profile/di/profile_binding.dart';
+import 'package:vietcook1/features/profile/presentation/page/profile_page.dart';
+import 'package:vietcook1/features/recipe/recipe_detail/di/recipe_detail_binding.dart';
+import 'package:vietcook1/features/recipe/recipe_detail/presentation/page/recipe_detail_page.dart';
 import 'package:vietcook1/features/search/di/search_binding.dart';
 import 'package:vietcook1/features/search/presentation/page/search_page.dart';
 import 'package:vietcook1/features/splash/di/splash_binding.dart';
@@ -70,6 +76,25 @@ class AppRoutes {
       name: Routes.search,
       page: () => SearchPage(),
       binding: CustomSearchBinding(),
+    ),
+    GetPage(
+      name: Routes.editPersonalInfo,
+      page: () => EditPersonalInfo(),
+      binding: EditProfileBinding(),
+    ),
+    GetPage(
+      name: Routes.profile,
+      page: () => ProfilePage(),
+      binding: ProfileBinding(),
+    ),
+    GetPage(
+      name: Routes.recipe_detail,
+      page: () {
+        final recipeId =
+            Get.parameters['recipeId'] ?? Get.arguments?['recipeId'];
+        return RecipeDetailPage(recipeId: recipeId ?? '');
+      },
+      binding: RecipeDetailBinding(),
     ),
   ];
 }

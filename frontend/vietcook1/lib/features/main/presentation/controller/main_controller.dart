@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 import 'package:vietcook1/core/configs/share_prefs_constants.dart';
+import 'package:vietcook1/core/data/local/models/recipe_model.dart';
 import 'package:vietcook1/core/data/network/model/result_dto.dart';
+import 'package:vietcook1/core/data/network/remote/favorite_service.dart';
 import 'package:vietcook1/core/data/network/remote/user_service.dart';
 import 'package:vietcook1/core/utils/shared_preferences%20_utils.dart';
 import 'package:vietcook1/features/home/di/home_binding.dart';
@@ -17,8 +19,10 @@ class MainController extends GetxController {
   RxInt currentIndex = 0.obs;
   final pages = <String>['/home', '/search', '/favorites', '/profile'];
   final UserService _userService;
-  MainController(this._userService);
+  final FavoriteService _faService;
+  MainController(this._userService, this._faService);
   UserModel? user;
+  List<String> favRecipesIds = [];
   @override
   void onInit() async {
     super.onInit();
@@ -78,13 +82,50 @@ class MainController extends GetxController {
           SharePrefsConstants.user, user!.toJson());
 
       print('User: ${user?.name}');
+      fetchFavorites();
+    } else {
+      Future.microtask(() {
+        Get.snackbar(
+          'Error',
+          'Failed to fetch user data',
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+        );
+      });
+    }
+  }
+
+  void fetchFavorites() async {
+    if (user == null) {
+      Get.snackbar(
+        'Error',
+        'User not found',
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+      return;
+    }
+    final result = await _faService.fetchFavoriteRecipes();
+    if (result.status == Status.success) {
+      await SharedPrefsUtils.saveStringList(
+          SharePrefsConstants.favRecipes, favRecipesIds);
+      favRecipesIds = result.data ?? [];
+      print('Favorites ids: $favRecipesIds');
+      update(['favorites']);
     } else {
       Get.snackbar(
         'Error',
-        'Failed to fetch user data',
+        'Failed to fetch favorites',
         backgroundColor: Colors.red,
         colorText: Colors.white,
       );
     }
+  }
+
+  Future<void> clearData() async {
+    favRecipesIds.clear();
+    user = null;
+    currentIndex.value = 0;
+    await SharedPrefsUtils.remove(SharePrefsConstants.user);
   }
 }

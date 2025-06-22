@@ -15,7 +15,6 @@ class HomePage extends GetView<HomeController> {
         if (controller.isLoading.value) {
           return const Center(child: CircularProgressIndicator());
         }
-
         return GetBuilder<HomeController>(
             id: 'updateHome',
             builder: (context) {
@@ -29,16 +28,9 @@ class HomePage extends GetView<HomeController> {
                       avatarUrl: controller.user.avatarUrl ??
                           'lib/assets/icons/avatar_placeholder.jpg',
                     ),
-                    CategoryList(categories: [
-                      {'name': 'Ăn sáng', 'icon': Icons.breakfast_dining},
-                      {'name': 'Ăn trưa', 'icon': Icons.lunch_dining},
-                      {'name': 'Nước uống', 'icon': Icons.local_drink},
-                      {'name': 'Xào', 'icon': Icons.restaurant},
-                      {'name': 'Bánh', 'icon': Icons.cake},
-                      {'name': 'Cơm phần', 'icon': Icons.rice_bowl},
-                      {'name': 'Đồ chay', 'icon': Icons.eco},
-                      {'name': 'Canh', 'icon': Icons.soup_kitchen},
-                    ]),
+                    CategoryList(
+                      categories: controller.categories,
+                    ),
                     const SizedBox(height: 16),
                     TopRatedRecipes(recipes: controller.topRatedRecipes)
                   ],

@@ -1,10 +1,11 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vietcook1/core/configs/share_prefs_constants.dart';
+import 'package:vietcook1/core/data/local/models/category_model.dart';
 import 'package:vietcook1/core/data/local/models/recipe_model.dart';
 import 'package:vietcook1/core/data/network/model/result_dto.dart';
+import 'package:vietcook1/core/data/network/remote/category_service.dart';
 import 'package:vietcook1/core/data/network/remote/user_service.dart';
 import 'package:vietcook1/core/utils/shared_preferences%20_utils.dart';
 import 'package:vietcook1/features/main/models/user_model.dart';
@@ -14,7 +15,8 @@ import 'package:vietcook1/core/data/local/models/top_rated_recipe_model.dart';
 class HomeController extends GetxController {
   final RecipeService _recipeService;
   final UserService _userService;
-  HomeController(this._recipeService, this._userService);
+  final CategoryService _categoryService;
+  HomeController(this._recipeService, this._userService, this._categoryService);
 
   final RxList<TopRatedRecipeModel> topRatedRecipes =
       RxList<TopRatedRecipeModel>();
@@ -24,6 +26,8 @@ class HomeController extends GetxController {
   final isLoading = false.obs;
 
   UserModel user = UserModel();
+
+  final RxList<CategoryModel> categories = RxList<CategoryModel>();
 
   @override
   void onInit() async {
@@ -45,8 +49,9 @@ class HomeController extends GetxController {
     if (result.status == Status.success) {
       user = result.data!;
       await SharedPrefsUtils.saveObject(
-          SharePrefsConstants.user, user!.toJson());
-      await fetchTopRatedRecipes();
+          SharePrefsConstants.user, user.toJson());
+      fetchTopRatedRecipes();
+      fetchCategories();
       update(['updateHome']);
     } else {
       Get.snackbar(
@@ -77,6 +82,26 @@ class HomeController extends GetxController {
     isLoading.value = false;
   }
 
+  Future<void> fetchCategories() async {
+    isLoading.value = true;
+    final result = await _categoryService.fetchCategories();
+    if (result.status == Status.success) {
+      categories.assignAll(result.data ?? []);
+      if (categories.isNotEmpty) {
+        await SharedPrefsUtils.saveObject(SharePrefsConstants.categories,
+            categories.map((e) => e.toJson()).toList());
+      }
+    } else {
+      Get.snackbar(
+        'Lỗi',
+        'Không thể tải danh mục món ăn',
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+    }
+    isLoading.value = false;
+  }
+
   // Lấy danh sách món gần đây từ API
   // Future<void> fetchRecentRecipes() async {
   //   isLoading.value = true;
@@ -95,5 +120,10 @@ class HomeController extends GetxController {
   // Chuyển qua các trang trong MainNavigator
   void navigateToPage(String routeName) {
     Get.toNamed(routeName);
+  }
+
+  Future<void> logout() async {
+    await SharedPrefsUtils.remove(SharePrefsConstants.user);
+    Get.offAllNamed('/login');
   }
 }

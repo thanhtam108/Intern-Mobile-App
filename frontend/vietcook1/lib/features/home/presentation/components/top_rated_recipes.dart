@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:vietcook1/core/data/local/models/recipe_model.dart';
 import 'package:vietcook1/core/data/local/models/top_rated_recipe_model.dart';
+import 'package:vietcook1/core/routing/routes.dart';
 
 class TopRatedRecipes extends StatelessWidget {
   final List<TopRatedRecipeModel> recipes;
@@ -27,6 +28,10 @@ class TopRatedRecipes extends StatelessWidget {
           itemBuilder: (context, index) {
             final recipe = recipes[index];
             return ListTile(
+              onTap: () {
+                Get.toNamed(Routes.recipe_detail,
+                    arguments: {'recipeId': recipe.id});
+              },
               key: ValueKey(recipe.id),
               title: Text(recipe.name),
               subtitle: Text(recipe.description),

@@ -1,7 +1,5 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vietcook1/core/configs/share_prefs_constants.dart';
 import 'package:vietcook1/core/data/local/models/recipe_model.dart';
 import 'package:vietcook1/core/data/network/model/result_dto.dart';
@@ -14,59 +12,57 @@ class ProfileController extends GetxController {
   final RecipeService _recipeService;
   final UserService _userService;
   ProfileController(this._recipeService, this._userService);
+
   final RxList<RecipeModel> userRecipes = RxList<RecipeModel>();
   final isLoading = false.obs;
-  UserModel userdata = UserModel();
+
+  UserModel user = UserModel();
 
   @override
-  void onInit() async {
+  void onInit() {
     super.onInit();
-    initializeData();
     getUser();
-    Map<String, dynamic>? user =
-        await SharedPrefsUtils.getObject(SharePrefsConstants.user);
-    if (user != null) {
-      userdata = UserModel.fromJson(user);
-      update(["updateUser"]);
-    }
-    // // fetchRecentRecipes();
   }
 
-  UserModel? user;
+  // void getUser() async {
+  //   isLoading.value = true;
+  //   final result = await _userService.getUser();
 
-  Future<void> initializeData() async {
-    await _loadUserData();
-    await fetchUserRecipes(userdata.id ?? '');
-    update(['updateUser', 'userRecipes']);
-  }
+  //   if (result.status == Status.success && result.data != null) {
+  //     user = result.data;
+  //     await SharedPrefsUtils.saveObject(
+  //       SharePrefsConstants.user,
+  //       user.toJson(),
+  //     );
 
-  Future<void> _loadUserData() async {
-    final prefs = await SharedPreferences.getInstance();
-    final userData = prefs.getString('user');
-    if (userData != null) {
-      userdata = UserModel.fromJson(jsonDecode(userData));
-    } else {
-      Get.snackbar('Lỗi', 'Không tìm thấy dữ liệu người dùng');
-    }
-  }
+  //     if (user.id?.isNotEmpty == true) {
+  //       await fetchUserRecipes(user.id!);
+  //     } else {
+  //       userRecipes.clear();
+  //     }
 
-  Future<void> fetchUserRecipes(String userId) async {
-    isLoading.value = true;
-    final result = await _recipeService.fetchRecipesByUserId(userId);
+  //     // update(['profile_info', 'user_recipes']);
+  //   } else {
+  //     user = UserModel(); // an toàn tránh null
+  //     Get.snackbar(
+  //       'Error',
+  //       'Failed to fetch user data',
+  //       backgroundColor: Colors.red,
+  //       colorText: Colors.white,
+  //     );
+  //   }
 
-    userRecipes.assignAll(result.data ?? []);
-    print("Top rated recipes: ${result.data}");
-    isLoading.value = false;
-  }
+  //   isLoading.value = false;
+  // }
 
   void getUser() async {
     final result = await _userService.getUser();
     if (result.status == Status.success) {
-      user = result.data;
+      user = result.data!;
       await SharedPrefsUtils.saveObject(
-          SharePrefsConstants.user, user!.toJson());
-
-      print('User: ${user?.name}');
+          SharePrefsConstants.user, user.toJson());
+      fetchUserRecipes(user.id!);
+      update(['profile_info', 'user_recipes']);
     } else {
       Get.snackbar(
         'Error',
@@ -75,5 +71,11 @@ class ProfileController extends GetxController {
         colorText: Colors.white,
       );
     }
+  }
+
+  Future<void> fetchUserRecipes(String userId) async {
+    final result = await _recipeService.fetchRecipesByUserId(userId);
+    userRecipes.assignAll(result.data ?? []);
+    update(['user_recipes']);
   }
 }

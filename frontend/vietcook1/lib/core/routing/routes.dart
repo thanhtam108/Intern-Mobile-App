@@ -12,4 +12,6 @@ class Routes {
   static const String favorites = '/favorites';
   static const String profile = '/profile';
   static const String search = '/search';
+  static const String editPersonalInfo = '/edit-personal-info';
+  static const String recipe_detail = '/recipe-detail';
 }

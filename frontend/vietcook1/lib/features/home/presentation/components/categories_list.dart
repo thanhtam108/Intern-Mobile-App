@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:vietcook1/core/configs/app_colors.dart';
+import 'package:vietcook1/core/data/local/models/category_model.dart';
+import 'package:vietcook1/features/home/presentation/controller/home_controller.dart';
 // import 'package:vietcook1/core/data/local/models/category_model.dart';
 
 class CategoryList extends StatelessWidget {
-  final List<Map<String, dynamic>> categories;
-
-  const CategoryList({
-    super.key,
-    required this.categories,
-  });
+  final List<CategoryModel> categories;
+  const CategoryList({required this.categories});
 
   @override
   Widget build(BuildContext context) {
@@ -45,13 +44,23 @@ class CategoryList extends StatelessWidget {
                   radius: 24,
                   backgroundColor: Colors.green.shade100,
                   child:
-                      // Image.network(category.imageUrl),
-                      Icon(category['icon'],
-                          color: AppColors.primary, size: 32),
+                      // Use Image.network to display image from URL
+                      category.imageUrl != null
+                          ? Image.network(
+                              category.imageUrl,
+                              width: 32,
+                              height: 32,
+                              fit: BoxFit.cover,
+                            )
+                          : Icon(
+                              Icons.category,
+                              color: AppColors.primary,
+                              size: 32,
+                            ),
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  category['name'] ?? 'Chưa có tên',
+                  category.name,
                   style: TextStyle(fontSize: 12),
                 ),
               ],

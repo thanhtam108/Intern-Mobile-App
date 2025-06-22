@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:vietcook1/features/profile/presentation/controller/profile_controller.dart';
 
-class ProfileInfo extends StatelessWidget {
+class ProfileInfo extends GetView<ProfileController> {
   final String username;
   final String bio;
   final String profileImageUrl;
 
-  ProfileInfo({
+  const ProfileInfo({
     super.key,
     required this.username,
     required this.bio,
@@ -15,7 +17,7 @@ class ProfileInfo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start, // Căn trái toàn bộ
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -24,16 +26,18 @@ class ProfileInfo extends StatelessWidget {
               radius: 30,
               backgroundImage: NetworkImage(profileImageUrl),
             ),
-            const SizedBox(width: 24),
+            const SizedBox(width: 16),
             Expanded(
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  _buildStat('3,990', 'Followers'),
+                  Expanded(child: _buildStat('3,990', 'Followers')),
                   _buildDivider(),
-                  _buildStat('1,224', 'Following'),
+                  Expanded(child: _buildStat('1,224', 'Following')),
                   _buildDivider(),
-                  _buildStat('9,290', 'Recipes'),
+                  Expanded(
+                      child: _buildStat(
+                          controller.userRecipes.length.toString(), 'Recipes')),
                 ],
               ),
             ),
@@ -43,15 +47,14 @@ class ProfileInfo extends StatelessWidget {
         // Name & Bio
         Text(
           username,
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
           textAlign: TextAlign.left,
         ),
         Text(
           bio,
-          style: TextStyle(color: Colors.grey),
+          style: const TextStyle(color: Colors.grey),
           textAlign: TextAlign.left,
         ),
-
         const SizedBox(height: 12),
       ],
     );
@@ -59,7 +62,7 @@ class ProfileInfo extends StatelessWidget {
 
   Widget _buildStat(String value, String label) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start, // Căn trái
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Text(value, style: const TextStyle(fontWeight: FontWeight.bold)),
         Text(label, style: const TextStyle(fontSize: 12, color: Colors.grey)),
@@ -69,7 +72,7 @@ class ProfileInfo extends StatelessWidget {
 
   Widget _buildDivider() {
     return const Padding(
-      padding: EdgeInsets.symmetric(horizontal: 16),
+      padding: EdgeInsets.symmetric(horizontal: 4), // Giảm padding cho divider
       child: SizedBox(
         height: 24,
         child: VerticalDivider(color: Colors.grey),
