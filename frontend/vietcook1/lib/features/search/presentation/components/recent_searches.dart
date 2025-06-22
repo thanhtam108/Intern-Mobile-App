@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:vietcook1/core/configs/app_colors.dart';
 import 'package:vietcook1/features/search/presentation/controller/search_controller.dart';
+import 'package:vietcook1/features/search/presentation/page/search_result_page.dart';
 
 class RecentSearches extends GetView<CustomSearchController> {
   const RecentSearches({super.key});
@@ -24,27 +25,37 @@ class RecentSearches extends GetView<CustomSearchController> {
               ),
               const SizedBox(height: 12),
               Wrap(
-                spacing: 12,
+                spacing: 10,
                 runSpacing: 12,
                 children: controller.recentSearches
-                    .map((keyword) => GestureDetector(
-                          // onTap: () => controller.searchByKeyword(keyword),
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 16, vertical: 8),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            child: Text(
-                              keyword,
-                              style: TextStyle(
-                                color: AppColors.primary,
-                                fontWeight: FontWeight.w600,
-                                fontSize: 13,
-                              ),
+                    .map(
+                      (keyword) => GestureDetector(
+                        onTap: () {
+                          // controller.searchQuery.value = keyword;
+                          Get.to(
+                              () => SearchResultPage(searchKeyword: keyword));
+                        },
+                        child: Container(
+                          width: MediaQuery.of(context).size.width / 3 - 28,
+                          alignment: Alignment.center,
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFE9EFEB),
+                            borderRadius: BorderRadius.circular(40),
+                          ),
+                          child: Text(
+                            keyword.toUpperCase(),
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                              color: Color(0xFF475D3A),
+                              fontWeight: FontWeight.bold,
+                              fontSize: 14,
+                              letterSpacing: 1.2,
                             ),
                           ),
-                        ))
+                        ),
+                      ),
+                    )
                     .toList(),
               ),
             ],

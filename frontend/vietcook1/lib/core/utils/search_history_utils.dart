@@ -1,26 +1,20 @@
-import '../utils/shared_preferences _utils.dart';
+import 'shared_preferences _utils.dart';
 
 class SearchHistoryUtils {
-  static const String _key = 'recent_searches';
+  static const String _key = 'recent_search_keywords';
 
-  static Future<void> addSearchTerm(String term) async {
-    List<String> history = await SharedPrefsUtils.getStringList(_key);
-
-    history.remove(term);
-    history.insert(0, term);
-
-    if (history.length > 10) {
-      history = history.sublist(0, 10);
-    }
-
-    await SharedPrefsUtils.saveStringList(_key, history);
+  /// Lưu lịch sử tìm kiếm
+  static Future<void> save(List<String> history) {
+    return SharedPrefsUtils.saveStringList(_key, history);
   }
 
-  static Future<List<String>> getSearchHistory() async {
-    return await SharedPrefsUtils.getStringList(_key);
+  /// Lấy danh sách tìm kiếm
+  static Future<List<String>> load() {
+    return SharedPrefsUtils.getStringList(_key);
   }
 
-  static Future<void> clearHistory() async {
-    await SharedPrefsUtils.remove(_key);
+  /// Xóa lịch sử tìm kiếm
+  static Future<void> clear() {
+    return SharedPrefsUtils.remove(_key);
   }
 }

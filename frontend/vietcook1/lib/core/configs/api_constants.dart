@@ -1,5 +1,5 @@
 class ApiConstants {
-  static const baseUrl = "http://192.168.6.108:3000";
+  static const baseUrl = "http://10.0.2.2:3000";
 
   static var auth = _AuthApi();
   static var categories = _CategoriesApi();
@@ -38,6 +38,7 @@ class _RecipesApi {
   final String delete = "/recipes/delete";
   final String getRecent = "/recipes/most-recent";
   final String getTopRated = "/recipes/most-rated";
+  final String getsearch = "/recipes/search";
 }
 
 class _FavoritesApi {

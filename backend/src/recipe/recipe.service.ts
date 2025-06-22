@@ -332,5 +332,4 @@ export class RecipeService {
     return text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   }
   
-  
 }

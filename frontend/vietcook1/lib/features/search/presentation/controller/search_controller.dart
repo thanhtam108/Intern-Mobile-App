@@ -1,48 +1,61 @@
-import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
-import 'package:vietcook1/core/data/local/models/recipe_model.dart';
 import 'package:vietcook1/core/data/network/remote/recipe_service.dart';
+import 'package:vietcook1/features/search/model/search_result_model.dart';
+import 'package:vietcook1/core/utils/search_history_utils.dart';
 
 class CustomSearchController extends GetxController {
-  final RecipeService _recipeService;
-  CustomSearchController(this._recipeService);
+  final RecipeService _recipeService = Get.find();
 
-  final RxList<RecipeModel> recipes = <RecipeModel>[].obs;
-  final RxBool isLoading = false.obs;
-  final RxList<String> recentSearches = <String>[].obs;
-  final RxBool hasSearched = false.obs;
-  final FocusNode searchFocusNode = FocusNode();
+  final searchQuery = ''.obs;
+  final isLoading = false.obs;
+  final searchResults = <SearchResult>[].obs;
+  final recentSearches = <String>[].obs;
 
-  String _query = '';
-
-  void onSearchChanged(String value) {
-    _query = value;
-
-    if (value.trim().isNotEmpty && !recentSearches.contains(value)) {
-      recentSearches.insert(0, value);
-      if (recentSearches.length > 10) {
-        recentSearches.removeLast();
-      }
-    }
+  @override
+  void onInit() {
+    super.onInit();
+    _loadRecentSearches();
   }
 
-  Future<void> searchRecipes() async {
-    final query = _query.trim();
-    if (query.isEmpty) return;
+  Future<void> search(String query) async {
+    final trimmed = query.trim();
+    if (trimmed.isEmpty) return;
 
+    searchQuery.value = trimmed;
     isLoading.value = true;
-    hasSearched.value = true;
 
     try {
-      final result = await _recipeService.fetchRecipesBySearch(query);
-      recipes.assignAll(result);
+      final recipes = await _recipeService.search(trimmed);
+      searchResults.assignAll(
+        recipes.map((e) => SearchResult.fromRecipeModel(e)).toList(),
+      );
+      _updateRecentSearch(trimmed);
     } catch (e) {
-      recipes.clear();
-      Get.snackbar('Lỗi', 'Không thể tìm kiếm món ăn');
+      // searchResults.clear();
     } finally {
       isLoading.value = false;
     }
-    print('SEARCH RECIPES : $recipes');
+  }
+
+  void _updateRecentSearch(String query) async {
+    if (!recentSearches.contains(query)) {
+      recentSearches.insert(0, query);
+      if (recentSearches.length > 6) {
+        recentSearches.removeLast();
+      }
+      await SearchHistoryUtils.save(recentSearches);
+    }
+  }
+
+  void _loadRecentSearches() async {
+    final stored = await SearchHistoryUtils.load();
+    recentSearches.assignAll(stored);
+  }
+
+  void clearSearch() {
+    searchQuery.value = '';
+    searchResults.clear();
   }
 }

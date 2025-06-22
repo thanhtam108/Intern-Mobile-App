@@ -7,7 +7,6 @@ import 'package:vietcook1/core/data/network/exceptions/status_code.dart';
 import 'package:vietcook1/core/data/network/model/base_response_dto.dart';
 import 'package:vietcook1/core/data/network/model/result_dto.dart';
 import 'package:vietcook1/features/insert/models/insert_recipe_model.dart';
-
 import '../../local/models/recipe_model.dart';
 
 class RecipeService {
@@ -73,17 +72,14 @@ class RecipeService {
     }
   }
 
-  Future<List<RecipeModel>> fetchRecipesBySearch(String query) async {
-    try {
-      final response = await _dio.get('/recipes/search', queryParameters: {
-        'query': query,
-      });
-      final List data = response.data['data'];
-      return data.map((e) => RecipeModel.fromJson(e)).toList();
-    } catch (e) {
-      print('Lỗi fetch: $e');
-      return [];
-    }
+  Future<List<RecipeModel>> search(String query) async {
+    final res = await Dio().get(
+      '${ApiConstants.baseUrl}${ApiConstants.recipes.getsearch}',
+      queryParameters: {'query': query},
+    );
+
+    final List<dynamic> data = res.data['data'];
+    return data.map((e) => RecipeModel.fromJson(e)).toList();
   }
 
   Future<Result<String>> createRecipe(InsertRecipeModel recipe) async {
