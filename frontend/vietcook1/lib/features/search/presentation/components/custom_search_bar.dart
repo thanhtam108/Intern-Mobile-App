@@ -5,8 +5,6 @@ class CustomSearchBar extends StatefulWidget {
   final Function(String)? onSearch;
   final Function(String)? onSubmitted;
   final TextEditingController? textController;
-  final FocusNode? focusNode;
-  final VoidCallback? onTap;
   final String? initialValue;
 
   const CustomSearchBar({
@@ -16,8 +14,6 @@ class CustomSearchBar extends StatefulWidget {
     this.onSubmitted,
     this.textController,
     this.initialValue,
-    this.focusNode,
-    this.onTap,
   });
 
   @override
@@ -45,8 +41,6 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
   @override
   Widget build(BuildContext context) {
     return TextField(
-      focusNode: focusNode,
-      onTap: onTap,
       controller: _controller,
       onChanged: widget.onSearch,
       onSubmitted: widget.onSubmitted,

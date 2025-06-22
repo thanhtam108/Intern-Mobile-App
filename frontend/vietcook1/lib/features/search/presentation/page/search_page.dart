@@ -10,7 +10,7 @@ class SearchPage extends GetView<CustomSearchController> {
   @override
   Widget build(BuildContext context) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      searchFocusNode.requestFocus();
+      // searchFocusNode.requestFocus();
     });
     return Scaffold(
       body: SafeArea(

@@ -1,5 +1,5 @@
 // favorite.service.ts
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Favorite } from './schema/favorites.schema';
 import { Model, Types } from 'mongoose';
@@ -18,7 +18,7 @@ export class FavoriteService {
     });
 
     if (exists) {
-      throw new Error('Recipe already in favorites');
+      throw new BadRequestException('Đã thích công thức này rồi');
     }
 
     const favorite = new this.favoriteModel({
@@ -38,5 +38,13 @@ export class FavoriteService {
       userId: new Types.ObjectId(userId),
       recipeId: new Types.ObjectId(recipeId),
     });
+  }
+
+  async isFavorite(userId: string, recipeId: string): Promise<boolean> {
+    const favorite = await this.favoriteModel.findOne({
+      userId: new Types.ObjectId(userId),
+      recipeId: new Types.ObjectId(recipeId),
+    });
+    return !!favorite;
   }
 }

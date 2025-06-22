@@ -22,9 +22,11 @@ export class UserService {
   }
 
   async update(id: string, updateData: Partial<User>) {
-    const user = await this.userModel.findByIdAndUpdate(id, updateData, {
-      new: true,
-    });
+    const user = await this.userModel
+      .findByIdAndUpdate(id, updateData, {
+        new: true,
+      })
+      .select('-password');
     if (!user) throw new NotFoundException('Người dùng không tồn tại');
     return user;
   }

@@ -7,10 +7,13 @@ import {
   UseGuards,
   UseInterceptors,
   BadRequestException,
+  Put,
+  Body,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { AuthGuard } from '@nestjs/passport';
 import { ResponseInterceptor } from '../common/interceptors/response.interceptor';
+import { UserDto } from './dto/user.dto';
 
 @Controller('user')
 @UseInterceptors(ResponseInterceptor)
@@ -38,5 +41,9 @@ export class UserController {
   @Get(':id')
   getUserById(@Param('id') id: string) {
     return this.userService.findById(id);
+  }
+  @Put(':id')
+  update(@Param('id') id: string, @Body() dto: Partial<UserDto>) {
+    return this.userService.update(id, dto);
   }
 }

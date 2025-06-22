@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException, InternalServerErrorException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  // InternalServerErrorException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Recipe } from './schema/recipe.schema';
@@ -308,16 +312,16 @@ export class RecipeService {
           { ingredients: { $regex: regex } },
         ];
       });
-  
+
       const recipes = await this.recipeModel
         .find({ $or: regexConditions })
         .populate('category')
         .populate({ path: 'userId', select: '-password -email -avatarUrl' });
-  
+
       if (!recipes.length) {
         throw new NotFoundException('Không tìm thấy món ăn nào phù hợp');
       }
-  
+
       return {
         message: 'Tìm kiếm thành công',
         data: recipes,
@@ -327,9 +331,8 @@ export class RecipeService {
       throw error;
     }
   }
-  
+
   private escapeRegex(text: string): string {
     return text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   }
-  
 }

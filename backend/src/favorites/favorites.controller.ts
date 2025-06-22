@@ -37,4 +37,11 @@ export class FavoriteController {
   ) {
     return this.favoriteService.removeFavorite(req.user.userId, recipeId);
   }
+  @Get('is-favorite/:recipeId')
+  isFavorite(
+    @Param('recipeId') recipeId: string,
+    @Req() req: Request & { user: { userId: string } },
+  ): Promise<boolean> {
+    return this.favoriteService.isFavorite(req.user.userId, recipeId);
+  }
 }
