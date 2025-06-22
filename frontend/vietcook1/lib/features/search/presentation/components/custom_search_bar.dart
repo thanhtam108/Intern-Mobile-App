@@ -6,6 +6,7 @@ class CustomSearchBar extends StatefulWidget {
   final Function(String)? onSubmitted;
   final TextEditingController? textController;
   final String? initialValue;
+  final VoidCallback? onTap;
 
   const CustomSearchBar({
     super.key,
@@ -14,6 +15,7 @@ class CustomSearchBar extends StatefulWidget {
     this.onSubmitted,
     this.textController,
     this.initialValue,
+    this.onTap,
   });
 
   @override

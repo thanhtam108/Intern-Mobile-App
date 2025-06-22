@@ -39,6 +39,7 @@ class SearchPage extends GetView<CustomSearchController> {
                   crossAxisSpacing: 10,
                   mainAxisSpacing: 10,
                   childAspectRatio: 3 / 2,
+                  shrinkWrap: true, // hoặc dùng Expanded như đang làm
                   children: const [
                     _DishCard(
                         title: 'Canh khổ qua',

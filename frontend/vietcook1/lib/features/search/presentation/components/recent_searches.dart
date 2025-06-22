@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:vietcook1/core/configs/app_colors.dart';
+import 'package:vietcook1/core/routing/routes.dart';
 import 'package:vietcook1/features/search/presentation/controller/search_controller.dart';
 import 'package:vietcook1/features/search/presentation/page/search_result_page.dart';
 
@@ -31,9 +32,8 @@ class RecentSearches extends GetView<CustomSearchController> {
                     .map(
                       (keyword) => GestureDetector(
                         onTap: () {
-                          // controller.searchQuery.value = keyword;
-                          Get.to(
-                              () => SearchResultPage(searchKeyword: keyword));
+                          controller.search(keyword);
+                          Get.toNamed(Routes.searchResult, arguments: keyword);
                         },
                         child: Container(
                           width: MediaQuery.of(context).size.width / 3 - 28,
