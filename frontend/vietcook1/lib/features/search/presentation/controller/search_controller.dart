@@ -17,11 +17,23 @@ class CustomSearchController extends GetxController {
   void onInit() {
     super.onInit();
     _loadRecentSearches();
+
+    // Optional: debounce cho search realtime
+    // debounce(searchQuery, (val) {
+    //   if ((val as String).isNotEmpty) {
+    //     search(val);
+    //   }
+    // }, time: Duration(milliseconds: 500));
   }
 
   Future<void> search(String query) async {
     final trimmed = query.trim();
     if (trimmed.isEmpty) return;
+
+    // Nếu từ khóa thay đổi, clear kết quả cũ
+    if (searchQuery.value != trimmed) {
+      searchResults.clear();
+    }
 
     searchQuery.value = trimmed;
     isLoading.value = true;
@@ -32,8 +44,8 @@ class CustomSearchController extends GetxController {
         recipes.map((e) => SearchResult.fromRecipeModel(e)).toList(),
       );
       _updateRecentSearch(trimmed);
-    } catch (e) {
-      // searchResults.clear();
+    } catch (_) {
+      // Có thể log lỗi
     } finally {
       isLoading.value = false;
     }

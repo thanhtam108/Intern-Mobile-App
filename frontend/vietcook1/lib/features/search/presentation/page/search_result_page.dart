@@ -7,11 +7,18 @@ import '../components/search_results_list.dart';
 class SearchResultPage extends GetView<CustomSearchController> {
   // const SearchResultPage({super.key});
   final String searchKeyword;
-
   const SearchResultPage({super.key, required this.searchKeyword});
-
   @override
   Widget build(BuildContext context) {
+    final String searchKeyword = Get.arguments ?? '';
+
+    // Gọi tìm kiếm sau khi trang được build lần đầu
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (searchKeyword.isNotEmpty) {
+        controller.search(searchKeyword);
+      }
+    });
+
     return Scaffold(
       body: SafeArea(
         child: Padding(

@@ -16,6 +16,7 @@ import 'package:vietcook1/features/recipe/recipe_detail/di/recipe_detail_binding
 import 'package:vietcook1/features/recipe/recipe_detail/presentation/page/recipe_detail_page.dart';
 import 'package:vietcook1/features/search/di/search_binding.dart';
 import 'package:vietcook1/features/search/presentation/page/search_page.dart';
+import 'package:vietcook1/features/search/presentation/page/search_result_page.dart';
 import 'package:vietcook1/features/splash/di/splash_binding.dart';
 import 'package:vietcook1/features/splash/presentation/page/splash_page.dart';
 import '../../features/auth/login/di/login_binding.dart';
@@ -95,6 +96,11 @@ class AppRoutes {
         return RecipeDetailPage(recipeId: recipeId ?? '');
       },
       binding: RecipeDetailBinding(),
+    ),
+    GetPage(
+      name: Routes.searchResult,
+      page: () => SearchResultPage(searchKeyword: ''),
+      binding: CustomSearchBinding(),
     ),
   ];
 }

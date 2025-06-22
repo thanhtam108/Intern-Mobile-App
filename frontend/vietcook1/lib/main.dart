@@ -30,14 +30,14 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: AppColors.primary),
         useMaterial3: true,
       ),
-      initialBinding: CoreBinding(), // Binding để inject dependencies
+      initialBinding: CoreBinding(),
       debugShowCheckedModeBanner: false,
-      initialRoute: AppRoutes.initial, // Route ban đầu
-      getPages: AppRoutes.routes, // Danh sách các route
+      initialRoute: AppRoutes.initial,
+      getPages: AppRoutes.routes,
     );
-    // return MaterialApp(
-    //   title: 'Test',
-    //   home: TestChefCardPage(),
-    // );
+    //   return MaterialApp(
+    //     title: 'Test',
+    //     home: TestChefCardPage(),
+    //   );
   }
 }
