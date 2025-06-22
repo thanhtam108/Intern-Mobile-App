@@ -52,15 +52,20 @@ export class UserService {
         },
       },
       {
-        $unwind: '$userDetails',
+        $unwind: {
+          path: '$userDetails',
+          preserveNullAndEmptyArrays: true, // giữ lại cả khi không match
+        }
       },
       {
         $project: {
           _id: 0,
           userId: '$_id',
           recipeCount: 1,
-          name: '$userDetails.name',
-          email: '$userDetails.email',
+          name: { $ifNull: ['$userDetails.name', null] },
+          email: { $ifNull: ['$userDetails.email', null] },
+          bio: { $ifNull: ['$userDetails.bio', null] },
+          avatarUrl:{ $ifNull: ['$userDetails.avatarUrl', null] },
         },
       },
     ]);

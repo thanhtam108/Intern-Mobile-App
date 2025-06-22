@@ -6,6 +6,7 @@ import 'package:vietcook1/core/data/network/remote/dio_client.dart';
 import 'core/bindings/core_binding.dart';
 import 'core/routing/app_routes.dart';
 import 'core/data/network/remote/auth_service.dart';
+import 'core/ui/test_chef_card.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -34,5 +35,9 @@ class MyApp extends StatelessWidget {
       initialRoute: AppRoutes.initial, // Route ban đầu
       getPages: AppRoutes.routes, // Danh sách các route
     );
+    // return MaterialApp(
+    //   title: 'Test',
+    //   home: TestChefCardPage(),
+    // );
   }
 }
