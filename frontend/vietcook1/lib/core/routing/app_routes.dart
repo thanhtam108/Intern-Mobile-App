@@ -2,6 +2,8 @@ import 'package:get/get.dart';
 import 'package:vietcook1/core/routing/routes.dart';
 import 'package:vietcook1/features/category/di/category_binding.dart';
 import 'package:vietcook1/features/category/presentation/page/category_recipes_page.dart';
+import 'package:vietcook1/features/chef/di/chef_binding.dart';
+import 'package:vietcook1/features/chef/page/chef_page.dart';
 import 'package:vietcook1/features/edit_profile/di/edit_profile_binding.dart';
 import 'package:vietcook1/features/edit_profile/presentation/page/edit_personal_info.dart';
 import 'package:vietcook1/features/insert/di/insert_binding.dart';
@@ -118,6 +120,11 @@ class AppRoutes {
         return CategoryRecipesPage(categoryId: categoryId);
       },
       binding: CategoryBinding(),
+    ),
+    GetPage(
+      name: Routes.chef,
+      page: () => const ChefPage(),
+      binding: ChefBinding(),
     ),
   ];
 }

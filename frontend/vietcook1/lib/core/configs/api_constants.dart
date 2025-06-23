@@ -15,11 +15,13 @@ class _AuthApi {
   final String resendOtp = "/auth/resend-otp";
   final String login = "/auth/login";
   final String getUser = "/user/me";
+  final String gettopUser = "/user/top?limit=10";
 }
 
 class _UserApi {
   final String update = "/user/";
   final String getById = "/user/";
+  final String getchef = "user/search";
 }
 
 class _CategoriesApi {

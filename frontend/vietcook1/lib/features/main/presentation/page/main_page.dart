@@ -90,20 +90,44 @@ class MainPage extends GetView<MainController> {
     return GestureDetector(
       onTap: () => controller.onChangeItemBottomBar(index),
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 6.0),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
+        padding: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 4.0),
+        child: Stack(
+          alignment: Alignment.center,
           children: [
-            Icon(
-              icon,
-              color: isSelected ? AppColors.primary : Colors.grey,
-            ),
-            Text(
-              label,
-              style: TextStyle(
-                fontSize: 12,
-                color: isSelected ? AppColors.primary : Colors.grey,
+            if (isSelected)
+              Positioned.fill(
+                child: Align(
+                  alignment: Alignment.center,
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 250),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                    decoration: BoxDecoration(
+                      color: AppColors.primary.withOpacity(0.20), // nền mờ
+                      borderRadius: BorderRadius.circular(17),
+                    ),
+                  ),
+                ),
               ),
+            Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  icon,
+                  color: isSelected ? AppColors.primary : Colors.grey,
+                ),
+                const SizedBox(
+                  height: 2,
+                  width: 4,
+                ),
+                Text(
+                  label,
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: isSelected ? AppColors.primary : Colors.grey,
+                  ),
+                ),
+              ],
             ),
           ],
         ),

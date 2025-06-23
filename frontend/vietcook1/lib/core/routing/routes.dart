@@ -15,4 +15,5 @@ class Routes {
   static const String searchResult = '/search-result';
   static const String editPersonalInfo = '/edit-personal-info';
   static const String recipe_detail = '/recipe-detail';
+  static const String chef = '/chef';
 }
