@@ -1,13 +1,26 @@
 import 'package:flutter/material.dart';
-import 'package:vietcook1/core/data/local/models/recipe_model.dart';
 
 class VerticalRecipeCard extends StatelessWidget {
-  final RecipeModel recipe;
+  final String imageUrl;
+  final String name;
+  final String description;
+  final double rating;
+  final int views;
+  final String authorName;
+  final String authorAvatarUrl;
+  final String createdAt;
   final bool isFavorite;
 
   const VerticalRecipeCard({
     super.key,
-    required this.recipe,
+    required this.imageUrl,
+    required this.name,
+    required this.description,
+    required this.rating,
+    required this.views,
+    required this.authorName,
+    required this.authorAvatarUrl,
+    required this.createdAt,
     this.isFavorite = false,
   });
 
@@ -22,14 +35,18 @@ class VerticalRecipeCard extends StatelessWidget {
         boxShadow: [BoxShadow(blurRadius: 4, color: Colors.black12)],
       ),
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Stack(
             children: [
               ClipRRect(
-                borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
+                borderRadius:
+                    const BorderRadius.vertical(top: Radius.circular(12)),
                 child: Image.network(
-                  recipe.imageUrl ?? 'lib/assets/images/placeholder.png',
+                  imageUrl.isNotEmpty
+                      ? imageUrl
+                      : 'lib/assets/images/placeholder.png',
                   width: double.infinity,
                   height: 120,
                   fit: BoxFit.cover,
@@ -38,52 +55,83 @@ class VerticalRecipeCard extends StatelessWidget {
               Positioned(
                 top: 8,
                 right: 8,
-                child: Icon(
-                  isFavorite ? Icons.favorite : Icons.favorite_border,
-                  color: Colors.white,
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.7),
+                    shape: BoxShape.circle,
+                  ),
+                  padding: const EdgeInsets.all(4),
+                  child: Icon(
+                    isFavorite ? Icons.favorite : Icons.favorite_border,
+                    color: isFavorite ? Colors.red : Colors.grey,
+                    size: 22,
+                  ),
                 ),
-              )
+              ),
             ],
           ),
-
-          // Text + info
           Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(10.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(recipe.name,
-                    style: TextStyle(fontWeight: FontWeight.bold)),
                 Text(
-                  recipe.description,
+                  name,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: TextStyle(fontSize: 12, color: Colors.grey),
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                    color: Color(0xFF3A6B1B),
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  description,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(fontSize: 12, color: Colors.grey),
                 ),
                 const SizedBox(height: 6),
                 Row(
                   children: [
-                    Icon(Icons.star, size: 14, color: Colors.orange),
-                    Text('${recipe.reviews}', style: TextStyle(fontSize: 12)),
-                    Icon(Icons.visibility, size: 14, color: Colors.grey),
-                    Text('${recipe.view} N', style: TextStyle(fontSize: 12)),
+                    const Icon(Icons.star, size: 16, color: Colors.orange),
+                    Text(
+                      rating.toStringAsFixed(1), // Hiển thị 1 số thập phân
+                      style: const TextStyle(fontSize: 13),
+                    ),
+                    const Spacer(),
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(Icons.visibility,
+                            size: 16, color: Colors.grey),
+                        SizedBox(width: 2),
+                        Text('$views N', style: const TextStyle(fontSize: 13)),
+                      ],
+                    ),
                   ],
                 ),
                 const SizedBox(height: 6),
                 Row(
                   children: [
                     CircleAvatar(
-                        radius: 10,
-                        backgroundImage: NetworkImage(
-                            recipe.user.avatarUrl != null
-                                ? recipe.user.avatarUrl!
-                                : 'lib/assets/images/avatar_placeholder.png')),
-                    const SizedBox(width: 4),
-                    Text(recipe.user.name ?? "",
-                        style: TextStyle(fontSize: 12)),
-                    Spacer(),
-                    Text(recipe.createdAt.toString(),
-                        style: TextStyle(fontSize: 10, color: Colors.grey)),
+                      radius: 11,
+                      backgroundImage: NetworkImage(
+                        authorAvatarUrl.isNotEmpty
+                            ? authorAvatarUrl
+                            : 'lib/assets/images/avatar_placeholder.png',
+                      ),
+                    ),
+                    const SizedBox(width: 6),
+                    Text(authorName,
+                        style: const TextStyle(
+                            fontSize: 13, fontWeight: FontWeight.w600)),
+                    const Spacer(),
+                    Text(
+                      createdAt,
+                      style: const TextStyle(fontSize: 11, color: Colors.grey),
+                    ),
                   ],
                 )
               ],

@@ -139,17 +139,19 @@ export class RecipeService {
     const recipes = await this.recipeModel
       .find({ category: categoryId })
       .populate('category')
-      .populate({ path: 'userId', select: '-password -email -avatarUrl' })
-      .populate('reviews');
+      .populate({ path: 'userId', select: '-password -email -avatarUrl' });
 
-    if (!recipes.length) throw new NotFoundException('No recipes found');
+    if (!recipes.length) return [];
 
     const result = await Promise.all(
       recipes.map(async (recipe) => {
         const steps = await this.stepperModel
           .find({ recipeID: recipe._id })
           .sort({ createdAt: 1 });
-        return Object.assign(recipe.toObject(), { steps });
+        const reviews = await this.reviewModel
+          .find({ recipeId: recipe._id })
+          .sort({ createdAt: -1 });
+        return Object.assign(recipe.toObject(), { steps, reviews });
       }),
     );
 

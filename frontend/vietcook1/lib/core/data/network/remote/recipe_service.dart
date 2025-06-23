@@ -29,6 +29,21 @@ class RecipeService {
     }
   }
 
+  Future<Result<List<RecipeModel>>> fetchRecentRecipes() async {
+    try {
+      final res = await _dio.get(ApiConstants.recipes.getRecent);
+      final baseRp = BaseResponseDto.fromJson(res.data);
+
+      List<RecipeModel> recipes = <RecipeModel>[];
+      baseRp.data.forEach((element) {
+        recipes.add(RecipeModel.fromJson(element));
+      });
+      return Result.success(recipes);
+    } on DioException catch (e) {
+      return Result.error(AppException.parse(e));
+    }
+  }
+
   Future<Result<RecipeModel>> fetchRecipeById(String id) async {
     try {
       final res = await _dio.get('${ApiConstants.recipes.common}$id');
@@ -57,6 +72,9 @@ class RecipeService {
 
   Future<Result<List<RecipeModel>>> fetchRecipesByCategoryId(
       String categoryId) async {
+    if (categoryId.isEmpty) {
+      return Result.error(AppException(message: 'Category id is empty'));
+    }
     try {
       final res =
           await _dio.get('${ApiConstants.recipes.getByCategoryId}$categoryId');
@@ -66,6 +84,7 @@ class RecipeService {
       baseRp.data.forEach((element) {
         recipes.add(RecipeModel.fromJson(element));
       });
+      print("Recipes by category: ${recipes.length}");
       return Result.success(recipes);
     } on DioException catch (e) {
       return Result.error(AppException.parse(e));

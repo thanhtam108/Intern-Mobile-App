@@ -26,4 +26,12 @@ export class CategoryService {
     }
     return { message: 'Xoá category thành công' };
   }
+
+  async findById(id: string): Promise<Category> {
+    const category = await this.categoryModel.findById(id).exec();
+    if (!category) {
+      throw new NotFoundException(`Category với ID ${id} không tồn tại`);
+    }
+    return category;
+  }
 }

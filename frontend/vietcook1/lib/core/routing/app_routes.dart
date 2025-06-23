@@ -1,5 +1,7 @@
 import 'package:get/get.dart';
 import 'package:vietcook1/core/routing/routes.dart';
+import 'package:vietcook1/features/category/di/category_binding.dart';
+import 'package:vietcook1/features/category/presentation/page/category_recipes_page.dart';
 import 'package:vietcook1/features/edit_profile/di/edit_profile_binding.dart';
 import 'package:vietcook1/features/edit_profile/presentation/page/edit_personal_info.dart';
 import 'package:vietcook1/features/insert/di/insert_binding.dart';
@@ -12,6 +14,8 @@ import 'package:vietcook1/features/home/di/home_binding.dart';
 import 'package:vietcook1/features/home/presentation/page/home_page.dart';
 import 'package:vietcook1/features/profile/di/profile_binding.dart';
 import 'package:vietcook1/features/profile/presentation/page/profile_page.dart';
+import 'package:vietcook1/features/recipe/favorite/di/favorite_binding.dart';
+import 'package:vietcook1/features/recipe/favorite/presentation/page/favorite_recipes_page.dart';
 import 'package:vietcook1/features/recipe/recipe_detail/di/recipe_detail_binding.dart';
 import 'package:vietcook1/features/recipe/recipe_detail/presentation/page/recipe_detail_page.dart';
 import 'package:vietcook1/features/search/di/search_binding.dart';
@@ -101,6 +105,19 @@ class AppRoutes {
       name: Routes.searchResult,
       page: () => SearchResultPage(searchKeyword: ''),
       binding: CustomSearchBinding(),
+    ),
+    GetPage(
+      name: Routes.favorites,
+      page: () => FavoriteRecipesPage(),
+      binding: FavoriteBinding(),
+    ),
+    GetPage(
+      name: Routes.category,
+      page: () {
+        final categoryId = Get.arguments['categoryId'];
+        return CategoryRecipesPage(categoryId: categoryId);
+      },
+      binding: CategoryBinding(),
     ),
   ];
 }

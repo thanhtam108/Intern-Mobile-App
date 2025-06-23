@@ -9,7 +9,8 @@ class FavoriteService {
   final Dio _dio;
   FavoriteService(this._dio);
 
-  Future<Result<List<String>>> fetchFavoriteRecipes() async {
+  // 1. Lấy danh sách ID các món yêu thích
+  Future<Result<List<String>>> fetchFavoriteRecipeIds() async {
     try {
       final res = await _dio.get(ApiConstants.favorites.common);
       final baseRp = BaseResponseDto.fromJson(res.data);
@@ -19,6 +20,22 @@ class FavoriteService {
           data.map((item) => item['recipeId'] as String).toList();
 
       return Result.success(favs);
+    } on DioException catch (e) {
+      return Result.error(AppException.parse(e));
+    }
+  }
+
+  // 2. Lấy danh sách RecipeModel các món yêu thích
+  Future<Result<List<RecipeModel>>> fetchFavoriteRecipes() async {
+    try {
+      final res = await _dio.get(ApiConstants.favorites.common);
+      final baseRp = BaseResponseDto.fromJson(res.data);
+
+      final List<dynamic> data = baseRp.data;
+      final List<RecipeModel> recipes =
+          data.map((item) => RecipeModel.fromJson(item)).toList();
+
+      return Result.success(recipes);
     } on DioException catch (e) {
       return Result.error(AppException.parse(e));
     }

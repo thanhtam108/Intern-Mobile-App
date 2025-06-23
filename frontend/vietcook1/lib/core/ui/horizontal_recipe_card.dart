@@ -1,20 +1,33 @@
 import 'package:flutter/material.dart';
-import 'package:vietcook1/core/data/local/models/recipe_model.dart';
 
 class HorizontalRecipeCard extends StatelessWidget {
-  final RecipeModel recipe;
+  final String imageUrl;
+  final String name;
+  final String description;
+  final double rating;
+  final int views;
+  final String authorName;
+  final String authorAvatarUrl;
+  final String createdAt;
   final bool isFavorite;
 
   const HorizontalRecipeCard({
     super.key,
-    required this.recipe,
-    this.isFavorite = false,
+    required this.imageUrl,
+    required this.name,
+    required this.description,
+    required this.rating,
+    required this.views,
+    required this.authorName,
+    required this.authorAvatarUrl,
+    required this.createdAt,
+    required this.isFavorite,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+      margin: const EdgeInsets.symmetric(horizontal: 12),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
@@ -23,70 +36,102 @@ class HorizontalRecipeCard extends StatelessWidget {
       child: Row(
         children: [
           // Image
-          ClipRRect(
-            borderRadius: BorderRadius.horizontal(left: Radius.circular(12)),
-            child: Image.network(
-              recipe.imageUrl != null
-                  ? recipe.imageUrl!
-                  : 'lib/assets/images/placeholder.png',
-              width: 100,
-              height: 100,
-              fit: BoxFit.cover,
+          Padding(
+            padding: const EdgeInsets.all(8),
+            child: ClipRRect(
+              borderRadius:
+                  const BorderRadius.horizontal(left: Radius.circular(12)),
+              child: Image.network(
+                imageUrl.isNotEmpty
+                    ? imageUrl
+                    : 'lib/assets/images/placeholder.png',
+                width: 100,
+                height: 100,
+                fit: BoxFit.cover,
+              ),
             ),
           ),
-
           // Content
           Expanded(
             child: Padding(
-              padding: const EdgeInsets.all(10),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(recipe.name,
-                      style: TextStyle(fontWeight: FontWeight.bold)),
-                  const SizedBox(height: 4),
-                  Text(recipe.description,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(fontSize: 12, color: Colors.grey)),
-                  const SizedBox(height: 6),
                   Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Icon(Icons.star, size: 14, color: Colors.orange),
-                      Text('${recipe.createdAt}' 'Lượt đánh giá',
-                          style: TextStyle(fontSize: 12)),
+                      Expanded(
+                        child: Text(
+                          name,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18,
+                            color: Color(0xFF3A6B1B),
+                          ),
+                        ),
+                      ),
+                      Icon(
+                        isFavorite ? Icons.favorite : Icons.favorite_border,
+                        color: Colors.red,
+                      ),
                     ],
                   ),
-                  const SizedBox(height: 4),
+                  const SizedBox(height: 2),
+                  Text(
+                    description,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(fontSize: 13, color: Colors.grey),
+                  ),
+                  const SizedBox(height: 8),
                   Row(
                     children: [
-                      Icon(Icons.remove_red_eye, size: 14, color: Colors.grey),
-                      Text('${recipe.view ?? 0}' 'Lượt xem',
-                          style: TextStyle(fontSize: 12)),
-                      Spacer(),
-                      Text(recipe.user.name ?? 'Unknown',
-                          style: TextStyle(
-                              fontSize: 12, fontWeight: FontWeight.w500)),
+                      const Icon(Icons.star, size: 16, color: Colors.orange),
+                      const SizedBox(width: 2),
+                      Text(
+                        '${rating.toStringAsFixed(1)} Đánh giá',
+                        style:
+                            const TextStyle(fontSize: 13, color: Colors.grey),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 2),
+                  Row(
+                    children: [
+                      const Icon(Icons.remove_red_eye,
+                          size: 16, color: Colors.grey),
+                      const SizedBox(width: 2),
+                      Text(
+                        '$views Lượt xem',
+                        style:
+                            const TextStyle(fontSize: 13, color: Colors.grey),
+                      ),
+                      const Spacer(),
+                      Text(
+                        authorName,
+                        style: const TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
                       const SizedBox(width: 4),
                       CircleAvatar(
-                          radius: 10,
-                          backgroundImage: NetworkImage(recipe.user.avatarUrl ??
-                              'lib/assets/images/avatar_placeholder.png')),
+                        radius: 12,
+                        backgroundImage: NetworkImage(
+                          authorAvatarUrl.isNotEmpty
+                              ? authorAvatarUrl
+                              : 'lib/assets/images/avatar_placeholder.png',
+                        ),
+                      ),
                     ],
-                  )
+                  ),
                 ],
               ),
             ),
           ),
-
-          // Heart icon
-          Padding(
-            padding: const EdgeInsets.all(8),
-            child: Icon(
-              isFavorite ? Icons.favorite : Icons.favorite_border,
-              color: Colors.grey,
-            ),
-          )
         ],
       ),
     );

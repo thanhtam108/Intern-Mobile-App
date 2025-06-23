@@ -12,6 +12,8 @@ import 'package:vietcook1/features/home/presentation/page/home_page.dart';
 import 'package:vietcook1/features/main/models/user_model.dart';
 import 'package:vietcook1/features/profile/di/profile_binding.dart';
 import 'package:vietcook1/features/profile/presentation/page/profile_page.dart';
+import 'package:vietcook1/features/recipe/favorite/di/favorite_binding.dart';
+import 'package:vietcook1/features/recipe/favorite/presentation/page/favorite_recipes_page.dart';
 import 'package:vietcook1/features/search/di/search_binding.dart';
 import 'package:vietcook1/features/search/presentation/page/search_page.dart';
 
@@ -50,8 +52,8 @@ class MainController extends GetxController {
     if (settings.name == '/favorites') {
       return GetPageRoute(
         settings: settings,
-        page: () => Container(),
-        // binding: UploadImageBinding(),
+        page: () => FavoriteRecipesPage(),
+        binding: FavoriteBinding(),
         transition: Transition.fadeIn,
       );
     }
@@ -105,13 +107,12 @@ class MainController extends GetxController {
       );
       return;
     }
-    final result = await _faService.fetchFavoriteRecipes();
+    final result = await _faService.fetchFavoriteRecipeIds();
     if (result.status == Status.success) {
+      favRecipesIds = result.data ?? [];
       await SharedPrefsUtils.saveStringList(
           SharePrefsConstants.favRecipes, favRecipesIds);
-      favRecipesIds = result.data ?? [];
       print('Favorites ids: $favRecipesIds');
-      update(['favorites']);
     } else {
       Get.snackbar(
         'Error',

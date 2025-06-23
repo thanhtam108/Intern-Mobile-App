@@ -23,4 +23,20 @@ class CategoryService {
       return Result.error(AppException.parse(e));
     }
   }
+
+  Future<Result<CategoryModel>> fetchCategoryById(String id) async {
+    try {
+      final res = await _dio.get('${ApiConstants.categories.getById}/$id');
+      print('Category fetch BE result: ${res.data}');
+      final baseRp = BaseResponseDto.fromJson(res.data);
+      if (baseRp.data.isNotEmpty) {
+        final category = CategoryModel.fromJson(baseRp.data);
+        return Result.success(category);
+      } else {
+        return Result.error(AppException());
+      }
+    } on DioException catch (e) {
+      return Result.error(AppException.parse(e));
+    }
+  }
 }

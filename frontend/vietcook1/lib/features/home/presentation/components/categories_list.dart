@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:vietcook1/core/configs/app_colors.dart';
 import 'package:vietcook1/core/data/local/models/category_model.dart';
+import 'package:vietcook1/core/routing/routes.dart';
 import 'package:vietcook1/features/home/presentation/controller/home_controller.dart';
-// import 'package:vietcook1/core/data/local/models/category_model.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class CategoryList extends StatelessWidget {
   final List<CategoryModel> categories;
@@ -38,32 +39,49 @@ class CategoryList extends StatelessWidget {
           itemCount: categories.length,
           itemBuilder: (context, index) {
             final category = categories[index];
-            return Column(
-              children: [
-                CircleAvatar(
-                  radius: 24,
-                  backgroundColor: Colors.green.shade100,
-                  child:
-                      // Use Image.network to display image from URL
-                      category.imageUrl != null
-                          ? Image.network(
-                              category.imageUrl,
-                              width: 32,
-                              height: 32,
-                              fit: BoxFit.cover,
-                            )
-                          : Icon(
+            return GestureDetector(
+              onTap: () {
+                Get.toNamed(Routes.category, arguments: {
+                  'categoryId': category.id,
+                });
+              },
+              child: Column(
+                children: [
+                  CircleAvatar(
+                    radius: 24,
+                    backgroundColor: Colors.green.shade100,
+                    child: category.imageUrl != null &&
+                            category.imageUrl.endsWith('.svg')
+                        ? SvgPicture.network(
+                            category.imageUrl,
+                            width: 32,
+                            height: 32,
+                            placeholderBuilder: (context) => Icon(
                               Icons.category,
                               color: AppColors.primary,
                               size: 32,
                             ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  category.name,
-                  style: TextStyle(fontSize: 12),
-                ),
-              ],
+                          )
+                        : (category.imageUrl != null
+                            ? Image.network(
+                                category.imageUrl,
+                                width: 32,
+                                height: 32,
+                                fit: BoxFit.cover,
+                              )
+                            : Icon(
+                                Icons.category,
+                                color: AppColors.primary,
+                                size: 32,
+                              )),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    category.name,
+                    style: TextStyle(fontSize: 12),
+                  ),
+                ],
+              ),
             );
           },
         ),

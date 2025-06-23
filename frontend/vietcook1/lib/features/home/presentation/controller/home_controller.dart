@@ -52,6 +52,7 @@ class HomeController extends GetxController {
           SharePrefsConstants.user, user.toJson());
       fetchTopRatedRecipes();
       fetchCategories();
+      fetchRecentRecipes();
       update(['updateHome']);
     } else {
       Get.snackbar(
@@ -63,21 +64,11 @@ class HomeController extends GetxController {
     }
   }
 
-  // Future<void> _loadUserData() async {
-  //   final prefs = await SharedPreferences.getInstance();
-  //   final userData = prefs.getString('user');
-  //   if (userData != null) {
-  //     userdata = UserModel.fromJson(jsonDecode(userData));
-  //   } else {
-  //     Get.snackbar('Lỗi', 'Không tìm thấy dữ liệu người dùng');
-  //   }
-  // }
-
   Future<void> fetchTopRatedRecipes() async {
     isLoading.value = true;
     final result = await _recipeService.fetchTopRatedRecipes();
 
-    topRatedRecipes.assignAll(result.data ?? []);
+    topRatedRecipes.assignAll((result.data ?? []).take(6).toList());
     print("Top rated recipes: ${result.data}");
     isLoading.value = false;
   }
@@ -86,7 +77,8 @@ class HomeController extends GetxController {
     isLoading.value = true;
     final result = await _categoryService.fetchCategories();
     if (result.status == Status.success) {
-      categories.assignAll(result.data ?? []);
+      categories.assignAll((result.data ?? []).take(8).toList());
+      ;
       if (categories.isNotEmpty) {
         await SharedPrefsUtils.saveObject(SharePrefsConstants.categories,
             categories.map((e) => e.toJson()).toList());
@@ -100,6 +92,25 @@ class HomeController extends GetxController {
       );
     }
     isLoading.value = false;
+    update(['updateHome']);
+  }
+
+  Future<void> fetchRecentRecipes() async {
+    isLoading.value = true;
+    final result = await _recipeService.fetchRecentRecipes();
+    if (result.status == Status.success) {
+      recentRecipes.assignAll((result.data ?? []).take(3).toList());
+      print("Recent recipes: ${result.data}");
+    } else {
+      Get.snackbar(
+        'Lỗi',
+        'Không thể tải danh sách món gần đây',
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+    }
+    isLoading.value = false;
+    update(['updateHome']);
   }
 
   // Lấy danh sách món gần đây từ API

@@ -29,10 +29,13 @@ class HomePage extends GetView<HomeController> {
                           'lib/assets/icons/avatar_placeholder.jpg',
                     ),
                     CategoryList(
-                      categories: controller.categories,
+                      categories: controller.categories.toList(),
                     ),
                     const SizedBox(height: 16),
-                    TopRatedRecipes(recipes: controller.topRatedRecipes)
+                    TopRatedRecipes(recipes: controller.topRatedRecipes),
+                    RecentRecipes(
+                      recipes: controller.recentRecipes,
+                    ),
                   ],
                 ),
               );

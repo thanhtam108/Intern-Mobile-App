@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:vietcook1/core/configs/app_colors.dart';
+import 'package:vietcook1/core/routing/routes.dart';
 import 'package:vietcook1/features/main/presentation/controller/main_controller.dart';
 
 class MainPage extends GetView<MainController> {
@@ -67,7 +68,7 @@ class MainPage extends GetView<MainController> {
             height: 80,
             child: FloatingActionButton(
               onPressed: () {
-                Get.toNamed('/insert'); // Navigate to insert page
+                Get.toNamed(Routes.insert); // Navigate to insert page
               },
               backgroundColor: AppColors.primary,
               child: const Icon(Icons.add, color: Colors.white),

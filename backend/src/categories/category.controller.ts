@@ -19,4 +19,8 @@ export class CategoryController {
   async delete(@Param('id') id: string) {
     return this.categoryService.delete(id);
   }
+  @Get(':id')
+  async findById(@Param('id') id: string) {
+    return this.categoryService.findById(id);
+  }
 }
