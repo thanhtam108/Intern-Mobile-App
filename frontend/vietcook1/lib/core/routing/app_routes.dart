@@ -116,8 +116,7 @@ class AppRoutes {
     GetPage(
       name: Routes.category,
       page: () {
-        final categoryId = Get.arguments['categoryId'];
-        return CategoryRecipesPage(categoryId: categoryId);
+        return CategoryRecipesPage();
       },
       binding: CategoryBinding(),
     ),

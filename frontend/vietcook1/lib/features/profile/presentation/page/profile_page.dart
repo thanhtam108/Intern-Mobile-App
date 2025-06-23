@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:vietcook1/core/routing/routes.dart';
 import 'package:vietcook1/core/ui/common_button.dart';
 import 'package:vietcook1/features/profile/presentation/components/profile_info.dart';
+import 'package:vietcook1/features/profile/presentation/components/profile_info_shimmer.dart';
 import 'package:vietcook1/features/profile/presentation/components/user_recipe_grid.dart';
 import '../controller/profile_controller.dart';
 
@@ -83,11 +84,14 @@ class ProfilePage extends GetView<ProfileController> {
               padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 8),
               child: GetBuilder<ProfileController>(
                 id: 'profile_info',
-                builder: (context) => ProfileInfo(
-                    username: controller.user.name ?? 'Người dùng',
-                    bio: controller.user.bio ?? 'Default bio',
-                    profileImageUrl: controller.user.avatarUrl ??
-                        'https://randomuser.me/api/portraits/men/32.jpg'),
+                builder: (context) => controller.isLoadingUser
+                    ? const ProfileInfoShimmer()
+                    : ProfileInfo(
+                        username: controller.user.name ?? 'Người dùng',
+                        bio: controller.user.bio ?? 'Default bio',
+                        profileImageUrl: controller.user.avatarUrl ??
+                            'https://randomuser.me/api/portraits/men/32.jpg',
+                      ),
               ),
             ),
             // User Recipe Grid

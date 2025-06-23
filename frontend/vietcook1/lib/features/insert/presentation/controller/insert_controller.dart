@@ -156,6 +156,15 @@ class InsertRecipeController extends GetxController {
   Future<void> submitRecipe(String userId) async {
     try {
       print('Bắt đầu submitRecipe');
+      if (imageFile.value == null) {
+        Get.snackbar(
+          'Lỗi',
+          'Vui lòng chọn ảnh món ăn',
+          backgroundColor: AppColors.error,
+          colorText: Colors.white,
+        );
+        return;
+      }
       // 1. Validate input
       if (name.value.trim().isEmpty ||
           description.value.trim().isEmpty ||
@@ -171,28 +180,24 @@ class InsertRecipeController extends GetxController {
         );
         return;
       }
+
+      Get.dialog(
+        AlertDialog(
+          title: const Text('Đang tải lên...'),
+          content: const SizedBox(
+            height: 60,
+            child: Center(
+              child: CircularProgressIndicator(),
+            ),
+          ),
+        ),
+        barrierDismissible: false,
+      );
       final urls = await UpLoadImageUtil.uploadImagesToCloudinary(
         fileName: 'recipes/${DateTime.now().millisecond}',
         pickedFiles: [imageFile.value!],
         uploadPreset: 'upload',
       );
-
-      // 2. Check image
-      if (imageFile.value == null) {
-        Get.snackbar(
-          'Lỗi',
-          'Vui lòng chọn ảnh món ăn',
-          backgroundColor: AppColors.error,
-          colorText: Colors.white,
-        );
-        return;
-      }
-
-      isLoading.value = true;
-
-      // 3. Upload image
-      print('Bắt đầu upload ảnh');
-      // final uploadedImageUrl = await uploadImage(imageFile.value!, 'recipes');
 
       // 4. Create recipe model
       final recipe = InsertRecipeModel(
@@ -211,17 +216,16 @@ class InsertRecipeController extends GetxController {
       print('Bắt đầu gửi recipe lên backend');
       final result = await _recipeService.createRecipe(recipe);
       print('Kết quả backend: ${result.status} - ${result.data} - ${result}');
+      Get.back(); // Đóng dialog loading
 
       if (result.status == Status.success) {
+        Get.back();
         Get.snackbar(
           'Thành công',
           'Món ăn đã được đăng thành công',
           backgroundColor: AppColors.success,
           colorText: Colors.white,
         );
-        Get.toNamed(
-          Routes.profile,
-        ); // Quay về trang trước
       } else {
         throw Exception(result.data ?? 'Không thể đăng món ăn');
       }

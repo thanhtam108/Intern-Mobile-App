@@ -19,12 +19,16 @@ class InsertRecipePage extends GetView<InsertRecipeController> {
       backgroundColor: const Color(0xFFF3F6F3),
       appBar: AppBar(
         backgroundColor: AppColors.primary,
+        centerTitle: true,
+        title: const Text('Đăng món ăn',
+            style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: 20)),
         elevation: 0,
-        leading: TextButton(
+        leading: IconButton(
           onPressed: () => Get.back(),
-          child: const Text('Huỷ',
-              style: TextStyle(
-                  color: AppColors.secondary, fontWeight: FontWeight.bold)),
+          icon: Icon(Icons.arrow_back_ios_new, color: Colors.white),
         ),
         toolbarHeight: 48,
       ),
@@ -42,12 +46,12 @@ class InsertRecipePage extends GetView<InsertRecipeController> {
                       child: GestureDetector(
                         onTap: () => controller.pickImage(context: context),
                         child: Obx(() => Container(
-                              height: 110,
+                              height: 200,
                               width: double.infinity,
                               decoration: BoxDecoration(
                                 color: Colors.white,
                                 border: Border.all(
-                                  color: Colors.grey.shade300,
+                                  color: AppColors.primary,
                                   style: BorderStyle.solid,
                                   width: 2,
                                 ),
@@ -155,6 +159,7 @@ class InsertRecipePage extends GetView<InsertRecipeController> {
                     padding:
                         const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
                     child: TextField(
+                      keyboardType: TextInputType.number,
                       controller: durationController,
                       decoration: InputDecoration(
                         labelText: 'Thời lượng nấu (phút)',
@@ -360,56 +365,35 @@ class InsertRecipePage extends GetView<InsertRecipeController> {
                   Padding(
                     padding: const EdgeInsets.symmetric(
                         horizontal: 16, vertical: 16),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: OutlinedButton(
-                            style: OutlinedButton.styleFrom(
-                              foregroundColor: const Color(0xFF1A2B3C),
-                              side: const BorderSide(color: Color(0xFF1A2B3C)),
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(24)),
-                              padding: const EdgeInsets.symmetric(vertical: 14),
-                            ),
-                            onPressed: () {
-                              Get.back();
-                            },
-                            child: const Text('Trở lại',
-                                style: TextStyle(fontWeight: FontWeight.bold)),
-                          ),
+                    child: SizedBox(
+                      width: double.infinity,
+                      height: 50,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.primary,
+                          foregroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(24)),
+                          padding: const EdgeInsets.symmetric(vertical: 14),
                         ),
-                        const SizedBox(width: 16),
-                        Expanded(
-                          child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xFF9BAE8C),
-                              foregroundColor: Colors.white,
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(24)),
-                              padding: const EdgeInsets.symmetric(vertical: 14),
-                            ),
-                            onPressed: () {
-                              controller.name.value = nameController.text;
-                              controller.description.value =
-                                  descController.text;
-                              controller.duration.value =
-                                  durationController.text;
-                              if (controller.user?.id != null) {
-                                controller.submitRecipe(controller.user!.id!);
-                              } else {
-                                Get.snackbar(
-                                  'Lỗi',
-                                  'Vui lòng đăng nhập để đăng món ăn',
-                                  backgroundColor: Colors.red,
-                                  colorText: Colors.white,
-                                );
-                              }
-                            },
-                            child: const Text('Đăng tải',
-                                style: TextStyle(fontWeight: FontWeight.bold)),
-                          ),
-                        ),
-                      ],
+                        onPressed: () {
+                          controller.name.value = nameController.text;
+                          controller.description.value = descController.text;
+                          controller.duration.value = durationController.text;
+                          if (controller.user?.id != null) {
+                            controller.submitRecipe(controller.user!.id!);
+                          } else {
+                            Get.snackbar(
+                              'Lỗi',
+                              'Vui lòng đăng nhập để đăng món ăn',
+                              backgroundColor: Colors.red,
+                              colorText: Colors.white,
+                            );
+                          }
+                        },
+                        child: const Text('Đăng tải',
+                            style: TextStyle(fontWeight: FontWeight.bold)),
+                      ),
                     ),
                   ),
                   const SizedBox(height: 16),

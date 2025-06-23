@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:vietcook1/core/configs/app_colors.dart';
 import 'package:vietcook1/core/data/local/models/category_model.dart';
 import 'package:vietcook1/core/routing/routes.dart';
+import 'package:vietcook1/features/category/presentation/controller/category_controller.dart';
 import 'package:vietcook1/features/home/presentation/controller/home_controller.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -41,9 +42,10 @@ class CategoryList extends StatelessWidget {
             final category = categories[index];
             return GestureDetector(
               onTap: () {
-                Get.toNamed(Routes.category, arguments: {
-                  'categoryId': category.id,
-                });
+                print('Category tapped: ${category.name}');
+                Get.toNamed(Routes.category,
+                    arguments: RecipesbyCategoryArg(
+                        name: category.name, categoryId: category.id));
               },
               child: Column(
                 children: [

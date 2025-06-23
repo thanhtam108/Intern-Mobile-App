@@ -23,7 +23,10 @@ class HomeController extends GetxController {
 
   final RxList<RecipeModel> recentRecipes = RxList<RecipeModel>();
 
-  final isLoading = false.obs;
+  bool isLoadingUser = true;
+  bool isLoadingCategories = true;
+  bool isLoadingTopRated = true;
+  bool isLoadingRecent = true;
 
   UserModel user = UserModel();
 
@@ -45,11 +48,13 @@ class HomeController extends GetxController {
   }
 
   void getUser() async {
+    isLoadingUser = true;
     final result = await _userService.getUser();
     if (result.status == Status.success) {
       user = result.data!;
       await SharedPrefsUtils.saveObject(
           SharePrefsConstants.user, user.toJson());
+      isLoadingUser = false;
       fetchTopRatedRecipes();
       fetchCategories();
       fetchRecentRecipes();
@@ -65,17 +70,20 @@ class HomeController extends GetxController {
   }
 
   Future<void> fetchTopRatedRecipes() async {
-    isLoading.value = true;
+    isLoadingTopRated = true;
     final result = await _recipeService.fetchTopRatedRecipes();
 
     topRatedRecipes.assignAll((result.data ?? []).take(6).toList());
+    isLoadingTopRated = false;
     print("Top rated recipes: ${result.data}");
-    isLoading.value = false;
   }
 
   Future<void> fetchCategories() async {
-    isLoading.value = true;
+    isLoadingCategories = true;
+    update(['updateHome']);
     final result = await _categoryService.fetchCategories();
+    isLoadingCategories = false;
+    update(['updateHome']);
     if (result.status == Status.success) {
       categories.assignAll((result.data ?? []).take(8).toList());
       ;
@@ -91,12 +99,11 @@ class HomeController extends GetxController {
         colorText: Colors.white,
       );
     }
-    isLoading.value = false;
     update(['updateHome']);
   }
 
   Future<void> fetchRecentRecipes() async {
-    isLoading.value = true;
+    isLoadingRecent = true;
     final result = await _recipeService.fetchRecentRecipes();
     if (result.status == Status.success) {
       recentRecipes.assignAll((result.data ?? []).take(3).toList());
@@ -109,8 +116,8 @@ class HomeController extends GetxController {
         colorText: Colors.white,
       );
     }
-    isLoading.value = false;
     update(['updateHome']);
+    isLoadingRecent = false;
   }
 
   // Lấy danh sách món gần đây từ API

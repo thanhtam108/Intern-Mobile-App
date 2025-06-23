@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:vietcook1/core/configs/app_colors.dart';
 import '../controller/search_controller.dart';
 import '../components/search_header.dart';
 import '../components/recent_searches.dart';
@@ -13,6 +14,17 @@ class SearchPage extends GetView<CustomSearchController> {
       // searchFocusNode.requestFocus();
     });
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('Tìm kiếm', style: TextStyle(color: Colors.white)),
+        centerTitle: true,
+        elevation: 0,
+        backgroundColor: AppColors.primary,
+        leading: IconButton(
+          onPressed: () => Get.back(),
+          icon: Icon(Icons.arrow_back_ios_new, color: Colors.white),
+        ),
+        iconTheme: const IconThemeData(color: Colors.black),
+      ),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -43,16 +55,20 @@ class SearchPage extends GetView<CustomSearchController> {
                   children: const [
                     _DishCard(
                         title: 'Canh khổ qua',
-                        imageUrl: 'https://via.placeholder.com/150'),
+                        imageUrl:
+                            'https://res.cloudinary.com/dcx4uowma/image/upload/v1750583442/40aafb68-68c3-400d-9947-7853fda03a87.png'),
                     _DishCard(
                         title: 'Tàu hũ sốt cà chua',
-                        imageUrl: 'https://via.placeholder.com/150'),
+                        imageUrl:
+                            'https://res.cloudinary.com/dcx4uowma/image/upload/v1750583442/40aafb68-68c3-400d-9947-7853fda03a87.png'),
                     _DishCard(
                         title: 'Canh chua cá',
-                        imageUrl: 'https://via.placeholder.com/150'),
+                        imageUrl:
+                            'https://res.cloudinary.com/dcx4uowma/image/upload/v1750583442/40aafb68-68c3-400d-9947-7853fda03a87.png'),
                     _DishCard(
                         title: 'Ba rọi kho',
-                        imageUrl: 'https://via.placeholder.com/150'),
+                        imageUrl:
+                            'https://res.cloudinary.com/dcx4uowma/image/upload/v1750583442/40aafb68-68c3-400d-9947-7853fda03a87.png'),
                   ],
                 ),
               )

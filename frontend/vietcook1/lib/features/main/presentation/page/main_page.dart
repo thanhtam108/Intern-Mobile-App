@@ -23,16 +23,20 @@ class MainPage extends GetView<MainController> {
             onGenerateRoute: controller.onGenerateRoute,
           ),
           bottomNavigationBar: BottomAppBar(
+            color: Colors.white,
             shape: const CircularNotchedRectangle(),
             notchMargin: 8.0,
+            elevation: 8,
             child: Row(
               children: [
-                Padding(
-                  padding: const EdgeInsets.only(right: 8.0),
-                  child: _buildBottomItem(
-                    icon: Icons.home,
-                    label: 'Trang chủ',
-                    index: 0,
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.only(right: 8.0),
+                    child: _buildBottomItem(
+                      icon: Icons.home,
+                      label: 'Trang chủ',
+                      index: 0,
+                    ),
                   ),
                 ),
                 Padding(
@@ -64,8 +68,8 @@ class MainPage extends GetView<MainController> {
             ),
           ),
           floatingActionButton: SizedBox(
-            width: 80,
-            height: 80,
+            width: 60,
+            height: 60,
             child: FloatingActionButton(
               onPressed: () {
                 Get.toNamed(Routes.insert); // Navigate to insert page
@@ -94,21 +98,6 @@ class MainPage extends GetView<MainController> {
         child: Stack(
           alignment: Alignment.center,
           children: [
-            if (isSelected)
-              Positioned.fill(
-                child: Align(
-                  alignment: Alignment.center,
-                  child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 250),
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-                    decoration: BoxDecoration(
-                      color: AppColors.primary.withOpacity(0.20), // nền mờ
-                      borderRadius: BorderRadius.circular(17),
-                    ),
-                  ),
-                ),
-              ),
             Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -124,6 +113,8 @@ class MainPage extends GetView<MainController> {
                   label,
                   style: TextStyle(
                     fontSize: 12,
+                    fontWeight:
+                        isSelected ? FontWeight.bold : FontWeight.normal,
                     color: isSelected ? AppColors.primary : Colors.grey,
                   ),
                 ),

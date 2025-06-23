@@ -7,6 +7,7 @@ class CustomSearchBar extends StatefulWidget {
   final TextEditingController? textController;
   final String? initialValue;
   final VoidCallback? onTap;
+  final bool? enabled;
 
   const CustomSearchBar({
     super.key,
@@ -16,6 +17,7 @@ class CustomSearchBar extends StatefulWidget {
     this.textController,
     this.initialValue,
     this.onTap,
+    this.enabled,
   });
 
   @override
@@ -43,6 +45,7 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
   @override
   Widget build(BuildContext context) {
     return TextField(
+      enabled: widget.enabled ?? true,
       controller: _controller,
       onChanged: widget.onSearch,
       onSubmitted: widget.onSubmitted,

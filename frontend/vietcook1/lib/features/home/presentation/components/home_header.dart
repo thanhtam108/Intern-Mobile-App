@@ -48,11 +48,17 @@ class HomeHeader extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 16),
-          CustomSearchBar(
-            hintText: 'Tìm kiếm món ăn, thành phần...',
-            onSearch: (query) {
-              print('Tìm kiếm: $query'); // Xử lý logic tìm kiếm
+          GestureDetector(
+            onTap: () {
+              Get.toNamed(Routes.search); // Điều hướng đến trang tìm kiếm
             },
+            child: CustomSearchBar(
+              enabled: false,
+              hintText: 'Tìm kiếm món ăn, thành phần...',
+              onSearch: (query) {
+                print('Tìm kiếm: $query'); // Xử lý logic tìm kiếm
+              },
+            ),
           ),
         ],
       ),

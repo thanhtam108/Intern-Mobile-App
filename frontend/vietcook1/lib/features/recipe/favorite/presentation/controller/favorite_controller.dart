@@ -16,6 +16,7 @@ class FavoriteRecipesController extends GetxController {
   final RecipeService _recipeService;
   FavoriteRecipesController(this._faService, this._recipeService);
   List<RecipeModel> favoriteRecipes = [];
+  bool isLoading = true;
 
   @override
   void onInit() {
@@ -24,6 +25,7 @@ class FavoriteRecipesController extends GetxController {
   }
 
   Future<void> fetchFavorites() async {
+    isLoading = true;
     final ids = await SharedPrefsUtils.getStringList(
       SharePrefsConstants.favRecipes,
     );
@@ -38,6 +40,7 @@ class FavoriteRecipesController extends GetxController {
       }
       favoriteRecipes = recipes;
       update(['favorite_recipes']);
+      isLoading = false;
     } else {
       Get.snackbar(
         'Error',
