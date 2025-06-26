@@ -44,6 +44,9 @@ class FavoriteRecipesPage extends GetView<FavoriteRecipesController> {
                         authorAvatarUrl: recipe.user.avatarUrl ?? '',
                         createdAt: DateTimeUtils.timeAgo(recipe.createdAt),
                         isFavorite: true,
+                        onFavoriteToggle: () {
+                          controller.toggleFavorite(recipe.id);
+                        },
                       );
                     },
                   ),

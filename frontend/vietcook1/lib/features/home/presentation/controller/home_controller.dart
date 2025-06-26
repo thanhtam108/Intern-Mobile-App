@@ -6,6 +6,7 @@ import 'package:vietcook1/core/data/local/models/category_model.dart';
 import 'package:vietcook1/core/data/local/models/recipe_model.dart';
 import 'package:vietcook1/core/data/network/model/result_dto.dart';
 import 'package:vietcook1/core/data/network/remote/category_service.dart';
+import 'package:vietcook1/core/data/network/remote/favorite_service.dart';
 import 'package:vietcook1/core/data/network/remote/user_service.dart';
 import 'package:vietcook1/core/utils/shared_preferences%20_utils.dart';
 import 'package:vietcook1/features/main/models/user_model.dart';
@@ -23,11 +24,11 @@ class HomeController extends GetxController {
 
   final RxList<RecipeModel> recentRecipes = RxList<RecipeModel>();
 
-  bool isLoadingUser = true;
-  bool isLoadingCategories = true;
-  bool isLoadingTopRated = true;
-  bool isLoadingRecent = true;
-
+  bool isLoadingUser = false;
+  bool isLoadingCategories = false;
+  bool isLoadingTopRated = false;
+  bool isLoadingRecent = false;
+  final List<String> favoriteRecipeIds = [];
   UserModel user = UserModel();
 
   final RxList<CategoryModel> categories = RxList<CategoryModel>();
@@ -49,15 +50,20 @@ class HomeController extends GetxController {
 
   void getUser() async {
     isLoadingUser = true;
+
+    update(['updateHome']);
     final result = await _userService.getUser();
     if (result.status == Status.success) {
       user = result.data!;
       await SharedPrefsUtils.saveObject(
           SharePrefsConstants.user, user.toJson());
+
       isLoadingUser = false;
+
       fetchTopRatedRecipes();
       fetchCategories();
       fetchRecentRecipes();
+
       update(['updateHome']);
     } else {
       Get.snackbar(
@@ -71,11 +77,19 @@ class HomeController extends GetxController {
 
   Future<void> fetchTopRatedRecipes() async {
     isLoadingTopRated = true;
+    update(['updateHome']);
     final result = await _recipeService.fetchTopRatedRecipes();
 
     topRatedRecipes.assignAll((result.data ?? []).take(6).toList());
+    await SharedPrefsUtils.getStringList(SharePrefsConstants.favRecipes)
+        .then((value) {
+      favoriteRecipeIds.clear();
+      favoriteRecipeIds.addAll(value);
+    });
+
     isLoadingTopRated = false;
-    print("Top rated recipes: ${result.data}");
+    update(['updateHome']);
+    print("Average ratings: ${result.data?.map((e) => e.averageRating)}");
   }
 
   Future<void> fetchCategories() async {
@@ -102,6 +116,10 @@ class HomeController extends GetxController {
     update(['updateHome']);
   }
 
+  bool isFavorite(String recipeId) {
+    return favoriteRecipeIds.contains(recipeId);
+  }
+
   Future<void> fetchRecentRecipes() async {
     isLoadingRecent = true;
     final result = await _recipeService.fetchRecentRecipes();
@@ -120,20 +138,47 @@ class HomeController extends GetxController {
     isLoadingRecent = false;
   }
 
-  // Lấy danh sách món gần đây từ API
-  // Future<void> fetchRecentRecipes() async {
-  //   isLoading.value = true;
-  //   final result = await _recipeService.fetchRecentRecipes();
-  //   result.when(
-  //     onSuccess: (data) {
-  //       recentRecipes.assignAll(data);
-  //     },
-  //     onError: (error) {
-  //       Get.snackbar('Lỗi', 'Không thể tải danh sách món gần đây');
-  //     },
-  //   );
-  //   isLoading.value = false;
-  // }
+  final FavoriteService _favoriteService = Get.find<FavoriteService>();
+
+  Future<void> toggleFavorite(String recipeId) async {
+    if (isFavorite(recipeId)) {
+      // Gọi API xóa khỏi favorite
+      final result = await _favoriteService.removeFavorite(recipeId);
+      if (result.status == Status.success) {
+        favoriteRecipeIds.remove(recipeId);
+        await SharedPrefsUtils.saveStringList(
+          SharePrefsConstants.favRecipes,
+          favoriteRecipeIds,
+        );
+        update(['updateHome']);
+      } else {
+        Get.snackbar(
+          'Lỗi',
+          'Không thể bỏ yêu thích. Vui lòng thử lại!',
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+        );
+      }
+    } else {
+      // Gọi API thêm vào favorite
+      final result = await _favoriteService.addFavorite(recipeId);
+      if (result.status == Status.success) {
+        favoriteRecipeIds.add(recipeId);
+        await SharedPrefsUtils.saveStringList(
+          SharePrefsConstants.favRecipes,
+          favoriteRecipeIds,
+        );
+        update(['updateHome']);
+      } else {
+        Get.snackbar(
+          'Lỗi',
+          'Không thể thêm vào yêu thích. Vui lòng thử lại!',
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+        );
+      }
+    }
+  }
 
   // Chuyển qua các trang trong MainNavigator
   void navigateToPage(String routeName) {

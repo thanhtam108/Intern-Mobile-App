@@ -25,11 +25,6 @@ class RegisterController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    if (kDebugMode) {
-      nameController.text = "Test User";
-      emailController.text = "yolotrainlalua2003@gmail.com";
-      passwordController.text = "12345678";
-    }
   }
 
   @override

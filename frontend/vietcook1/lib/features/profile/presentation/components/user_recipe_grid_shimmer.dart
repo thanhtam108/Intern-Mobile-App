@@ -25,13 +25,10 @@ class UserRecipeGridShimmer extends StatelessWidget {
         const SizedBox(height: 12),
         ListView.separated(
           shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          itemCount: 4, // Placeholder shimmer count
+          physics: NeverScrollableScrollPhysics(),
+          itemCount: 4,
           separatorBuilder: (context, index) => const SizedBox(height: 12),
-          itemBuilder: (context, index) => const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16),
-            child: HorizontalRecipeCardShimmer(),
-          ),
+          itemBuilder: (context, index) => const HorizontalRecipeCardShimmer(),
         ),
       ],
     );

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:vietcook1/core/configs/app_colors.dart';
+import 'package:vietcook1/features/home/presentation/components/top_rated_recipes.dart';
 import '../controller/search_controller.dart';
 import '../components/search_header.dart';
 import '../components/recent_searches.dart';
@@ -39,38 +40,14 @@ class SearchPage extends GetView<CustomSearchController> {
               ),
               const SizedBox(height: 8),
               const RecentSearches(),
-              const SizedBox(height: 24),
-              const Text(
-                'Gợi ý liên quan',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-              ),
               const SizedBox(height: 8),
               Expanded(
-                child: GridView.count(
-                  crossAxisCount: 2,
-                  crossAxisSpacing: 10,
-                  mainAxisSpacing: 10,
-                  childAspectRatio: 3 / 2,
-                  shrinkWrap: true, // hoặc dùng Expanded như đang làm
-                  children: const [
-                    _DishCard(
-                        title: 'Canh khổ qua',
-                        imageUrl:
-                            'https://res.cloudinary.com/dcx4uowma/image/upload/v1750583442/40aafb68-68c3-400d-9947-7853fda03a87.png'),
-                    _DishCard(
-                        title: 'Tàu hũ sốt cà chua',
-                        imageUrl:
-                            'https://res.cloudinary.com/dcx4uowma/image/upload/v1750583442/40aafb68-68c3-400d-9947-7853fda03a87.png'),
-                    _DishCard(
-                        title: 'Canh chua cá',
-                        imageUrl:
-                            'https://res.cloudinary.com/dcx4uowma/image/upload/v1750583442/40aafb68-68c3-400d-9947-7853fda03a87.png'),
-                    _DishCard(
-                        title: 'Ba rọi kho',
-                        imageUrl:
-                            'https://res.cloudinary.com/dcx4uowma/image/upload/v1750583442/40aafb68-68c3-400d-9947-7853fda03a87.png'),
-                  ],
-                ),
+                child: Obx(() {
+                  if (controller.topRatedRecipes.isEmpty) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                  return TopRatedRecipes(recipes: controller.topRatedRecipes);
+                }),
               )
             ],
           ),

@@ -31,21 +31,6 @@ class InsertRecipeController extends GetxController {
     super.onInit();
     getUser();
     getCategories();
-    if (kDebugMode) {
-      // For testing purposes, pre-fill some fields
-      name.value = 'Bánh mì';
-      description.value = 'Món ăn truyền thống Việt Nam';
-      ingredients.addAll(['Bánh mì', 'Thịt nướng', 'Rau sống']);
-      duration.value = '30 phút';
-      steps.addAll([
-        StepModel(
-            stepName: 'Chuẩn bị nguyên liệu',
-            stepDescription: 'Chuẩn bị bánh mì, thịt nướng và rau sống'),
-        StepModel(
-            stepName: 'Nướng thịt',
-            stepDescription: 'Nướng thịt trên bếp than hoa')
-      ]);
-    }
   }
 
   // Rx variables for form fields

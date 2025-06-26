@@ -172,34 +172,44 @@ export class RecipeService {
     const recipes = await this.recipeModel.aggregate([
       {
         $lookup: {
-          from: 'reviews', // Tên collection của Review
-          localField: '_id', // ID của Recipe
-          foreignField: 'recipeId', // Liên kết với recipeID trong Review
-          as: 'reviews', // Kết quả join sẽ lưu trong reviews
+          from: 'reviews',
+          localField: '_id',
+          foreignField: 'recipeId',
+          as: 'reviews',
         },
+      },
+      {
+        $addFields: {
+          averageRating: {
+            $cond: [
+              { $gt: [{ $size: '$reviews' }, 0] },
+              { $avg: '$reviews.rating' },
+              null,
+            ],
+          },
+        },
+      },
+      {
+        $match: {
+          averageRating: { $ne: null }, // chỉ lấy các món có review
+        },
+      },
+      {
+        $sort: { averageRating: -1 },
+      },
+      {
+        $limit: limit,
       },
       {
         $lookup: {
           from: 'users',
-          localField: 'userId', // Sửa: dùng trường userId từ recipe
+          localField: 'userId',
           foreignField: '_id',
           as: 'user',
         },
       },
       {
         $unwind: '$user',
-      },
-      {
-        $addFields: {
-          averageRating: { $avg: '$reviews.rating' }, // Tính trung bình điểm đánh giá
-          imageUrl: { $ifNull: ['$imageUrl', ''] },
-        },
-      },
-      {
-        $sort: { averageRating: -1 }, // Sắp xếp giảm dần theo điểm đánh giá
-      },
-      {
-        $limit: limit, // Giới hạn số lượng công thức trả về
       },
       {
         $project: {
@@ -210,15 +220,15 @@ export class RecipeService {
           reviews: 1,
           category: 1,
           view: 1,
+          createdAt: 1,
+          updatedAt: 1,
+          imageUrl: 1,
           user: {
             _id: '$user._id',
             name: '$user.name',
             email: '$user.email',
             avatarUrl: '$user.avatarUrl',
           },
-          createdAt: 1,
-          updatedAt: 1,
-          imageUrl: 1,
         },
       },
     ]);

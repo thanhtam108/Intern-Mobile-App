@@ -62,14 +62,28 @@ class RecipeDetailController extends GetxController {
   // Hàm toggle yêu thích
   Future<void> toggleFavorite() async {
     if (user.value == null || recipe.value == null) return;
+
+    // Lấy danh sách id từ SharedPreferences
+    final favIds =
+        await SharedPrefsUtils.getStringList(SharePrefsConstants.favRecipes) ??
+            [];
+
     if (isFavorite.value) {
-      // Xóa khỏi bảng favorite
+      // Xóa khỏi bảng favorite (nếu có API)
       await _faService.removeFavorite(recipe.value!.id);
+      favIds.remove(recipe.value!.id);
       isFavorite.value = false;
     } else {
-      // Thêm vào bảng favorite
+      // Thêm vào bảng favorite (nếu có API)
       await _faService.addFavorite(recipe.value!.id);
+      favIds.add(recipe.value!.id);
       isFavorite.value = true;
     }
+
+    // Lưu lại vào SharedPreferences giống HomeController
+    await SharedPrefsUtils.saveStringList(
+        SharePrefsConstants.favRecipes, favIds);
+
+    update(['recipeDetails']);
   }
 }

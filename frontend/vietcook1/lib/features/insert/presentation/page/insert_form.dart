@@ -11,6 +11,7 @@ class InsertRecipePage extends GetView<InsertRecipeController> {
   final TextEditingController descController = TextEditingController();
   final TextEditingController durationController = TextEditingController();
   final TextEditingController ingredientController = TextEditingController();
+  final TextEditingController stepNameController = TextEditingController();
   final TextEditingController stepDescController = TextEditingController();
 
   @override
@@ -185,15 +186,6 @@ class InsertRecipePage extends GetView<InsertRecipeController> {
                                 fontWeight: FontWeight.bold,
                                 fontSize: 16,
                                 color: AppColors.primary)),
-                        TextButton.icon(
-                          onPressed: () {
-                            // Xử lý thêm nhóm nguyên liệu nếu muốn
-                          },
-                          icon: const Icon(Icons.add,
-                              size: 18, color: Color(0xFF7BA23F)),
-                          label: const Text('Nhóm',
-                              style: TextStyle(color: Color(0xFF7BA23F))),
-                        ),
                       ],
                     ),
                   ),
@@ -289,18 +281,40 @@ class InsertRecipePage extends GetView<InsertRecipeController> {
                         ),
                         const SizedBox(width: 10),
                         Expanded(
-                          child: TextField(
-                            controller: stepDescController,
-                            maxLines: 2,
-                            decoration: InputDecoration(
-                              hintText: 'Nhập vào các bước làm món ăn',
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12)),
-                              contentPadding: const EdgeInsets.symmetric(
-                                  horizontal: 12, vertical: 12),
-                              filled: true,
-                              fillColor: Colors.white,
-                            ),
+                          child: Column(
+                            children: [
+                              TextField(
+                                controller: stepNameController,
+                                decoration: InputDecoration(
+                                  labelText: 'Tên bước',
+                                  hintText:
+                                      'Nhập tên bước (ví dụ: Chuẩn bị nguyên liệu)',
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  contentPadding: const EdgeInsets.symmetric(
+                                      horizontal: 12, vertical: 12),
+                                  filled: true,
+                                  fillColor: Colors.white,
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              TextField(
+                                controller: stepDescController,
+                                maxLines: 2,
+                                decoration: InputDecoration(
+                                  labelText: 'Mô tả bước',
+                                  hintText: 'Nhập mô tả chi tiết cho bước này',
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  contentPadding: const EdgeInsets.symmetric(
+                                      horizontal: 12, vertical: 12),
+                                  filled: true,
+                                  fillColor: Colors.white,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                         const SizedBox(width: 8),
@@ -326,10 +340,17 @@ class InsertRecipePage extends GetView<InsertRecipeController> {
                           padding: const EdgeInsets.symmetric(vertical: 14),
                         ),
                         onPressed: () {
-                          if (stepDescController.text.trim().isNotEmpty) {
+                          if (stepNameController.text.trim().isNotEmpty &&
+                              stepDescController.text.trim().isNotEmpty) {
                             controller.addStep(
-                                '', stepDescController.text.trim());
+                              stepNameController.text.trim(),
+                              stepDescController.text.trim(),
+                            );
+                            stepNameController.clear();
                             stepDescController.clear();
+                          } else {
+                            Get.snackbar('Lỗi',
+                                'Vui lòng nhập đủ tên bước và mô tả bước');
                           }
                         },
                         child: const Text(
@@ -355,7 +376,8 @@ class InsertRecipePage extends GetView<InsertRecipeController> {
                                           style: const TextStyle(
                                               color: Colors.white)),
                                     ),
-                                    title:
+                                    title: Text(entry.value.stepName ?? ''),
+                                    subtitle:
                                         Text(entry.value.stepDescription ?? ''),
                                   ))
                               .toList(),

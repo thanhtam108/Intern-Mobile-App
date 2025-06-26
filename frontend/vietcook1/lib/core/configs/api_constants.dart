@@ -45,8 +45,8 @@ class _RecipesApi {
 
 class _FavoritesApi {
   final String common = "/favorites";
-  final String add = "/favorites/add";
-  final String remove = "/favorites/remove";
+  final String add = "/favorites";
+  final String remove = "/favorites";
 }
 
 class _Reviews {

@@ -57,7 +57,7 @@ class HomePage extends GetView<HomeController> {
                           : CategoryList(categories: controller.categories),
                       const SizedBox(height: 16),
                       controller.isLoadingTopRated
-                          ? const TopRatedRecipesShimmer()
+                          ? TopRatedRecipesShimmer()
                           : TopRatedRecipes(
                               recipes: controller.topRatedRecipes),
                       const SizedBox(height: 16),

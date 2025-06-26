@@ -1,10 +1,10 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import mongoose, { Document } from 'mongoose';
+import mongoose, { Document, Types } from 'mongoose';
 
 @Schema({ timestamps: true })
 export class Review extends Document {
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Recipe', required: true })
-  recipeId: mongoose.Types.ObjectId;
+  recipeId: Types.ObjectId;
 
   @Prop({ required: true, ref: 'User' })
   userId: string;

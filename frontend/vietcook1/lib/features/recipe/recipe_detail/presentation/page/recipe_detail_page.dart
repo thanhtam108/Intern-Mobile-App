@@ -48,7 +48,7 @@ class RecipeDetailPage extends GetView<RecipeDetailController> {
                   category: controller.recipe.value?.category?.name ?? '',
                   duration: controller.recipe.value?.duration ?? '',
                   isFavorite: controller.isFavorite.value,
-                  onFavoriteTap: () {},
+                  onFavoriteTap: controller.toggleFavorite, // <-- Sửa dòng này
                   author: controller.recipe.value?.user.name ?? '',
                 ),
                 // Description

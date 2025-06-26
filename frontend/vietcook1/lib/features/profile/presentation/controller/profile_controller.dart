@@ -14,8 +14,7 @@ class ProfileController extends GetxController {
   ProfileController(this._recipeService, this._userService);
 
   final RxList<RecipeModel> userRecipes = RxList<RecipeModel>();
-  bool isLoadingUser = true;
-  bool isLoadingRecipes = true;
+  bool isLoading = true;
 
   UserModel user = UserModel();
 
@@ -57,15 +56,15 @@ class ProfileController extends GetxController {
   // }
 
   void getUser() async {
-    isLoadingUser = true;
+    isLoading = true;
     final result = await _userService.getUser();
     if (result.status == Status.success) {
       user = result.data!;
       await SharedPrefsUtils.saveObject(
           SharePrefsConstants.user, user.toJson());
       fetchUserRecipes(user.id!);
-      update(['profile_info', 'user_recipes']);
-      isLoadingUser = false;
+      update(['profile_info']);
+      isLoading = false;
     } else {
       Get.snackbar(
         'Error',
@@ -73,14 +72,13 @@ class ProfileController extends GetxController {
         backgroundColor: Colors.red,
         colorText: Colors.white,
       );
+      isLoading = false;
     }
   }
 
   Future<void> fetchUserRecipes(String userId) async {
-    isLoadingRecipes = true;
     final result = await _recipeService.fetchRecipesByUserId(userId);
     userRecipes.assignAll(result.data ?? []);
     update(['user_recipes']);
-    isLoadingRecipes = false;
   }
 }

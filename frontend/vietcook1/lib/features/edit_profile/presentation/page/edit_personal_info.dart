@@ -53,7 +53,7 @@ class EditPersonalInfo extends GetView<EditProfileController> {
                         child: IconButton(
                           icon:
                               const Icon(Icons.arrow_back, color: Colors.black),
-                          onPressed: () => Get.toNamed(Routes.home),
+                          onPressed: () => Get.back(),
                         ),
                       ),
                     ),

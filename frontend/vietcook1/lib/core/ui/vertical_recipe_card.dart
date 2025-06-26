@@ -1,6 +1,9 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 
 class VerticalRecipeCard extends StatelessWidget {
+  final VoidCallback? onFavoriteToggle;
   final String imageUrl;
   final String name;
   final String description;
@@ -12,6 +15,7 @@ class VerticalRecipeCard extends StatelessWidget {
   final bool isFavorite;
 
   const VerticalRecipeCard({
+    this.onFavoriteToggle,
     super.key,
     required this.imageUrl,
     required this.name,
@@ -21,7 +25,7 @@ class VerticalRecipeCard extends StatelessWidget {
     required this.authorName,
     required this.authorAvatarUrl,
     required this.createdAt,
-    this.isFavorite = false,
+    required this.isFavorite,
   });
 
   @override
@@ -61,10 +65,13 @@ class VerticalRecipeCard extends StatelessWidget {
                     shape: BoxShape.circle,
                   ),
                   padding: const EdgeInsets.all(4),
-                  child: Icon(
-                    isFavorite ? Icons.favorite : Icons.favorite_border,
-                    color: isFavorite ? Colors.red : Colors.grey,
-                    size: 22,
+                  child: IconButton(
+                    icon: Icon(
+                      isFavorite ? Icons.favorite : Icons.favorite_border,
+                      color: isFavorite ? Colors.red : Colors.grey,
+                      size: 30,
+                    ),
+                    onPressed: onFavoriteToggle,
                   ),
                 ),
               ),
@@ -97,7 +104,7 @@ class VerticalRecipeCard extends StatelessWidget {
                   children: [
                     const Icon(Icons.star, size: 16, color: Colors.orange),
                     Text(
-                      rating.toStringAsFixed(1), // Hiển thị 1 số thập phân
+                      rating.toStringAsFixed(1),
                       style: const TextStyle(fontSize: 13),
                     ),
                     const Spacer(),
@@ -124,16 +131,20 @@ class VerticalRecipeCard extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(width: 6),
-                    Text(authorName,
-                        style: const TextStyle(
-                            fontSize: 13, fontWeight: FontWeight.w600)),
-                    const Spacer(),
                     Text(
-                      createdAt,
-                      style: const TextStyle(fontSize: 11, color: Colors.grey),
+                      authorName,
+                      style: const TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ],
-                )
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  createdAt,
+                  style: const TextStyle(fontSize: 11, color: Colors.grey),
+                ),
               ],
             ),
           ),

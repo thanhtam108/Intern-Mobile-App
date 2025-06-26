@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
+import 'package:vietcook1/core/data/local/models/top_rated_recipe_model.dart';
 import 'package:vietcook1/core/data/network/remote/recipe_service.dart';
 import 'package:vietcook1/features/search/model/search_result_model.dart';
 import 'package:vietcook1/core/utils/search_history_utils.dart';
@@ -12,18 +13,20 @@ class CustomSearchController extends GetxController {
   final isLoading = false.obs;
   final searchResults = <SearchResult>[].obs;
   final recentSearches = <String>[].obs;
-
+  final topRatedRecipes = <TopRatedRecipeModel>[].obs;
   @override
   void onInit() {
     super.onInit();
     _loadRecentSearches();
+    fetchTopRatedRecipes();
+  }
 
-    // Optional: debounce cho search realtime
-    // debounce(searchQuery, (val) {
-    //   if ((val as String).isNotEmpty) {
-    //     search(val);
-    //   }
-    // }, time: Duration(milliseconds: 500));
+  Future<void> fetchTopRatedRecipes() async {
+    update(['searchtopRatedRecipes']);
+    final result = await _recipeService.fetchTopRatedRecipes();
+    topRatedRecipes.assignAll((result.data ?? []).take(6).toList());
+    update(['searchtopRatedRecipes']);
+    print("Top rated recipes: ${result.data}");
   }
 
   Future<void> search(String query) async {

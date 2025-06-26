@@ -2,11 +2,14 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:vietcook1/core/configs/share_prefs_constants.dart';
 import 'package:vietcook1/core/routing/routes.dart';
 import 'package:vietcook1/core/ui/common_button.dart';
+import 'package:vietcook1/core/utils/shared_preferences%20_utils.dart';
 import 'package:vietcook1/features/profile/presentation/components/profile_info.dart';
 import 'package:vietcook1/features/profile/presentation/components/profile_info_shimmer.dart';
 import 'package:vietcook1/features/profile/presentation/components/user_recipe_grid.dart';
+import 'package:vietcook1/features/profile/presentation/components/user_recipe_grid_shimmer.dart';
 import '../controller/profile_controller.dart';
 
 class ProfilePage extends GetView<ProfileController> {
@@ -48,10 +51,9 @@ class ProfilePage extends GetView<ProfileController> {
                               begin: Alignment.topCenter,
                               end: Alignment.bottomCenter,
                               colors: [
-                                Color.fromARGB(
-                                    0, 255, 255, 255), // Trắng trong suốt
-                                Color.fromARGB(180, 255, 255, 255), // Trắng mờ
-                                Color.fromARGB(255, 255, 255, 255), // Trắng đục
+                                Color.fromARGB(0, 255, 255, 255),
+                                Color.fromARGB(180, 255, 255, 255),
+                                Color.fromARGB(255, 255, 255, 255),
                               ],
                               stops: [0.0, 0.7, 1.0],
                             ),
@@ -63,48 +65,81 @@ class ProfilePage extends GetView<ProfileController> {
                   Positioned(
                     top: 16,
                     left: 8,
-                    child: IconButton(
-                      icon: const Icon(Icons.arrow_back, color: Colors.white),
-                      onPressed: () => Get.back(),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.7),
+                        shape: BoxShape.circle,
+                      ),
+                      child: IconButton(
+                        icon: const Icon(Icons.arrow_back, color: Colors.white),
+                        onPressed: () => Get.back(),
+                      ),
                     ),
                   ),
                   Positioned(
                     top: 16,
                     right: 8,
-                    child: IconButton(
-                      icon: const Icon(Icons.edit, color: Colors.white),
-                      onPressed: () {}, // Sửa thông tin cá nhân
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.7),
+                        shape: BoxShape.circle,
+                      ),
+                      child: PopupMenuButton<String>(
+                        icon: const Icon(Icons.more_vert, color: Colors.white),
+                        onSelected: (value) async {
+                          if (value == 'logout') {
+                            // Xóa thông tin user khỏi SharedPreferences
+                            await SharedPrefsUtils.remove(
+                                SharePrefsConstants.user);
+                            Get.offAllNamed(Routes.login);
+                          }
+                        },
+                        itemBuilder: (context) => [
+                          const PopupMenuItem(
+                            value: 'logout',
+                            child: Text('Đăng xuất'),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ],
               ),
             ),
-            // Profile Info
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 8),
-              child: GetBuilder<ProfileController>(
-                id: 'profile_info',
-                builder: (context) => controller.isLoadingUser
-                    ? const ProfileInfoShimmer()
-                    : ProfileInfo(
-                        username: controller.user.name ?? 'Người dùng',
-                        bio: controller.user.bio ?? 'Default bio',
-                        profileImageUrl: controller.user.avatarUrl ??
-                            'https://randomuser.me/api/portraits/men/32.jpg',
-                      ),
+
+            // Tất cả bên trong GetBuilder có id: 'profile'
+            GetBuilder<ProfileController>(
+              id: 'profile_info',
+              builder: (controller) => Column(
+                children: [
+                  Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 32, vertical: 8),
+                    child: controller.isLoading
+                        ? const ProfileInfoShimmer()
+                        : ProfileInfo(
+                            username: controller.user.name ?? 'Người dùng',
+                            bio: controller.user.bio ?? 'Default bio',
+                            profileImageUrl: controller.user.avatarUrl ??
+                                'https://randomuser.me/api/portraits/men/32.jpg',
+                          ),
+                  ),
+                  Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 24, vertical: 4),
+                    child: CommonButton(
+                      text: 'Chỉnh sửa thông tin',
+                      onPressed: () {
+                        Get.toNamed(Routes.editPersonalInfo);
+                      },
+                    ),
+                  ),
+                  controller.isLoading
+                      ? const UserRecipeGridShimmer()
+                      : const UserRecipeGrid(),
+                ],
               ),
             ),
-            // User Recipe Grid
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 4),
-              child: CommonButton(
-                text: 'Chỉnh sửa thông tin',
-                onPressed: () {
-                  Get.toNamed(Routes.editPersonalInfo);
-                },
-              ),
-            ),
-            UserRecipeGrid(),
           ],
         ),
       ),

@@ -27,10 +27,6 @@ class LoginController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    if (kDebugMode) {
-      emailController.text = 'newuser@gmail.com';
-      passwordController.text = '123456';
-    }
   }
 
   void toggleObscure() {
