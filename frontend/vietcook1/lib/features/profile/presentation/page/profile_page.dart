@@ -72,7 +72,7 @@ class ProfilePage extends GetView<ProfileController> {
                       ),
                       child: IconButton(
                         icon: const Icon(Icons.arrow_back, color: Colors.white),
-                        onPressed: () => Get.back(),
+                        onPressed: () => Get.toNamed(Routes.main),
                       ),
                     ),
                   ),
@@ -88,9 +88,8 @@ class ProfilePage extends GetView<ProfileController> {
                         icon: const Icon(Icons.more_vert, color: Colors.white),
                         onSelected: (value) async {
                           if (value == 'logout') {
-                            // Xóa thông tin user khỏi SharedPreferences
-                            await SharedPrefsUtils.remove(
-                                SharePrefsConstants.user);
+                            // Xóa toàn bộ dữ liệu local SharedPreferences
+                            await SharedPrefsUtils.clearAll();
                             Get.offAllNamed(Routes.login);
                           }
                         },
@@ -110,7 +109,7 @@ class ProfilePage extends GetView<ProfileController> {
             // Tất cả bên trong GetBuilder có id: 'profile'
             GetBuilder<ProfileController>(
               id: 'profile_info',
-              builder: (controller) => Column(
+              builder: (context) => Column(
                 children: [
                   Padding(
                     padding:

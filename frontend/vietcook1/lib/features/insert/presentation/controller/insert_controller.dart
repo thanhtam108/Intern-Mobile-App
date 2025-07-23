@@ -145,7 +145,7 @@ class InsertRecipeController extends GetxController {
         Get.snackbar(
           'Lỗi',
           'Vui lòng chọn ảnh món ăn',
-          backgroundColor: AppColors.error,
+          backgroundColor: AppColors.secondary,
           colorText: Colors.white,
         );
         return;

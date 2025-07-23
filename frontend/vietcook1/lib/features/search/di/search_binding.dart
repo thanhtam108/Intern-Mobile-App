@@ -10,5 +10,6 @@ class CustomSearchBinding extends Bindings {
     Get.putAsync<Dio>(() => DioClient().create());
     Get.lazyPut(() => RecipeService(Get.find<Dio>()));
     Get.lazyPut(() => CustomSearchController());
+    Get.put<CustomSearchController>(CustomSearchController(), permanent: true);
   }
 }

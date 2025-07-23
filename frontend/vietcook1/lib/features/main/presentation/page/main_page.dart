@@ -17,6 +17,7 @@ class MainPage extends GetView<MainController> {
   @override
   Widget build(BuildContext context) {
     return Obx(() => Scaffold(
+          resizeToAvoidBottomInset: false,
           body: Navigator(
             key: Get.nestedKey(1),
             initialRoute: "/home",
@@ -31,7 +32,7 @@ class MainPage extends GetView<MainController> {
               children: [
                 Expanded(
                   child: Padding(
-                    padding: const EdgeInsets.only(right: 8.0),
+                    padding: const EdgeInsets.only(right: 10),
                     child: _buildBottomItem(
                       icon: Icons.home,
                       label: 'Trang chủ',
@@ -40,7 +41,7 @@ class MainPage extends GetView<MainController> {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(left: 8.0),
+                  padding: const EdgeInsets.only(left: 8.0, right: 8.0),
                   child: _buildBottomItem(
                     icon: Icons.search,
                     label: 'Tìm kiếm',

@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -83,12 +84,24 @@ class EditPersonalInfo extends GetView<EditProfileController> {
                   children: [
                     Stack(
                       children: [
-                        CircleAvatar(
-                          radius: 48,
-                          backgroundColor: Colors.white,
-                          backgroundImage: NetworkImage(
-                              controller.user.avatarUrl ??
-                                  'https://via.placeholder.com/150'),
+                        GetBuilder<EditProfileController>(
+                          id: 'profile_info',
+                          builder: (controller) {
+                            final imageFile = controller.imageFile?.value;
+                            final hasNewImage = imageFile != null;
+
+                            return CircleAvatar(
+                              radius: 48,
+                              backgroundColor: Colors.white,
+                              backgroundImage: hasNewImage
+                                  ? FileImage(File(imageFile.path))
+                                      as ImageProvider
+                                  : NetworkImage(
+                                      controller.user.avatarUrl ??
+                                          'https://via.placeholder.com/150',
+                                    ),
+                            );
+                          },
                         ),
                         Positioned(
                           bottom: 0,
@@ -134,7 +147,9 @@ class EditPersonalInfo extends GetView<EditProfileController> {
 
               // Email
               _buildLabel('Email'),
-              _buildTextField(emailController, 'Email của bạn', enabled: false),
+              _buildTextField(
+                  emailController, controller.user.email ?? 'Example@gmail.com',
+                  enabled: false),
 
               const SizedBox(height: 24),
 

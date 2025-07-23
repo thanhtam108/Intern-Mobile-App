@@ -14,19 +14,26 @@ class CustomSearchController extends GetxController {
   final searchResults = <SearchResult>[].obs;
   final recentSearches = <String>[].obs;
   final topRatedRecipes = <TopRatedRecipeModel>[].obs;
+  bool isLoadingTopRated = false;
   @override
   void onInit() {
     super.onInit();
     _loadRecentSearches();
     fetchTopRatedRecipes();
+    update(['search_top_rated']);
+    print("SVC: ${topRatedRecipes}");
   }
 
   Future<void> fetchTopRatedRecipes() async {
-    update(['searchtopRatedRecipes']);
+    isLoadingTopRated = true;
+    update(['search_top_rated']);
     final result = await _recipeService.fetchTopRatedRecipes();
+
     topRatedRecipes.assignAll((result.data ?? []).take(6).toList());
-    update(['searchtopRatedRecipes']);
-    print("Top rated recipes: ${result.data}");
+
+    update(['search_top_rated']);
+    print("Sverage ratings: ${result.data}");
+    isLoadingTopRated = false;
   }
 
   Future<void> search(String query) async {

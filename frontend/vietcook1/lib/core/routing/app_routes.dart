@@ -33,8 +33,6 @@ import '../../features/auth/register/presentation/page/register_page.dart';
 import '../../features/onboarding/di/onboarding_binding.dart';
 
 class AppRoutes {
-  static const String initial = Routes.initial;
-
   static final List<GetPage> routes = [
     GetPage(
       name: Routes.initial,

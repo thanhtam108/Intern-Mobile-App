@@ -19,30 +19,37 @@ class ProfileInfo extends GetView<ProfileController> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            CircleAvatar(
-              radius: 30,
-              backgroundImage: NetworkImage(profileImageUrl),
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        GetBuilder<ProfileController>(
+            id: 'profile_info',
+            builder: (context) {
+              return Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Expanded(child: _buildStat('3,990', 'Followers')),
-                  _buildDivider(),
-                  Expanded(child: _buildStat('1,224', 'Following')),
-                  _buildDivider(),
+                  CircleAvatar(
+                    radius: 30,
+                    backgroundImage: NetworkImage(profileImageUrl),
+                  ),
+                  const SizedBox(width: 16),
                   Expanded(
-                      child: _buildStat(
-                          controller.userRecipes.length.toString(), 'Recipes')),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(child: _buildStat('0', 'Followers')),
+                        _buildDivider(),
+                        Expanded(child: _buildStat('0', 'Following')),
+                        _buildDivider(),
+                        Expanded(
+                          child: _buildStat(
+                            controller.userRecipes.length.toString(),
+                            'Recipes',
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ],
-              ),
-            ),
-          ],
-        ),
+              );
+            }),
         const SizedBox(height: 16),
         // Name & Bio
         Text(

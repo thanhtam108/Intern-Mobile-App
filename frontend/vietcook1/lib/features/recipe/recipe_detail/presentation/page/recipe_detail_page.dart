@@ -17,12 +17,24 @@ class RecipeDetailPage extends GetView<RecipeDetailController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('Chi tiết món ăn',
+            style: TextStyle(color: Colors.white)),
+        centerTitle: true,
+        elevation: 0,
+        backgroundColor: AppColors.primary,
+        leading: IconButton(
+          onPressed: () => Get.back(),
+          icon: Icon(Icons.arrow_back_ios_new, color: Colors.white),
+        ),
+        iconTheme: const IconThemeData(color: Colors.black),
+      ),
       backgroundColor: const Color(0xFFF3F6F3),
       body: SingleChildScrollView(
         child: GetBuilder<RecipeDetailController>(
           id: 'recipeDetails',
           builder: (context) => Padding(
-            padding: const EdgeInsets.only(top: 36),
+            padding: const EdgeInsets.only(top: 12),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -31,14 +43,10 @@ class RecipeDetailPage extends GetView<RecipeDetailController> {
                     color: AppColors.primary.withOpacity(0.6),
                     shape: BoxShape.circle,
                   ),
-                  child: IconButton(
-                    icon: const Icon(Icons.arrow_back, color: Colors.white),
-                    onPressed: () => Get.back(),
-                  ),
                 ),
                 // Recipe Image
                 Padding(
-                  padding: const EdgeInsets.only(bottom: 16.0),
+                  padding: const EdgeInsets.only(bottom: 8.0),
                   child: RecipeImage(
                       imageUrl: controller.recipe.value?.imageUrl ?? ''),
                 ),
@@ -48,7 +56,7 @@ class RecipeDetailPage extends GetView<RecipeDetailController> {
                   category: controller.recipe.value?.category?.name ?? '',
                   duration: controller.recipe.value?.duration ?? '',
                   isFavorite: controller.isFavorite.value,
-                  onFavoriteTap: controller.toggleFavorite, // <-- Sửa dòng này
+                  onFavoriteTap: controller.toggleFavorite,
                   author: controller.recipe.value?.user.name ?? '',
                 ),
                 // Description

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:vietcook1/core/routing/routes.dart';
 import 'package:vietcook1/core/ui/horizontal_recipe_card.dart';
 import 'package:vietcook1/core/utils/date_time_utils.dart';
 import 'package:vietcook1/features/profile/presentation/controller/profile_controller.dart';
@@ -29,7 +30,13 @@ class UserRecipeGrid extends GetView<ProfileController> {
               authorName: recipe.user.name ?? '',
               authorAvatarUrl: recipe.user.avatarUrl ?? '',
               createdAt: DateTimeUtils.timeAgo(recipe.createdAt),
-              isFavorite: false, // Optionally adjust
+              isFavorite: false,
+              onTap: () {
+                // Điều hướng sang trang chi tiết
+                Get.toNamed(Routes.recipe_detail,
+                    arguments: {'recipeId': recipe.id});
+              },
+              onFavoriteToggle: () => controller.toggleFavorite(recipe.id),
             );
           },
         );

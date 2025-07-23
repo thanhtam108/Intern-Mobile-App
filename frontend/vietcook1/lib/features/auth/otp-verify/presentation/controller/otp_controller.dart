@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:vietcook1/core/configs/app_colors.dart';
+import 'package:vietcook1/core/configs/share_prefs_constants.dart';
 import 'package:vietcook1/core/routing/app_routes.dart';
+import 'package:vietcook1/core/routing/routes.dart';
+import 'package:vietcook1/core/utils/shared_preferences%20_utils.dart';
 import 'dart:async';
 import '../../../../../core/data/network/remote/auth_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
+import 'package:vietcook1/features/auth/login/models/token_model.dart';
 
 class OtpController extends GetxController {
   final List<TextEditingController> otpControllers =
@@ -74,10 +78,7 @@ class OtpController extends GetxController {
           backgroundColor: Colors.green,
           colorText: Colors.white,
         );
-        Get.toNamed('/home', arguments: {
-          'access_token': accessToken,
-          'user': user,
-        });
+        Get.offAllNamed(Routes.main);
       },
       onError: (error) {
         Get.snackbar(
@@ -108,8 +109,15 @@ class OtpController extends GetxController {
 
   Future<void> saveUserData(
       String accessToken, Map<String, dynamic> user) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('access_token', accessToken);
-    await prefs.setString('user', jsonEncode(user));
+    // Tạo TokenModel từ accessToken
+    final tokenModel = TokenModel(accessToken: accessToken);
+    await SharedPrefsUtils.saveObject(
+      SharePrefsConstants.token,
+      tokenModel.toJson(),
+    );
+    await SharedPrefsUtils.saveObject(
+      SharePrefsConstants.user,
+      user,
+    );
   }
 }

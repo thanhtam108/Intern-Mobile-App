@@ -12,7 +12,7 @@ class CategoryBinding extends Bindings {
     Get.putAsync<Dio>(() => DioClient().create());
     Get.lazyPut(() => RecipeService(Get.find<Dio>()));
     Get.lazyPut(() => CategoryService(Get.find<Dio>()));
-    Get.lazyPut(() => CategoryController(
-        Get.find<RecipeService>(), Get.find<CategoryService>()));
+    Get.lazyPut(() => CategoryController(Get.find<RecipeService>(),
+        Get.find<CategoryService>(), Get.find<FavoriteService>()));
   }
 }

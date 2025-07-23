@@ -34,21 +34,27 @@ class SearchPage extends GetView<CustomSearchController> {
             children: [
               const SearchHeader(),
               const SizedBox(height: 24),
-              const Text(
-                'Tìm kiếm gần đây',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-              ),
               const SizedBox(height: 8),
               const RecentSearches(),
               const SizedBox(height: 8),
+              // Bọc phần có thể tràn bằng Expanded + SingleChildScrollView
               Expanded(
-                child: Obx(() {
-                  if (controller.topRatedRecipes.isEmpty) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
-                  return TopRatedRecipes(recipes: controller.topRatedRecipes);
-                }),
-              )
+                child: SingleChildScrollView(
+                  keyboardDismissBehavior:
+                      ScrollViewKeyboardDismissBehavior.onDrag,
+                  child: GetBuilder<CustomSearchController>(
+                    id: 'search_top_rated',
+                    builder: (controller) {
+                      if (controller.topRatedRecipes.isEmpty) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
+                      return TopRatedRecipes(
+                        recipes: controller.topRatedRecipes.toList(),
+                      );
+                    },
+                  ),
+                ),
+              ),
             ],
           ),
         ),

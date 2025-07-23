@@ -6,6 +6,7 @@ import 'package:vietcook1/core/configs/share_prefs_constants.dart';
 import 'package:vietcook1/core/data/local/models/recipe_model.dart';
 import 'package:vietcook1/core/data/network/model/result_dto.dart';
 import 'package:vietcook1/core/data/network/remote/user_service.dart';
+import 'package:vietcook1/core/routing/routes.dart';
 import 'package:vietcook1/core/utils/shared_preferences%20_utils.dart';
 import 'package:vietcook1/core/utils/upload_image_utils.dart';
 import 'package:vietcook1/features/main/models/user_model.dart';
@@ -44,13 +45,10 @@ class EditProfileController extends GetxController {
   }
 
   Future<void> pickImage({required BuildContext context}) async {
-    // final picked = await picker.pickImage(source: ImageSource.gallery);
-    // if (picked != null) {
-    //   imageFile.value = File(picked.path);
-    // }
     final picked = await UpLoadImageUtil.pickImages(context: context);
     if (picked != null) {
       imageFile!.value = picked.first;
+      update(['profile_info']);
     }
   }
 
@@ -59,9 +57,20 @@ class EditProfileController extends GetxController {
     required String bio,
     required String email,
   }) async {
-    isLoading.value = true;
     try {
       final currentUser = user;
+
+      // Show loading dialog
+      Get.dialog(
+        AlertDialog(
+          title: const Text('Đang cập nhật hồ sơ...'),
+          content: const SizedBox(
+            height: 60,
+            child: Center(child: CircularProgressIndicator()),
+          ),
+        ),
+        barrierDismissible: false,
+      );
 
       String finalName =
           name.trim().isNotEmpty ? name.trim() : currentUser.name ?? '';
@@ -71,8 +80,8 @@ class EditProfileController extends GetxController {
           email.trim().isNotEmpty ? email.trim() : currentUser.email ?? '';
       String finalAvatarUrl = currentUser.avatarUrl ?? '';
 
-      // Nếu có upload avatar mới thì upload lên cloud và lấy url
-      if (imageFile != null && imageFile!.value != null) {
+      // Upload avatar nếu có chọn ảnh mới
+      if (imageFile?.value != null) {
         final urls = await UpLoadImageUtil.uploadImagesToCloudinary(
           fileName: 'avatars/${DateTime.now().millisecondsSinceEpoch}',
           pickedFiles: [imageFile!.value!],
@@ -83,7 +92,7 @@ class EditProfileController extends GetxController {
         }
       }
 
-      // Tạo model mới
+      // Tạo model user mới
       final updatedUser = UserModel(
         id: currentUser.id,
         name: finalName,
@@ -92,7 +101,7 @@ class EditProfileController extends GetxController {
         avatarUrl: finalAvatarUrl,
       );
 
-      // Gửi lên backend
+      // Gửi request cập nhật user
       final result = await _userService.updateUser(
         id: updatedUser.id,
         name: updatedUser.name,
@@ -101,37 +110,34 @@ class EditProfileController extends GetxController {
         avatarUrl: updatedUser.avatarUrl,
       );
 
+      Get.back(); // Đóng loading dialog
+
       if (result.status == Status.success) {
         user = updatedUser;
         await SharedPrefsUtils.saveObject(
-          SharePrefsConstants.user,
-          user.toJson(),
-        );
+            SharePrefsConstants.user, user.toJson());
         update(['profile_info']);
+
         Get.snackbar(
           'Thành công',
-          'Cập nhật thông tin thành công',
-          backgroundColor: Colors.green,
+          'Cập nhật hồ sơ thành công',
+          backgroundColor: AppColors.success,
           colorText: Colors.white,
         );
-        Get.back();
+
+        update(['profile_info']);
+        Get.offAllNamed(Routes.profile);
       } else {
-        Get.snackbar(
-          'Lỗi',
-          result.data?.id ?? 'Cập nhật thất bại',
-          backgroundColor: AppColors.error,
-          colorText: Colors.white,
-        );
+        throw Exception(result.data?.id ?? 'Cập nhật thất bại');
       }
     } catch (e) {
+      Get.back(); // Đóng dialog nếu lỗi
       Get.snackbar(
         'Lỗi',
         e.toString(),
-        backgroundColor: Colors.red,
+        backgroundColor: AppColors.error,
         colorText: Colors.white,
       );
-    } finally {
-      isLoading.value = false;
     }
   }
 }

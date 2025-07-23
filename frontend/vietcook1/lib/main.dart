@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:vietcook1/core/configs/app_colors.dart';
 import 'package:vietcook1/core/data/network/remote/dio_client.dart';
+import 'package:vietcook1/core/routing/routes.dart';
 import 'core/bindings/core_binding.dart';
 import 'core/routing/app_routes.dart';
 import 'core/data/network/remote/auth_service.dart';
@@ -33,7 +34,7 @@ class MyApp extends StatelessWidget {
       ),
       initialBinding: CoreBinding(),
       debugShowCheckedModeBanner: false,
-      initialRoute: AppRoutes.initial,
+      initialRoute: Routes.initial,
       getPages: AppRoutes.routes,
     );
     //   return MaterialApp(

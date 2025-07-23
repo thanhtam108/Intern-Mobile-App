@@ -230,7 +230,8 @@ class InsertRecipePage extends GetView<InsertRecipeController> {
                             const SizedBox(width: 8),
                             ElevatedButton(
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: AppColors.primary,
+                                backgroundColor:
+                                    AppColors.primary.withOpacity(0.6),
                                 shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(16)),
                                 padding: const EdgeInsets.symmetric(
@@ -246,7 +247,7 @@ class InsertRecipePage extends GetView<InsertRecipeController> {
                                 }
                               },
                               child: const Text(
-                                'Thêm',
+                                '+ Thêm',
                                 style: TextStyle(
                                     color: Colors.white,
                                     fontWeight: FontWeight.bold),
@@ -318,27 +319,13 @@ class InsertRecipePage extends GetView<InsertRecipeController> {
                           ),
                         ),
                         const SizedBox(width: 8),
-                        IconButton(
-                          icon: const Icon(Icons.camera_alt,
-                              color: AppColors.primary),
-                          onPressed: () {
-                            // Xử lý thêm ảnh cho bước nếu muốn
-                          },
-                        ),
                       ],
                     ),
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.primary,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(16)),
-                          padding: const EdgeInsets.symmetric(vertical: 14),
-                        ),
+                    child: Center(
+                      child: RawMaterialButton(
                         onPressed: () {
                           if (stepNameController.text.trim().isNotEmpty &&
                               stepDescController.text.trim().isNotEmpty) {
@@ -353,10 +340,15 @@ class InsertRecipePage extends GetView<InsertRecipeController> {
                                 'Vui lòng nhập đủ tên bước và mô tả bước');
                           }
                         },
-                        child: const Text(
-                          'Thêm',
-                          style: TextStyle(color: Colors.white),
+                        elevation: 2.0,
+                        fillColor: AppColors.primary.withOpacity(0.6),
+                        shape: const CircleBorder(),
+                        constraints: const BoxConstraints.tightFor(
+                          width: 56, // Kích thước to hơn
+                          height: 56,
                         ),
+                        child: const Icon(Icons.add,
+                            color: Colors.white, size: 32),
                       ),
                     ),
                   ),

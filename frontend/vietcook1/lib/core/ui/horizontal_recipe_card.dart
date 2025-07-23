@@ -120,7 +120,7 @@ class HorizontalRecipeCard extends StatelessWidget {
                             ),
                             const SizedBox(width: 4),
                             CircleAvatar(
-                              radius: 12,
+                              radius: 11,
                               backgroundImage: NetworkImage(
                                 authorAvatarUrl.isNotEmpty
                                     ? authorAvatarUrl

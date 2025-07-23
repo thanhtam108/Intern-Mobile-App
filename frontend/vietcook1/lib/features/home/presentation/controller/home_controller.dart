@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vietcook1/core/configs/share_prefs_constants.dart';
 import 'package:vietcook1/core/data/local/models/category_model.dart';
+import 'package:vietcook1/core/data/local/models/chef_model.dart';
 import 'package:vietcook1/core/data/local/models/recipe_model.dart';
 import 'package:vietcook1/core/data/network/model/result_dto.dart';
 import 'package:vietcook1/core/data/network/remote/category_service.dart';
@@ -23,7 +24,8 @@ class HomeController extends GetxController {
       RxList<TopRatedRecipeModel>();
 
   final RxList<RecipeModel> recentRecipes = RxList<RecipeModel>();
-
+  final RxList<ChefModel> topChefs = <ChefModel>[].obs;
+// Và hàm fetchTopChefs() để lấy dữ liệu nếu cần
   bool isLoadingUser = false;
   bool isLoadingCategories = false;
   bool isLoadingTopRated = false;

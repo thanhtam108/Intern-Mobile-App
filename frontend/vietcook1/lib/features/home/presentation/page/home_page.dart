@@ -60,13 +60,10 @@ class HomePage extends GetView<HomeController> {
                           ? TopRatedRecipesShimmer()
                           : TopRatedRecipes(
                               recipes: controller.topRatedRecipes),
-                      const SizedBox(height: 16),
+                      const SizedBox(height: 8),
                       controller.isLoadingRecent
                           ? const RecentRecipesShimmer()
                           : RecentRecipes(recipes: controller.recentRecipes),
-                      // TopChef(
-                      //   chefs: controller.user.topCh,
-                      // ),
                     ],
                   ),
                 ),
